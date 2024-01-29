@@ -12,7 +12,84 @@ import Comfort from '../assests/CardImages/Comfort.jpg';
 
  function CardList() {
   return (
-    <Box display={'flex'} justifyContent={'space-around'} padding={'16px 16px'} sx={{background:'#B6B6B4'}}>
+//     <Box
+//     display="flex"
+//     flexDirection={{ xs: 'column', md: 'row' }}  // Change to column layout on small screens, row on medium and larger screens
+//     justifyContent="space-around"
+//     padding="16px 16px"
+//     sx={{ background: '#B6B6B4', overflow: 'auto' }}  // Add overflow:auto to allow horizontal scrolling on small screens
+//   >
+//     <Card sx={{ maxWidth: 345,maxHeight: 500, marginBottom: { xs: 2, md: 0 } }}> {/* Add margin-bottom only on small screens */}
+//       <CardActionArea>
+//         <CardMedia
+//           component="img"
+//           height={{ xs: 200, md: 300 }}  // Adjust height based on screen size
+//           image={Safety}
+//         />
+//         <CardContent sx={{ background: "#E5E4E2" }}>
+//           <Typography gutterBottom variant="h4" component="div" fontWeight={'700'}>
+//             Safety
+//           </Typography>
+//           <Typography variant="h6">
+//             Safety is our top priority for all of our clients to make sure they arrive safely at their destinations.
+//           </Typography>
+//         </CardContent>
+//       </CardActionArea>
+//     </Card>
+//     <Card sx={{ maxWidth: 345, marginBottom: { xs: 2, md: 0 } }}> {/* Add margin-bottom only on small screens */}
+//       <CardActionArea>
+//         <CardMedia
+//           component="img"
+//           height={{ xs: 200, md: 300 }}  // Adjust height based on screen size
+//           image={Service}
+//         />
+//         <CardContent sx={{ background: "#E5E4E2" }}>
+//           <Typography gutterBottom variant="h4" component="div" fontWeight={'700'}>
+//           Service
+//           </Typography>
+//           <Typography variant="h6">
+//           We care about providing only the best service at an affordable price to all our customers.
+//           </Typography>
+//         </CardContent>
+//       </CardActionArea>
+//     </Card>
+//     <Card sx={{ maxWidth: 345 ,marginBottom: { xs: 2, md: 0 } }}> {/* Add margin-bottom only on small screens */}
+//       <CardActionArea>
+//         <CardMedia
+//           component="img"
+//           height={{ xs: 200, md: 300 }}  // Adjust height based on screen size
+//           image={Comfort}
+//         />
+//         <CardContent sx={{ background: "#E5E4E2" }}>
+//           <Typography gutterBottom variant="h4" component="div" fontWeight={'700'}>
+//           Comfort
+//           </Typography>
+//           <Typography variant="h6">
+//           Our new vehicles are equiped to take our customers as far as they need.
+//           </Typography>
+//         </CardContent>
+//       </CardActionArea>
+//     </Card>
+//     <Card sx={{ maxWidth: 345,marginBottom: { xs: 2, md: 0 } }}> {/* Add margin-bottom only on small screens */}
+//       <CardActionArea>
+//         <CardMedia
+//           component="img"
+//           height={{ xs: 200, md: 300 }}  // Adjust height based on screen size
+//           image={OnTime}
+//         />
+//         <CardContent sx={{ background: "#E5E4E2" }}>
+//           <Typography gutterBottom variant="h4" component="div" fontWeight={'700'}>
+//           OnTime
+//           </Typography>
+//           <Typography variant="h6">
+//           We value our customers and their needs to arrive on time to their appointmnts.
+//           </Typography>
+//         </CardContent>
+//       </CardActionArea>
+//     </Card>
+//     {/* Repeat similar structure for other cards */}
+//   </Box>
+    <Box display={'flex'} flexDirection={{ xs: 'column', md: 'row' }} justifyContent={'space-around'} padding={'16px 16px'} sx={{ background: '#B6B6B4', overflow: 'auto' }}>
         <Card sx={{ maxWidth: 345, maxHeight: 500 }}>
             <CardActionArea>
                 <CardMedia

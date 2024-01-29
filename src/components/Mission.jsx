@@ -20,7 +20,7 @@ function Mission() {
           <Hidden mdDown>
             <CorouselItem />
           </Hidden>
-            <Box display={'flex'}>
+            <Box display={'flex'}  flexDirection={{ xs: 'column', md: 'row' }} justifyContent={'space-around'} padding={'12px 12px'}>
                 <Container maxWidth="xs">
                     <Typography variant="h4" textAlign={'left'} gutterBottom style={{color: "#808000", padding: "1rem 0 1rem 0",}}>
                         Contact Us

@@ -43,13 +43,43 @@ function HomePageHeader() {
             </Typography>
           <Divider />
           <List>
-            {navItems.map((item) => (
+            <ListItem disablePadding >
+            <ListItemButton onClick={()=>navigate('/AboutUs')} sx={{ textAlign: 'center' }}>
+                  <ListItemText primary="About Us" />
+                  </ListItemButton>
+
+
+            </ListItem>
+            <ListItem disablePadding >
+            <ListItemButton onClick={()=>navigate('/Contact')} sx={{ textAlign: 'center' }}>
+                  <ListItemText primary="Contact" />
+                  </ListItemButton>
+
+
+            </ListItem>
+            <ListItem disablePadding >
+            <ListItemButton onClick={()=>navigate('/Mission')} sx={{ textAlign: 'center' }}>
+                  <ListItemText primary="Mission" />
+                  </ListItemButton>
+
+
+            </ListItem>
+          {/* <Button >
+                  About Us
+                </Button>
+                <Button onClick={()=>navigate('/Contact')}>
+                  Contact
+                </Button>
+                <Button onClick={()=>navigate('/Mission')}>
+                  Mission
+                </Button> */}
+            {/* {navItems.map((item) => (
               <ListItem key={item} disablePadding>
                 <ListItemButton sx={{ textAlign: 'center' }}>
                   <ListItemText primary={item} />
                 </ListItemButton>
               </ListItem>
-            ))}
+            ))} */}
           </List>
         </Box>
       );

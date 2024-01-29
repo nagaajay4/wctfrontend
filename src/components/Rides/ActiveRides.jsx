@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Header from '../../layouts/Header'
+import Header from "../../layouts/Header";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -24,26 +24,22 @@ import {
 import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
-import { useNavigate } from 'react-router-dom';
-import AdminSidebar from '../../layouts/AdminSidebar'
-import { Typography } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+import AdminSidebar from "../../layouts/AdminSidebar";
+import { Typography } from "@mui/material";
 import AuthUser from "../AuthUser";
-import axios from 'axios';
-
-
+import axios from "axios";
 
 const ActiveRides = () => {
   const [ridesRows, setRidesRows] = useState([]);
-  const {http,getToken} =AuthUser();
-  const [drivers,setDrivers]=useState([]);
+  const { http, getToken } = AuthUser();
+  const [drivers, setDrivers] = useState([]);
   //const drivers = ['Nagaajay', 'Darwin', 'Zak'];
 
-
   const navigate = useNavigate();
-  if(getToken()===null) {
-    navigate('/AdminLogin');
+  if (getToken() === null) {
+    navigate("/AdminLogin");
   }
-
 
   useEffect(() => {
     axios({
@@ -51,12 +47,12 @@ const ActiveRides = () => {
       url: "/admin/unAssignedRides",
       method: "get",
       headers: {
-        Authorization: getToken()
+        Authorization: getToken(),
       },
       timeout: 2000,
     })
       .then((response) => {
-        console.log("response.data",response.data);
+        console.log("response.data", response.data);
         setRidesRows(response.data.data);
       })
       .catch((error) => {
@@ -67,28 +63,26 @@ const ActiveRides = () => {
         }
       });
 
-      axios({
-        baseURL: "http://localhost:8000/api/v1",
-        url: "/admin/drivers",
-        method: "get",
-        headers: {
-          Authorization: getToken()
-        },
-        timeout: 2000,
+    axios({
+      baseURL: "http://localhost:8000/api/v1",
+      url: "/admin/drivers",
+      method: "get",
+      headers: {
+        Authorization: getToken(),
+      },
+      timeout: 2000,
+    })
+      .then((response) => {
+        console.log("response.data", response.data);
+        setDrivers(response.data.data);
       })
-        .then((response) => {
-          console.log("response.data",response.data);
-          setDrivers(response.data.data);
-        })
-        .catch((error) => {
-          if (error.code === "ECONNABORTED") {
-            console.log("Request timed out");
-          } else {
-            console.log(error.message);
-          }
-        });
-
-
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+        } else {
+          console.log(error.message);
+        }
+      });
 
     //const data = fetchUpComingRides();
     // const response = http.get("/admin/unAssignedRides",{
@@ -98,7 +92,6 @@ const ActiveRides = () => {
     //   }
     // });
     // console.log(response.data);
-    
   }, []);
   // const handleDeleteRow = (id) => {
   //   console.log(id);
@@ -115,7 +108,6 @@ const ActiveRides = () => {
     }
   };
 
-
   const handleEditCellChange = (params) => {
     const updatedRows = [...ridesRows];
     updatedRows[params.RideID - 1] = {
@@ -125,51 +117,44 @@ const ActiveRides = () => {
     setRidesRows(updatedRows);
   };
   const handleDriverChange = (id, newStatus) => {
-    console.log("id",id);
-    console.log("newStatus",newStatus)
+    console.log("id", id);
+    console.log("newStatus", newStatus);
     const updatedRows = ridesRows.map((ridesRows) =>
-      ridesRows.RideID === id ? { ...ridesRows, Driver: newStatus.driverFirstName } : ridesRows
+      ridesRows.RideID === id
+        ? { ...ridesRows, Driver: newStatus.driverFirstName }
+        : ridesRows
     );
 
-
-  
-      axios({
-        baseURL: "http://localhost:8000/api/v1",
-        url: "/admin/assignRide",
-        method: "post",
-       data:{
-        
-          "rideId":id,
-          "driverId":newStatus.driverID
-      
-        
+    axios({
+      baseURL: "http://localhost:8000/api/v1",
+      url: "/admin/assignRide",
+      method: "post",
+      data: {
+        rideId: id,
+        driverId: newStatus.driverID,
       },
-        
-        headers:  {
-          'Content-Type': 'application/json',
-          'Authorization': getToken()
-        },
-        
-        timeout: 5000,
+
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getToken(),
+      },
+
+      timeout: 5000,
+    })
+      .then((response) => {
+        console.log(response);
+        console.log("response.data", response.data.data);
+        console.log("message", response.data.message);
+        setRidesRows(updatedRows);
       })
-        .then((response) => {
-          console.log(response);
-          console.log("response.data",response.data.data);
-          console.log("message",response.data.message);
-          setRidesRows(updatedRows);
-
-
-        })
-        .catch((error) => {
-          if (error.code === "ECONNABORTED") {
-            console.log("Request timed out");
-          } else {
-            console.log("error",error);
-          }
-        });
-      closepopup();
-    
-
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+        } else {
+          console.log("error", error);
+        }
+      });
+    closepopup();
 
     // axios({
     //   baseURL: "http://localhost:8000/api/v1",
@@ -196,7 +181,6 @@ const ActiveRides = () => {
     // console.log("Ride id: ", id);
     // console.log("Driver Selected: ", newStatus);
     //handleDeleteRow(id);
-   
   };
 
   // const handleRideStatusChange = (id, newStatus) => {
@@ -230,11 +214,12 @@ const ActiveRides = () => {
           value={params.value}
           onChange={(e) => handleDriverChange(params.id, e.target.value)}
         >
-          {drivers && drivers.map((driver) => (
-            <MenuItem key={driver.driverID} value={driver}>
-              {driver.driverFirstName +" " +driver.driverLastName}
-            </MenuItem>
-          ))}
+          {drivers &&
+            drivers.map((driver) => (
+              <MenuItem key={driver.driverID} value={driver}>
+                {driver.driverFirstName + " " + driver.driverLastName}
+              </MenuItem>
+            ))}
           {/* <MenuItem value="">None </MenuItem>
 
           <MenuItem value="null">None </MenuItem>
@@ -245,7 +230,9 @@ const ActiveRides = () => {
       ),
     },
     {
-      field:"Ride_Status", headerName:"Ride Status", minWidth:120
+      field: "Ride_Status",
+      headerName: "Ride Status",
+      minWidth: 120,
     },
     // {
     //   field: "Ride_Status",
@@ -262,7 +249,7 @@ const ActiveRides = () => {
     //         </MenuItem>
     //       ))}
     //     </Select>
-    //   ),width: 200 
+    //   ),width: 200
     // },
     { field: "RideID", headerName: "Ride ID", width: 100 },
     // { field: "Ride_Status", headerName: "Ride Status", width: 150 },
@@ -339,19 +326,18 @@ const ActiveRides = () => {
   });
   //Driver change
   const handleChange = (event) => {
-
-    if(event.target.value!==null) {
+    if (event.target.value !== null) {
       axios({
         baseURL: "http://localhost:8000/api/v1",
         url: "/admin/assignRide",
         method: "post",
-        headers:  {
-          Authorization: getToken()
+        headers: {
+          Authorization: getToken(),
         },
         timeout: 2000,
       })
         .then((response) => {
-          console.log("response.data",response);
+          console.log("response.data", response);
           setRide({ ...ride, [event.target.name]: event.target.value });
 
           //setRidesRows(response.data.data);
@@ -365,13 +351,13 @@ const ActiveRides = () => {
         });
     }
   };
-  const rideStatus = ['UPCOMING', 'PENDING_UPDATE', 'COMPLETED'];
+  const rideStatus = ["UPCOMING", "PENDING_UPDATE", "COMPLETED"];
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(ride);
     closepopup();
   };
-  const handleAddRide=()=> {
+  const handleAddRide = () => {
     setIsEditMode(false);
     setRide({
       RideID: "",
@@ -390,14 +376,13 @@ const ActiveRides = () => {
       Driver: "",
     });
     functionopenpopup();
-  }
-  const [isEditMode,setIsEditMode]=useState(false);
+  };
+  const [isEditMode, setIsEditMode] = useState(false);
   const handleEditRow = (id) => {
     // Implement your edit logic here
     setIsEditMode(true);
-    const editRide=ridesRows.filter((ride) => ride.RideID === id)[0];
-    if(editRide===null) 
-    {
+    const editRide = ridesRows.filter((ride) => ride.RideID === id)[0];
+    if (editRide === null) {
       alert("Id is not found");
     }
     console.log(editRide);
@@ -419,17 +404,15 @@ const ActiveRides = () => {
     });
     functionopenpopup();
     console.log(`Edit row with ID ${editRide[0]}`);
-   
   };
 
   return (
     <>
       <AdminSidebar />
-      <Typography variant="h3" sx={{marginBottom:'12px',color:'#004080'}}>
+      <Typography variant="h3" sx={{ marginBottom: "12px", color: "#004080" }}>
         Active Rides
       </Typography>
       <div>
-        
         <Dialog
           // fullScreen
           open={open}
@@ -468,6 +451,17 @@ const ActiveRides = () => {
                 name="Ride_Date"
                 value={ride.Ride_Date}
                 onChange={handleChange}
+              />
+              <TextField
+                id="datetime-local"
+                label="Next appointment"
+                type="datetime-local"
+                value={ride.Ride_Date}
+                defaultValue="2017-05-24T10:30"
+                sx={{ width: 250 }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 label="Customer First Name"
@@ -529,8 +523,8 @@ const ActiveRides = () => {
                 value={ride.Pickup_Directions}
                 onChange={handleChange}
               />
-              
-        {/* <FormControl>
+
+              {/* <FormControl>
         <InputLabel>Driver</InputLabel>
         <Select
           name="Driver"
@@ -545,7 +539,7 @@ const ActiveRides = () => {
           ))}
         </Select>
         </FormControl> */}
-        {/* <FormControl>
+              {/* <FormControl>
         <InputLabel>Ride Status</InputLabel>
         <Select
           name="Ride_Status"
@@ -560,9 +554,12 @@ const ActiveRides = () => {
           ))}
         </Select>
       </FormControl> */}
-           
-           
-              <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
+
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={(event) => handleSubmit(event)}
+              >
                 Submit
               </Button>
             </Stack>
@@ -588,7 +585,6 @@ const ActiveRides = () => {
             <Button
               // onClick={functionopenpopup}
               onClick={(event) => handleAddRide(event)}
-
               color="primary"
               variant="contained"
               sx={{ height: 40 }}
@@ -599,18 +595,19 @@ const ActiveRides = () => {
           </Box>
 
           <Paper component={Box} width={1} height={700}>
-           {ridesRows && <DataGrid
-              rows={ridesRows}
-              columns={rideColumns}
-              pageSize={5}
-              getRowId={(ridesRows) => ridesRows.RideID}
-              // checkboxSelection
-              onEditCellChangeCommitted={handleEditCellChange}
-              components={{
-                Toolbar: GridToolbar,
-              }}
-            />
-          }
+            {ridesRows && (
+              <DataGrid
+                rows={ridesRows}
+                columns={rideColumns}
+                pageSize={5}
+                getRowId={(ridesRows) => ridesRows.RideID}
+                // checkboxSelection
+                onEditCellChangeCommitted={handleEditCellChange}
+                components={{
+                  Toolbar: GridToolbar,
+                }}
+              />
+            )}
           </Paper>
         </Container>
       </div>
