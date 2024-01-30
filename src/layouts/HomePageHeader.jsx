@@ -38,9 +38,22 @@ function HomePageHeader() {
     });
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-            <Typography onClick={()=>navigate('/')}>
+          <List>
+            <ListItem>
+              <ListItemButton>
               <LogoImage src={logoImage} alt="Logo" />
+
+
+              </ListItemButton>
+            <Typography onClick={()=>navigate('/')}>
+              
             </Typography>
+
+            </ListItem>
+
+
+          </List>
+            
           <Divider />
           <List>
             <ListItem disablePadding >
@@ -97,9 +110,9 @@ function HomePageHeader() {
             <MenuIcon />
         </IconButton>
         <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'} flexGrow={1}>
-            <Typography onClick={()=>navigate('/')}>
+            <Button onClick={()=>navigate('/')}>
             <LogoImage src={logoImage} alt="Logo" />
-            </Typography>
+            </Button>
             <Box sx={{ display: { xs: 'none', sm: 'block' }}} alignContent={'flex-end'}>
                 <Button onClick={()=>navigate('/AboutUs')}>
                   About Us
