@@ -29,11 +29,23 @@ import AdminSidebar from "../../layouts/AdminSidebar";
 import { Typography } from "@mui/material";
 import AuthUser from "../AuthUser";
 import axios from "axios";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const ActiveRides = () => {
   const [ridesRows, setRidesRows] = useState([]);
   const { http, getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertMessage,setAlertMessage]=useState({status:"",alert:""});
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
+  };
+  
+
   //const drivers = ['Nagaajay', 'Darwin', 'Zak'];
 
   const navigate = useNavigate();
@@ -84,14 +96,7 @@ const ActiveRides = () => {
         }
       });
 
-    //const data = fetchUpComingRides();
-    // const response = http.get("/admin/unAssignedRides",{
-    //   headers: {
-    //     'Authorization': getToken(),
-    //     'Content-Type': ' application/json,*/*'
-    //   }
-    // });
-    // console.log(response.data);
+    
   }, []);
   // const handleDeleteRow = (id) => {
   //   console.log(id);
@@ -119,11 +124,11 @@ const ActiveRides = () => {
   const handleDriverChange = (id, newStatus) => {
     console.log("id", id);
     console.log("newStatus", newStatus);
-    const updatedRows = ridesRows.map((ridesRows) =>
-      ridesRows.RideID === id
-        ? { ...ridesRows, Driver: newStatus.driverFirstName }
-        : ridesRows
-    );
+    // const updatedRows = ridesRows.map((ridesRows) =>
+    //   ridesRows.RideID === id
+    //     ? { ...ridesRows, Driver: newStatus.driverFirstName }
+    //     : ridesRows
+    // );
 
     axios({
       baseURL: "http://localhost:8000/api/v1",
@@ -145,11 +150,17 @@ const ActiveRides = () => {
         console.log(response);
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
+        const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
+      //setRidesRows(updatedRows);
         setRidesRows(updatedRows);
+        setAlertMessage({status:"success",alert:"Ride Assigned succesfully..!"});
+        setAlertOpen(true);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setAlertMessage({status:"error",alert:"Unable to Assign RIDE, Please try Again..!"});
+          setAlertOpen(true);
         } else {
           console.log("error", error);
         }
@@ -234,23 +245,7 @@ const ActiveRides = () => {
       headerName: "Ride Status",
       minWidth: 120,
     },
-    // {
-    //   field: "Ride_Status",
-    //   headerName: "Assign Status",
-    //   minWidth: 120,
-    //   renderCell: (params) => (
-    //     <Select
-    //       value={params.value}
-    //       onChange={(e) => handleRideStatusChange(params.id, e.target.value)}
-    //     >
-    //       {rideStatus && rideStatus.map((status) => (
-    //         <MenuItem key={status} value={status}>
-    //           {status}
-    //         </MenuItem>
-    //       ))}
-    //     </Select>
-    //   ),width: 200
-    // },
+    
     { field: "RideID", headerName: "Ride ID", width: 100 },
     // { field: "Ride_Status", headerName: "Ride Status", width: 150 },
     { field: "Ride_Date", headerName: "Ride Date" },
@@ -264,24 +259,7 @@ const ActiveRides = () => {
     { field: "Pickup_Address", headerName: "Pickup Address" },
     { field: "Dropoff_Address", headerName: "Dropoff Address" },
     { field: "Pickup_Directions", headerName: "Pickup Directions" },
-    // {
-    //   field: "delete",
-    //   headerName: "Delete",
-    //   sortable: false,
-    //   width: 80,
-    //   disableClickEventBubbling: true,
-    //   renderCell: (params) => (
-    //     <IconButton
-    //       color="secondary"
-    //       onClick={() => {
-    //         console.log(params);
-    //         handleDeleteRow(params.id);
-    //       }}
-    //     >
-    //       <DeleteIcon />
-    //     </IconButton>
-    //   ),
-    // },
+    
   ];
 
   const [open, openchange] = useState(false);
@@ -524,36 +502,6 @@ const ActiveRides = () => {
                 onChange={handleChange}
               />
 
-              {/* <FormControl>
-        <InputLabel>Driver</InputLabel>
-        <Select
-          name="Driver"
-          value={ride.Driver}
-          onChange={handleChange}
-          label="Driver"
-        >
-          {drivers.map((driver) => (
-            <MenuItem key={driver} value={driver}>
-              {driver}
-            </MenuItem>
-          ))}
-        </Select>
-        </FormControl> */}
-              {/* <FormControl>
-        <InputLabel>Ride Status</InputLabel>
-        <Select
-          name="Ride_Status"
-          value={ride.Ride_Status}
-          onChange={handleChange}
-          label="Ride_Status"
-        >
-           {rideStatus && rideStatus.map((status) => (
-            <MenuItem key={status} value={status}>
-              {status}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
 
               <Button
                 color="primary"
@@ -565,8 +513,7 @@ const ActiveRides = () => {
             </Stack>
           </DialogContent>
           <DialogActions>
-            {/* <Button color="success" variant="contained">Yes</Button>
-                    <Button onClick={closepopup} color="error" variant="contained">Close</Button> */}
+            
           </DialogActions>
         </Dialog>
       </div>
@@ -611,8 +558,118 @@ const ActiveRides = () => {
           </Paper>
         </Container>
       </div>
+      <div>
+      
+      <Snackbar open={alertOpen} autoHideDuration={3000} onClose={handleAlertClose}>
+        <Alert
+          onClose={handleAlertClose}
+          severity={alertMessage.status}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {alertMessage.alert}
+        </Alert>
+      </Snackbar>
+    </div>
     </>
   );
 };
 
 export default ActiveRides;
+
+
+
+
+
+
+
+
+
+
+
+//const data = fetchUpComingRides();
+    // const response = http.get("/admin/unAssignedRides",{
+    //   headers: {
+    //     'Authorization': getToken(),
+    //     'Content-Type': ' application/json,*/*'
+    //   }
+    // });
+    // console.log(response.data);
+
+
+    // {
+    //   field: "delete",
+    //   headerName: "Delete",
+    //   sortable: false,
+    //   width: 80,
+    //   disableClickEventBubbling: true,
+    //   renderCell: (params) => (
+    //     <IconButton
+    //       color="secondary"
+    //       onClick={() => {
+    //         console.log(params);
+    //         handleDeleteRow(params.id);
+    //       }}
+    //     >
+    //       <DeleteIcon />
+    //     </IconButton>
+    //   ),
+    // },
+
+    // {
+    //   field: "Ride_Status",
+    //   headerName: "Assign Status",
+    //   minWidth: 120,
+    //   renderCell: (params) => (
+    //     <Select
+    //       value={params.value}
+    //       onChange={(e) => handleRideStatusChange(params.id, e.target.value)}
+    //     >
+    //       {rideStatus && rideStatus.map((status) => (
+    //         <MenuItem key={status} value={status}>
+    //           {status}
+    //         </MenuItem>
+    //       ))}
+    //     </Select>
+    //   ),width: 200
+    // },
+
+
+
+
+
+    
+              /* <FormControl>
+        <InputLabel>Driver</InputLabel>
+        <Select
+          name="Driver"
+          value={ride.Driver}
+          onChange={handleChange}
+          label="Driver"
+        >
+          {drivers.map((driver) => (
+            <MenuItem key={driver} value={driver}>
+              {driver}
+            </MenuItem>
+          ))}
+        </Select>
+        </FormControl> */
+              /* <FormControl>
+        <InputLabel>Ride Status</InputLabel>
+        <Select
+          name="Ride_Status"
+          value={ride.Ride_Status}
+          onChange={handleChange}
+          label="Ride_Status"
+        >
+           {rideStatus && rideStatus.map((status) => (
+            <MenuItem key={status} value={status}>
+              {status}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl> */
+
+
+    /* <Button color="success" variant="contained">Yes</Button>
+                    <Button onClick={closepopup} color="error" variant="contained">Close</Button> */

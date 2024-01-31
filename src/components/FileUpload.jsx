@@ -4,13 +4,22 @@ import Header from '../layouts/Header';
 import { useNavigate } from 'react-router-dom';
 import AdminSidebar from '../layouts/AdminSidebar';
 import AuthUser from "./AuthUser";
-
-
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import axios from 'axios';
 
 const FileUpload = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [open, setOpen] = useState(false);
   const {http,getToken} =AuthUser();
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage,setAlertMessage]=useState({status:"",alert:""});
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
+  };
 
   const navigate = useNavigate();
   if(getToken()===null) {
@@ -40,22 +49,28 @@ const FileUpload = () => {
       formData.append("csvFile", selectedFiles[0]);
   
       try {
-        const response = await http.post("/admin/fileUpload", formData, {
+        const response = await axios.post("/admin/fileUpload", formData, {
           headers: {
             'Authorization': getToken(),
             'Content-Type': 'multipart/form-data'
           }
         });
-  
+    
         console.log(response.data);
-        navigate('/ActiveRides');
+        setAlertMessage({ status: "success", alert: "File submitted successfully..!" });
+        setAlertOpen(true);
+        navigate('/ActiveRides'); // Assuming you have navigate function defined
       } catch (error) {
         console.error(error);
-        navigate('/ActiveRides');
+        setAlertMessage({ status: "error", alert: "Unable to Submit File, Please try Again..!" });
+        setAlertOpen(true);
+        // navigate('/ActiveRides'); // Uncomment if you have the navigate function defined
       }
     } else {
       console.error('No files upladed');
-      navigate('/ActiveRides');
+      setAlertMessage({status:"warning",alert:"No files upladed, Please try Again..!"});
+        setAlertOpen(true);
+      //navigate('/ActiveRides');
     }
   };
 
@@ -95,6 +110,19 @@ const FileUpload = () => {
         </div>
       )}
     </Box>
+    <div>
+      
+      <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleAlertClose}>
+        <Alert
+          onClose={handleAlertClose}
+          severity={alertMessage.status}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {alertMessage.alert}
+        </Alert>
+      </Snackbar>
+    </div>
     </>
   );
 };

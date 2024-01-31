@@ -37,8 +37,8 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="/">
+        West Central Transportation, Inc (WCTI)
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -50,8 +50,9 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function AdminLogin() {
+export default function ForgotPasswordAdmin() {
   const { http, setToken } = AuthUser();
+  const [errors, setErrors] = React.useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState({
     status: "",
@@ -60,12 +61,7 @@ export default function AdminLogin() {
 
   const navigate = useNavigate();
   const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [errors, setErrors] = React.useState({});
 
-  const [showPassword, setShowPassword] = React.useState(false);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -73,9 +69,6 @@ export default function AdminLogin() {
     setAlertOpen(false);
   };
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
@@ -89,12 +82,6 @@ export default function AdminLogin() {
       newErrors.email = "Invalid email address";
     }
 
-    // validation
-    if (!password) {
-      valid = false;
-      newErrors.password = "password is required";
-    }
-
     setErrors(newErrors);
     return valid;
   };
@@ -103,20 +90,18 @@ export default function AdminLogin() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     setEmail(data.get("email"));
-    setPassword(data.get("password"));
     console.log({
       email: data.get("email"),
-      password: data.get("password"),
     });
-    if (validateForm()) {
+    //http://localhost:8000/api/v1/admin/forgotPassword
 
+    if (validateForm()) {
       axios({
         baseURL: "http://localhost:8000/api/v1",
-        url: "/admin/signIn",
+        url: "/admin/forgotPassword",
         method: "post",
         data: {
           email: data.get("email"),
-          password: data.get("password"),
         },
 
         headers: {
@@ -126,10 +111,9 @@ export default function AdminLogin() {
         timeout: 5000,
       })
         .then((response) => {
-          setToken(data.get("email"), response.data.token, "admin");
           setAlertMessage({
             status: "success",
-            alert: "Admin Login Successful..!",
+            alert: "Password reset link is Successful sent to email..!",
           });
           setAlertOpen(true);
         })
@@ -138,56 +122,31 @@ export default function AdminLogin() {
             console.log("Request timed out");
             setAlertMessage({
               status: "error",
-              alert: "Unable to Login server error..!",
+              alert: "Unable to send Password reset link server error..!",
             });
 
             setAlertOpen(true);
           } else {
             console.log("login api error", error);
-          setAlertMessage({
-            status: "error",
-            alert: "Unable to Login Successfully..!",
-          });
-          setAlertOpen(true);
+            setAlertMessage({
+              status: "error",
+              alert: "Unable to send Password reset link..!",
+            });
+            setAlertOpen(true);
           }
         });
     }
     else {
         setAlertMessage({
           status: "warning",
-          alert: "please enter correct email and Password..!",
+          alert: "please enter correct email to send Password reset link..!",
         });
         setAlertOpen(true);
       }
+    
+   
 
 
-
-
-
-
-
-    //   http
-    //     .post("/admin/signIn", {
-    //       email: data.get("email"),
-    //       password: data.get("password"),
-    //     })
-    //     .then((res) => {
-    //       setToken(data.get("email"), res.data.token, "admin");
-    //       setAlertMessage({
-    //         status: "success",
-    //         alert: "Admin Login Successful..!",
-    //       });
-    //       setAlertOpen(true);
-    //     })
-    //     .catch((error) => {
-    //       console.log("login api error", error);
-    //       setAlertMessage({
-    //         status: "error",
-    //         alert: "Unable to Login Successfully..!",
-    //       });
-    //       setAlertOpen(true);
-    //     });
-    // }
   };
 
   return (
@@ -195,19 +154,7 @@ export default function AdminLogin() {
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
         <Header></Header>
-        {/* <Box sx={{ display: "flex", }}>
-        <CssBaseline />
-        <AppBar  sx = {{ background: "white",fontFamily: 'Apple Color Emoji',fontWeight: 100, }}component="nav">
-          
-          <Toolbar
-            sx={{justifyContent: "center",}}
-          >
-            <Typography  sx={{color: 'yellow',}} variant="h3" component="div">
-              West Central Transportation
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </Box> */}
+
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
@@ -222,11 +169,13 @@ export default function AdminLogin() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Admin Sign in
+              Reset Password for Admin
             </Typography>
             <Box
               component="form"
-              onSubmit={handleSubmit}
+              onSubmit={(event) => {
+                handleSubmit(event);
+              }}
               noValidate
               sx={{ mt: 1 }}
             >
@@ -242,59 +191,19 @@ export default function AdminLogin() {
                 error={Boolean(errors.email)}
                 helperText={errors.email}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                error={Boolean(errors.password)}
-                helperText={errors.password}
-              />
-              {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
-          />
-        </FormControl> */}
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
+
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 2, mb: 2 }}
               >
-                Sign In
+                Send link
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="/ForgotPasswordAdmin" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
+              <Grid container justifyContent={"space-around"}>
                 <Grid item>
                   <Link href="http://localhost:3000/Contact" variant="body2">
-                    {"Please Contact Zak"}
+                    {"Please Contact Admin"}
                   </Link>
                 </Grid>
               </Grid>

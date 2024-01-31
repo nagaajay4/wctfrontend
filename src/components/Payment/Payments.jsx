@@ -105,7 +105,7 @@ const Payements = () => {
   const handleAddPayment=()=> {
     setIsEditMode(false);
     setNewpayment({
-      "paymentID": "",
+    "paymentID": "",
     "amount": "",
     "driverID": "",
     "paymentDate": "",
@@ -138,6 +138,42 @@ const Payements = () => {
     console.log("newPayemnt",newPayemnt);
     
     if(isEditMode) {
+      //http://localhost:8000/api/v1/admin/payments/:paymentId
+      axios({
+        baseURL: "http://localhost:8000/api/v1",
+        url: "/admin/payments",
+        method: "post",
+        params: {
+          paymentId: newPayemnt.paymentID,
+        },
+       data:{
+        driverId:newPayemnt.driverID, 
+        amount:newPayemnt.amount, 
+        remarks:newPayemnt.remarks
+      },
+        
+        headers:  {
+          'Content-Type': 'application/json',
+          'Authorization': getToken()
+        },
+        
+        timeout: 5000,
+      })
+        .then((response) => {
+          console.log(response);
+          console.log("response.data",response.data.data);
+          console.log("message",response.data.message);
+          
+        })
+        .catch((error) => {
+          if (error.code === "ECONNABORTED") {
+            console.log("Request timed out");
+          } else {
+            console.log("error",error);
+          }
+        });
+
+      
 
     }
     else {

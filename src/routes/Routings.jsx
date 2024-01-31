@@ -33,6 +33,9 @@ import AboutUs from "../components/AboutUs";
 import Mission from "../components/Mission";
 import Contact from "../components/Contact";
 
+import ForgotPasswordAdmin from "../components/ForgotPasswordAdmin"
+import ForgotPasswordDriver from "../components/ForgotPasswordDriver"
+
 
 function Routings() {
   return (
@@ -52,6 +55,7 @@ function Routings() {
           <Route path="/Payments" element={<Payments /> }></Route>
           <Route path="/DriverProfiles" element={<DriverProfiles />}></Route>
           <Route path="/AdminDetails" element={<AdminDetails />}></Route>
+          <Route path="/ForgotPasswordAdmin" element={<ForgotPasswordAdmin />}></Route>
 
 
           <Route path="/DriverLogin" element={<DriverLogin />}></Route>
@@ -59,6 +63,7 @@ function Routings() {
           <Route path="/DriverPayments" element={<DriverPayments />}></Route>
           <Route path="/DriverPastRides" element={<DriverPastRides />}></Route>
           <Route path="/DriverActiveRides" element={<DriverActiveRides />}></Route>
+          <Route path="/ForgotPasswordDriver" element={<ForgotPasswordDriver />}></Route>
 
           <Route path="/" element={<Home />}></Route>
           <Route path="/PrivacyPolicy" element={<PrivacyPolicy />}></Route>

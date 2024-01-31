@@ -54,6 +54,8 @@ export default function DriverLogin() {
   const navigate = useNavigate();
   const [email,setEmail]=React.useState('');
   const [password,setPassword]=React.useState('');
+  const [errors, setErrors] = React.useState({});
+
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [alertOpen, setAlertOpen] = React.useState(false);
@@ -72,34 +74,106 @@ export default function DriverLogin() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const validateForm = (getemail,getpassword) => {
+    let valid = true;
+    const newErrors = {};
+
+    // Email validation
+    if (!getemail) {
+      valid = false;
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(getemail)) {
+      valid = false;
+      newErrors.email = "Invalid email address";
+    }
+
+    // validation
+    if (!getpassword) {
+      valid = false;
+      newErrors.password = "password is required";
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // setEmail(data.get('email'));
-    // setPassword(data.get('password'))
+    setEmail(data.get("email"));
+    setPassword(data.get("password"));
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
-  //   if(email=="mainajay890@gmail.com") {
-  //     navigate('/DriverActiveRides')
-  // }
+
+    if (validateForm(data.get("email"),data.get("password"))) {
+
+      axios({
+        baseURL: "http://localhost:8000/api/v1",
+        url: "/driver/signIn",
+        method: "post",
+        data: {
+          email: data.get("email"),
+          password: data.get("password"),
+        },
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        timeout: 5000,
+      })
+        .then((response) => {
+          setToken(data.get("email"), response.data.token, "driver");
+          setAlertMessage({
+            status: "success",
+            alert: "Driver Login Successful..!",
+          });
+          setAlertOpen(true);
+        })
+        .catch((error) => {
+          if (error.code === "ECONNABORTED") {
+            console.log("Request timed out");
+            setAlertMessage({
+              status: "error",
+              alert: "Unable to Login server error..!",
+            });
+
+            setAlertOpen(true);
+          } else {
+            console.log("login api error", error);
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to Login Successfully..!",
+          });
+          setAlertOpen(true);
+          }
+        });
+    }
+    else {
+        setAlertMessage({
+          status: "warning",
+          alert: "please enter correct email and Password..!",
+        });
+        setAlertOpen(true);
+      }
+  
 
   //http://localhost:8000/api/v1/driver/signIn
-    http.post("/driver/signIn",{
-      email: data.get('email'),
-      password: data.get('password'),
-    })
-    .then((res)=>{setToken(data.get('email'),res.data.token,"driver");
-    setAlertMessage({status:"success",alert:"Driver Login Successful..!"});
-    setAlertOpen(true);
- }).catch(error=>{console.log("login api error",error);
- setAlertMessage({status:"error",alert:"Unable to Login Successfully..!"});
-    setAlertOpen(true);
+//     http.post("/driver/signIn",{
+//       email: data.get('email'),
+//       password: data.get('password'),
+//     })
+//     .then((res)=>{setToken(data.get('email'),res.data.token,"driver");
+//     setAlertMessage({status:"success",alert:"Driver Login Successful..!"});
+//     setAlertOpen(true);
+//  }).catch(error=>{console.log("login api error",error);
+//  setAlertMessage({status:"error",alert:"Unable to Login Successfully..!"});
+//     setAlertOpen(true);
 
-});
+// });
 
     // const response=await axios.post('http://localhost:8000/api/v1/admin/signIn', {
     //   email: data.get('email'),
@@ -162,6 +236,8 @@ export default function DriverLogin() {
               name="email"
               autoComplete="email"
               autoFocus
+              error={Boolean(errors.email)}
+              helperText={errors.email}
             />
             <TextField
               margin="normal"
@@ -172,6 +248,8 @@ export default function DriverLogin() {
               type="password"
               id="password"
               autoComplete="current-password"
+              error={Boolean(errors.password)}
+              helperText={errors.password}
             />
              {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
           <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -207,7 +285,7 @@ export default function DriverLogin() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="/ForgotPasswordDriver" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>

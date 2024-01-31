@@ -100,9 +100,7 @@ const DriverActiveRides = () => {
 
 
 
-    //const data = fetchUpComingRides();
-    //console.log(data);
-    //setRidesRows(data);
+    
   }, []);
   // const data =[
   //   {

@@ -30,6 +30,8 @@ import AdminSidebar from '../../layouts/AdminSidebar';
 import axios from 'axios';
 import AuthUser from "../AuthUser";
 import { Typography } from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 
 
@@ -37,6 +39,11 @@ function DriverProfiles() {
   const navigate = useNavigate();
   const [driverDetails,setDriverDetails]=useState([]);
   const {http,getToken} =AuthUser();
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertMessage,setAlertMessage]=useState({status:"",alert:""});
+  const [errors, setErrors] = useState({});
+  const [countnewdriver,setCountnewdriver]=useState();
+
   if(getToken()===null) {
     navigate('/AdminLogin');
   }
@@ -217,7 +224,7 @@ function DriverProfiles() {
   // ];
     //console.log(data);
     //setDriverDetails(data);
-  }, []);
+  }, [countnewdriver]);
   const [isEditMode,setIsEditMode]=useState(false);
   const handleDeleteRow = (id) => {
     console.log(id);
@@ -247,6 +254,7 @@ function DriverProfiles() {
       driverLicense:"",
       driverSSN:"",
     });
+    setErrors({});
     functionopenpopup();
   }
   const [open, openchange] = useState(false);
@@ -280,13 +288,132 @@ function DriverProfiles() {
     //setValues(prevState => ({ ...values, [name]: value }));
 
   };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {};
+     
+
+      // if (!newdriver.driverID) {
+      //   valid = false;
+      //   newErrors.driverID = "driverID is required";
+      // }
+      if (!newdriver.driverFirstName) {
+        valid = false;
+        newErrors.driverFirstName = "First Name is required";
+      }
+      if (!newdriver.driverLastName) {
+        valid = false;
+        newErrors.driverLastName = "Last Name is required";
+      }
+      if (!newdriver.email) {
+        valid = false;
+        newErrors.email = "Email is required";
+      }else if (!/\S+@\S+\.\S+/.test(newdriver.email)) {
+        valid = false;
+        newErrors.email = "Invalid email address";
+      }
+      if (!newdriver.password) {
+        valid = false;
+        newErrors.password = "password is required";
+      }
+      if (!newdriver.driverAddress) {
+        valid = false;
+        newErrors.driverAddress = "driver Address is required";
+      }
+      if (!newdriver.driverPhoneNumber1) {
+        valid = false;
+        newErrors.driverPhoneNumber1 = "driver PhoneNumber is required";
+      }
+      if (!newdriver.vehicleColor) {
+        valid = false;
+        newErrors.vehicleColor = "vehicle Color is required";
+      }
+      if (!newdriver.vehicleMake) {
+        valid = false;
+        newErrors.vehicleMake = "vehicle Make is required";
+      }
+      if (!newdriver.vehicleModel) {
+        valid = false;
+        newErrors.vehicleModel = "vehicle Model is required";
+      }
+      if (!newdriver.vehicleLicense) {
+        valid = false;
+        newErrors.vehicleLicense = "vehicle License is required";
+      }
+      if (!newdriver.driverLicense) {
+        valid = false;
+        newErrors.driverLicense = "driver License is required";
+      }
+      if (!newdriver.driverSSN) {
+        valid = false;
+        newErrors.driverSSN = "driver SSN is required";
+      }
+    setErrors(newErrors);
+    return valid;
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("newdriver",newdriver);
     if(isEditMode) {
+      //http://localhost:PORT/api/v1/admin/updateDriverDetails
+      if (validateForm()) {
+        axios({
+          baseURL: "http://localhost:8000/api/v1",
+          url: "/admin/updateDriverDetails",
+          method: "post",
+          params: {
+            driverId: newdriver.driverID,
+          },
+         data:{
+          //driverId:newdriver.driverID,
+          driverFirstName: newdriver.driverFirstName,
+          driverLastName:newdriver.driverLastName,
+          email:newdriver.email,
+          password:newdriver.password,
+          driverAddress:newdriver.driverAddress,
+          driverPhoneNumber1:newdriver.driverPhoneNumber1,
+          driverPhoneNumber2:newdriver.driverPhoneNumber2,
+          vehicleColor:newdriver.vehicleColor,
+          vehicleMake:newdriver.vehicleMake,   
+          vehicleModel:newdriver.vehicleModel,
+          vehicleLicense:newdriver.vehicleLicense,
+          driverLicense:newdriver.driverLicense,
+          driverSSN:newdriver.driverSSN
+        },
+          
+          headers:  {
+            'Content-Type': 'application/json',
+            'Authorization': getToken()
+          },
+          
+          timeout: 5000,
+        })
+          .then((response) => {
+            console.log(response);
+            console.log("response.data",response.data.data);
+            console.log("message",response.data.message);
+            setCountnewdriver(1);
+            closepopup();
+            
+          })
+          .catch((error) => {
+            if (error.code === "ECONNABORTED") {
+              console.log("Request timed out");
+            } else {
+              console.log("error",error);
+            }
+          });
+        }
+        else {
+          console.log("validation failed");
+          setAlertMessage({status:"error",alert:"Please fill all the details, and  try Again..!"}) 
+          setAlertOpen(true);
+        }
 
     }
     else {
+      if (validateForm()) {
       axios({
         baseURL: "http://localhost:8000/api/v1",
         url: "/admin/addDriver",
@@ -318,7 +445,9 @@ function DriverProfiles() {
           console.log(response);
           console.log("response.data",response.data.data);
           console.log("message",response.data.message);
-          window.location.reload();
+          setCountnewdriver(1);
+          closepopup();
+          //window.location.reload();
           //setDriverDetails(response.data.data);
           //setRidesRows(response.data.data);
         })
@@ -329,11 +458,17 @@ function DriverProfiles() {
             console.log("error",error);
           }
         });
-
+      }
+      else {
+        console.log("validation failed");
+        setAlertMessage({status:"error",alert:"Please fill all the details, and  try Again..!"}) 
+        setAlertOpen(true);
+      }
+      
     }
 
    
-    closepopup();
+    
   };
   const handleEditRow = (id) => {
     // Implement your edit logic here
@@ -394,95 +529,135 @@ function DriverProfiles() {
                 // value={newdriver.driverLastName}
                 // onChange={handleChange}
               /> */}
-              <TextField
+              {isEditMode && <TextField
                 label="Driver ID"
                 name="driverID"
                 value={newdriver.driverID}
                 onChange={(event)=>handleChange(event)}
-                 disabled={true}
+                disabled={true}
                 sx={{
                   "& .MuiInputBase-input.Mui-disabled": {
                     WebkitTextFillColor: "black",
                   },
                 }}
-              />
+                autoFocus
+                error={Boolean(errors.driverID)}
+                helperText={errors.driverID}
+              />}
               <TextField
                 label="Driver FirstName"
                 name="driverFirstName"
                 value={newdriver.driverFirstName}
                onChange={handleChange}
+               autoFocus
+                error={Boolean(errors.driverFirstName)}
+                helperText={errors.driverFirstName}
               />
               <TextField
                 label="Driver LastName"
                 name="driverLastName"
                 value={newdriver.driverLastName}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.driverLastName)}
+                helperText={errors.driverLastName}
               />
               <TextField
                 label="Driver Email"
                 name="email"
                 value={newdriver.email}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.email)}
+                helperText={errors.email}
               />
               <TextField
                 label="Driver password"
                 name="password"
                 value={newdriver.password}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.password)}
+                helperText={errors.password}
               />
               <TextField
                 label="Driver Address"
                 name="driverAddress"
                 value={newdriver.driverAddress}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.driverAddress)}
+                helperText={errors.driverAddress}
               />
               <TextField
                 label="Driver Phone number1"
                 name="driverPhoneNumber1"
                 value={newdriver.driverPhoneNumber1}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.driverPhoneNumber1)}
+                helperText={errors.driverPhoneNumber1}
               />
               <TextField
                 label="Driver Phone number2"
                 name="driverPhoneNumber2"
                 value={newdriver.driverPhoneNumber2}
                 onChange={handleChange}
+
               />
               <TextField
                 label="Driver vehicle Color"
                 name="vehicleColor"
                 value={newdriver.vehicleColor}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.vehicleColor)}
+                helperText={errors.vehicleColor}
               />
               <TextField
                 label="Driver vehicle Make"
                 name="vehicleMake"
                 value={newdriver.vehicleMake}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.vehicleMake)}
+                helperText={errors.vehicleMake}
               />
               <TextField
                 label="Driver vehicle Model"
                 name="vehicleModel"
                 value={newdriver.vehicleModel}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.vehicleModel)}
+                helperText={errors.vehicleModel}
               />
               <TextField
                 label="Driver vehicle License"
                 name="vehicleLicense"
                 value={newdriver.vehicleLicense}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.vehicleLicense)}
+                helperText={errors.vehicleLicense}
               />
                <TextField
                 label="Driver vehicle License"
                 name="driverLicense"
                 value={newdriver.driverLicense}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.driverLicense)}
+                helperText={errors.driverLicense}
               />
               <TextField
                 label="Driver SSN"
                 name="driverSSN"
                 value={newdriver.driverSSN}
                 onChange={handleChange}
+                autoFocus
+                error={Boolean(errors.driverSSN)}
+                helperText={errors.driverSSN}
               />
              
               <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
@@ -491,8 +666,6 @@ function DriverProfiles() {
             </Stack>
           </DialogContent>
           <DialogActions>
-            {/* <Button color="success" variant="contained">Yes</Button>
-                    <Button onClick={closepopup} color="error" variant="contained">Close</Button> */}
           </DialogActions>
         </Dialog>
       </div>
