@@ -116,9 +116,7 @@ const AssignedRides = () => {
         }
       });
 
-    //const data = fetchUpComingRides();
-    //console.log(data);
-    //setRidesRows(data);
+    
   }, []);
 
   const handleDeleteRow = (id) => {
@@ -131,9 +129,7 @@ const AssignedRides = () => {
     }
   };
   const handleRideStatusChange = (id, newStatus) => {
-    // const updatedRows = ridesRows.map((ridesRows) =>
-    //   ridesRows.RideID === id ? { ...ridesRows, Ride_Status: newStatus } : ridesRows
-    // );
+    
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/admin/updateRideAsCompleted",
@@ -195,12 +191,7 @@ const AssignedRides = () => {
     setRidesRows(updatedRows);
   };
   const handleStatusChange = (id, newStatus) => {
-    // const updatedRows = ridesRows.map((ridesRows) =>
-    //   ridesRows.RideID === id ? { ...ridesRows, Driver: newStatus } : ridesRows
-    // );
-    // console.log("Ride id: ", id);
-    // console.log("Driver Selected: ", newStatus);
-    // setRidesRows(updatedRows);
+    
     console.log("id", id);
     console.log("newStatus", newStatus);
     const updatedRows = ridesRows.map((ridesRows) =>
@@ -282,16 +273,7 @@ const AssignedRides = () => {
         >
           <NoCrashSharpIcon />
         </IconButton>
-        // <Select
-        //   value={params.value}
-        //   onChange={(e) => handleRideStatusChange(params.id, e.target.value)}
-        // >
-        //   {rideStatus && rideStatus.map((status) => (
-        //     <MenuItem key={status} value={status}>
-        //       {status}
-        //     </MenuItem>
-        //   ))}
-        // </Select>
+       
       ),
       width: 80,
     },
@@ -325,24 +307,7 @@ const AssignedRides = () => {
     { field: "Arrival_Time", headerName: "Arrival Time" },
     { field: "Estimated_Distance", headerName: "Estimated Distance" },
 
-    // {
-    //   field: "delete",
-    //   headerName: "Delete",
-    //   sortable: false,
-    //   width: 80,
-    //   disableClickEventBubbling: true,
-    //   renderCell: (params) => (
-    //     <IconButton
-    //       color="secondary"
-    //       onClick={() => {
-    //         console.log(params);
-    //         handleDeleteRow(params.id);
-    //       }}
-    //     >
-    //       <DeleteIcon />
-    //     </IconButton>
-    //   ),
-    // },
+    
   ];
 
   const [open, openchange] = useState(false);
@@ -395,26 +360,7 @@ const AssignedRides = () => {
     console.log(ride);
     closepopup();
   };
-  // const handleAddRide=()=> {
-  //   setIsEditMode(false);
-  //   setRide({
-  //     RideID: "",
-  //     Ride_Status: "",
-  //     Ride_Date: "",
-  //     Customer_FirstName: "",
-  //     Customer_LastName: "",
-  //     Phone_Number: "",
-  //     Transportation_Type: "",
-  //     Pick_Up_Time: "",
-  //     Arrival_Time: "",
-  //     Estimated_Distance: "",
-  //     Pickup_Address: "",
-  //     Dropoff_Address: "",
-  //     Pickup_Directions: "",
-  //     Driver: "",
-  //   });
-  //   functionopenpopup();
-  // }
+ 
   const [isEditMode, setIsEditMode] = useState(false);
   const handleEditRow = (id) => {
     // Implement your edit logic here
@@ -453,21 +399,7 @@ const AssignedRides = () => {
 
   return (
     <>
-      {/* <Stack spacing={2} sx={{ width: '100%' }}>
-      <Button variant="outlined" onClick={handleSnackbarClick}>
-        Open success snackbar
-      </Button>
-      <Snackbar open={snackbaropen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-          This is a success message!
-        </Alert>
-      </Snackbar>
-      <Alert severity="error">This is an error message!</Alert>
-      <Alert severity="warning">This is a warning message!</Alert>
-      <Alert severity="info">This is an information message!</Alert>
-      <Alert severity="success">This is a success message!</Alert>
-    </Stack> */}
-      {/* <AdminSidebar items={["AppLogin","UpComingRides","FileUpload"]}></AdminSidebar> */}
+      
       <AdminSidebar />
       <Typography variant="h3" sx={{ marginBottom: "12px", color: "#004080" }}>
         Assigned Rides
@@ -595,24 +527,7 @@ const AssignedRides = () => {
                 value={ride.Estimated_Distance}
                 onChange={handleChange}
               />
-              {/* <TextField
-                label="Estimated cost"
-                name="Estimated_Cost"
-                value={ride.Estimated_Cost}
-                onChange={handleChange}
-              /> */}
-              {/* <TextField
-                label="Pickup Address"
-                name="Pickup_Address"
-                value={ride.Pickup_Address}
-                onChange={handleChange}
-              /> */}
-              {/* <TextField
-                label="Dropoff Address"
-                name="Dropoff_Address"
-                value={ride.Dropoff_Address}
-                onChange={handleChange}
-              /> */}
+              
               <TextField
                 label="Pickup Directions"
                 name="Pickup_Directions"
@@ -620,41 +535,7 @@ const AssignedRides = () => {
                 onChange={handleChange}
               />
 
-              {/* <FormControl>
-        <InputLabel>Driver</InputLabel>
-        <Select
-          name="Driver"
-          value={ride.Driver}
-          onChange={handleChange}
-          label="Driver"
-        >
-          {drivers.map((driver) => (
-            <MenuItem key={driver} value={driver}>
-              {driver}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
-              {/* <FormControl>
-        <InputLabel>Ride Status</InputLabel>
-        <Select
-          name="Ride_Status"
-          value={ride.Ride_Status}
-          onChange={handleChange}
-          label="Ride_Status"
-        >
-           {rideStatus && rideStatus.map((status) => (
-            <MenuItem key={status} value={status}>
-              {status}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
-
-              {/* <FormControlLabel
-                control={<Checkbox defaultChecked color="primary"></Checkbox>}
-                label="Please check the Ride ID"
-              > </FormControlLabel> */}
+              
               <Button
                 color="primary"
                 variant="contained"
@@ -665,8 +546,7 @@ const AssignedRides = () => {
             </Stack>
           </DialogContent>
           <DialogActions>
-            {/* <Button color="success" variant="contained">Yes</Button>
-                    <Button onClick={closepopup} color="error" variant="contained">Close</Button> */}
+           
           </DialogActions>
         </Dialog>
       </div>
@@ -682,17 +562,7 @@ const AssignedRides = () => {
             alignItems="flex-end"
             // sx={boxDefault}
           >
-            {/* <Button
-              // onClick={functionopenpopup}
-              onClick={(event) => handleAddRide(event)}
-
-              color="primary"
-              variant="contained"
-              sx={{ height: 40 }}
-              startIcon={<AirportShuttleIcon />}
-            >
-              Add Ride
-            </Button> */}
+           
           </Box>
 
           <Paper component={Box} width={1} height={700}>

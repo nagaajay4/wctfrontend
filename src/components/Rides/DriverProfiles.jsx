@@ -43,6 +43,12 @@ function DriverProfiles() {
   const [alertMessage,setAlertMessage]=useState({status:"",alert:""});
   const [errors, setErrors] = useState({});
   const [countnewdriver,setCountnewdriver]=useState();
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
+  };
 
   if(getToken()===null) {
     navigate('/AdminLogin');
@@ -92,43 +98,7 @@ function DriverProfiles() {
         </IconButton>
       ),
     },
-    // {
-    //   field: "Driver",
-    //   headerName: "Assign Driver",
-    //   minWidth: 120,
-    //   renderCell: (params) => (
-    //     <Select
-    //       value={params.value}
-    //       onChange={(e) => handleStatusChange(params.id, e.target.value)}
-    //     >
-    //       <MenuItem value="">None </MenuItem>
-
-    //       <MenuItem value="null">None </MenuItem>
-    //       <MenuItem value="Nagaajay">Nagaajay</MenuItem>
-    //       <MenuItem value="Darwin">Darwin</MenuItem>
-    //       <MenuItem value="Zak">Zak</MenuItem>
-    //     </Select>
-    //   ),
-    // },
-    
-    // {
-    //   field: "delete",
-    //   headerName: "Delete",
-    //   sortable: false,
-    //   width: 80,
-    //   disableClickEventBubbling: true,
-    //   renderCell: (params) => (
-    //     <IconButton
-    //       color="secondary"
-    //       onClick={() => {
-    //         console.log(params);
-    //         handleDeleteRow(params.id);
-    //       }}
-    //     >
-    //       <DeleteIcon />
-    //     </IconButton>
-    //   ),
-    // },
+   
   ];
 
   
@@ -157,73 +127,7 @@ function DriverProfiles() {
           console.log(error.message);
         }
       });
-  //   const data = [{
-  //     driverID:"25457",
-  //     driverFirstName: "JOEY",
-  //     driverLastName:"TRIBBIANI",
-  //     email:"joey@iamjoey.com",
-  //     password:"Joey@143",
-  //     driverAddress:"Earth PLanet",
-  //     driverPhoneNumber1:"989098909890",
-  //     driverPhoneNumber2:"09813209813290231",
-  //     vehicleColor:"Black",
-  //     vehicleMake:"BWM",   
-  //     vehicleModel:"X7",
-  //     vehicleLicense:"AXAX098989",
-  //     driverLicense:"ASSASA9889",
-  //     driverSSN:"ASASLP0909090",
-  //   },
-  //   {
-  //     driverID:"25456",
-  //     driverFirstName: "JOEY",
-  //     driverLastName:"TRIBBIANI",
-  //     email:"joey@iamjoey.com",
-  //     password:"Joey@143",
-  //     driverAddress:"Earth PLanet",
-  //     driverPhoneNumber1:"989098909890",
-  //     driverPhoneNumber2:"09813209813290231",
-  //     vehicleColor:"Black",
-  //     vehicleMake:"BWM",   
-  //     vehicleModel:"X7",
-  //     vehicleLicense:"AXAX098989",
-  //     driverLicense:"ASSASA9889",
-  //     driverSSN:"ASASLP0909090",
-  //   },
-  //   {
-  //     driverID:"25458",
-  //     driverFirstName: "JOEY",
-  //     driverLastName:"TRIBBIANI",
-  //     email:"joey@iamjoey.com",
-  //     password:"Joey@143",
-  //     driverAddress:"Earth PLanet",
-  //     driverPhoneNumber1:"989098909890",
-  //     driverPhoneNumber2:"09813209813290231",
-  //     vehicleColor:"Black",
-  //     vehicleMake:"BWM",   
-  //     vehicleModel:"X7",
-  //     vehicleLicense:"AXAX098989",
-  //     driverLicense:"ASSASA9889",
-  //     driverSSN:"ASASLP0909090",
-  //   },
-  //   {
-  //     driverID:"25451",
-  //     driverFirstName: "JOEY",
-  //     driverLastName:"TRIBBIANI",
-  //     email:"joey@iamjoey.com",
-  //     password:"Joey@143",
-  //     driverAddress:"Earth PLanet",
-  //     driverPhoneNumber1:"989098909890",
-  //     driverPhoneNumber2:"09813209813290231",
-  //     vehicleColor:"Black",
-  //     vehicleMake:"BWM",   
-  //     vehicleModel:"X7",
-  //     vehicleLicense:"AXAX098989",
-  //     driverLicense:"ASSASA9889",
-  //     driverSSN:"ASASLP0909090",
-  //   }
-  // ];
-    //console.log(data);
-    //setDriverDetails(data);
+  
   }, [countnewdriver]);
   const [isEditMode,setIsEditMode]=useState(false);
   const handleDeleteRow = (id) => {
@@ -284,8 +188,7 @@ function DriverProfiles() {
   const handleChange = (event) => {
     console.log(event);
     setNewdriver({ ...newdriver, [event.target.name]: event.target.value });
-    //console.log(newdriver);
-    //setValues(prevState => ({ ...values, [name]: value }));
+    
 
   };
 
@@ -294,10 +197,7 @@ function DriverProfiles() {
     const newErrors = {};
      
 
-      // if (!newdriver.driverID) {
-      //   valid = false;
-      //   newErrors.driverID = "driverID is required";
-      // }
+      
       if (!newdriver.driverFirstName) {
         valid = false;
         newErrors.driverFirstName = "First Name is required";
@@ -360,11 +260,11 @@ function DriverProfiles() {
       if (validateForm()) {
         axios({
           baseURL: "http://localhost:8000/api/v1",
-          url: "/admin/updateDriverDetails",
+          url: `/admin/updateDriverDetails?driverId=${newdriver.driverID}`,
           method: "post",
-          params: {
-            driverId: newdriver.driverID,
-          },
+          // params: {
+          //   driverId: newdriver.driverID,
+          // },
          data:{
           //driverId:newdriver.driverID,
           driverFirstName: newdriver.driverFirstName,
@@ -400,8 +300,14 @@ function DriverProfiles() {
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
               console.log("Request timed out");
+              setAlertMessage({status:"error",alert:"server timeout request"}) 
+              setAlertOpen(true);
             } else {
               console.log("error",error);
+              setAlertMessage({status:"error",alert:error}) 
+            setAlertOpen(true);
+            setAlertMessage({status:"success",alert:"Driver updated successfully!"}) 
+        setAlertOpen(true);
             }
           });
         }
@@ -447,6 +353,8 @@ function DriverProfiles() {
           console.log("message",response.data.message);
           setCountnewdriver(1);
           closepopup();
+          setAlertMessage({status:"success",alert:"Driver added successfully!"}) 
+        setAlertOpen(true);
           //window.location.reload();
           //setDriverDetails(response.data.data);
           //setRidesRows(response.data.data);
@@ -454,8 +362,12 @@ function DriverProfiles() {
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
             console.log("Request timed out");
+            setAlertMessage({status:"error",alert:"server timeout request"}) 
+            setAlertOpen(true);
           } else {
             console.log("error",error);
+            setAlertMessage({status:"error",alert:error}) 
+            setAlertOpen(true);
           }
         });
       }
@@ -524,12 +436,7 @@ function DriverProfiles() {
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2} margin={2}>
-            {/* <TextField
-                label="Driver LastName"
-                name="Driver LastName"
-                // value={newdriver.driverLastName}
-                // onChange={handleChange}
-              /> */}
+            
               {isEditMode && <TextField
                 label="Driver ID"
                 name="driverID"
@@ -711,6 +618,22 @@ function DriverProfiles() {
             />
           </Paper>
         </Container>
+      </div>
+      <div>
+        <Snackbar
+          open={alertOpen}
+          autoHideDuration={6000}
+          onClose={handleAlertClose}
+        >
+          <Alert
+            onClose={handleAlertClose}
+            severity={alertMessage.status}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {alertMessage.alert}
+          </Alert>
+        </Snackbar>
       </div>
     </>
   )

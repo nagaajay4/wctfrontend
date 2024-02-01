@@ -64,6 +64,8 @@ export default function AdminLogin() {
   const [errors, setErrors] = React.useState({});
 
   const [showPassword, setShowPassword] = React.useState(false);
+  const [rememberMe, setRememberMe] = React.useState(false);
+
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleAlertClose = (event, reason) => {
@@ -98,16 +100,22 @@ export default function AdminLogin() {
     setErrors(newErrors);
     return valid;
   };
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleRememberMeChange = (event) => {
+    setRememberMe(event.target.checked);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    setEmail(data.get("email"));
-    setPassword(data.get("password"));
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    //const data = new FormData(event.currentTarget);
+   
     if (validateForm()) {
 
       axios({
@@ -115,8 +123,8 @@ export default function AdminLogin() {
         url: "/admin/signIn",
         method: "post",
         data: {
-          email: data.get("email"),
-          password: data.get("password"),
+          email: email,
+          password: password,
         },
 
         headers: {
@@ -126,7 +134,7 @@ export default function AdminLogin() {
         timeout: 5000,
       })
         .then((response) => {
-          setToken(data.get("email"), response.data.token, "admin");
+          setToken(email, response.data.token, "admin");
           setAlertMessage({
             status: "success",
             alert: "Admin Login Successful..!",
@@ -166,28 +174,7 @@ export default function AdminLogin() {
 
 
 
-    //   http
-    //     .post("/admin/signIn", {
-    //       email: data.get("email"),
-    //       password: data.get("password"),
-    //     })
-    //     .then((res) => {
-    //       setToken(data.get("email"), res.data.token, "admin");
-    //       setAlertMessage({
-    //         status: "success",
-    //         alert: "Admin Login Successful..!",
-    //       });
-    //       setAlertOpen(true);
-    //     })
-    //     .catch((error) => {
-    //       console.log("login api error", error);
-    //       setAlertMessage({
-    //         status: "error",
-    //         alert: "Unable to Login Successfully..!",
-    //       });
-    //       setAlertOpen(true);
-    //     });
-    // }
+    
   };
 
   return (
@@ -195,19 +182,7 @@ export default function AdminLogin() {
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
         <Header></Header>
-        {/* <Box sx={{ display: "flex", }}>
-        <CssBaseline />
-        <AppBar  sx = {{ background: "white",fontFamily: 'Apple Color Emoji',fontWeight: 100, }}component="nav">
-          
-          <Toolbar
-            sx={{justifyContent: "center",}}
-          >
-            <Typography  sx={{color: 'yellow',}} variant="h3" component="div">
-              West Central Transportation
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </Box> */}
+        
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
@@ -226,62 +201,55 @@ export default function AdminLogin() {
             </Typography>
             <Box
               component="form"
-              onSubmit={(event)=>handleSubmit(event)}
+              
               noValidate
               sx={{ mt: 1 }}
             >
               <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                error={Boolean(errors.email)}
-                helperText={errors.email}
-              />
+        margin="normal"
+        required
+        fullWidth
+        id="email"
+        label="Email Address"
+        name="email"
+        autoComplete="email"
+        autoFocus
+        value={email}
+        onChange={handleEmailChange}
+        error={Boolean(errors.email)}
+        helperText={errors.email}
+      />
               <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                error={Boolean(errors.password)}
-                helperText={errors.password}
-              />
-              {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
-          />
-        </FormControl> */}
+        margin="normal"
+        required
+        fullWidth
+        name="password"
+        label="Password"
+        type="password"
+        id="password"
+        autoComplete="current-password"
+        value={password}
+        onChange={handlePasswordChange}
+        error={Boolean(errors.password)}
+        helperText={errors.password}
+      />
+             
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
+        control={
+          <Checkbox
+            name="rememberMe"
+            color="primary"
+            checked={rememberMe}
+            onChange={handleRememberMeChange}
+          />
+        }
+        label="Remember me"
+      />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
+                onClick={(event)=>handleSubmit(event)}
                 sx={{ mt: 2, mb: 2 }}
               >
                 Sign In

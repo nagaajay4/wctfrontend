@@ -55,6 +55,8 @@ export default function DriverLogin() {
   const [email,setEmail]=React.useState('');
   const [password,setPassword]=React.useState('');
   const [errors, setErrors] = React.useState({});
+  const [rememberMe, setRememberMe] = React.useState(false);
+
 
 
   const [showPassword, setShowPassword] = React.useState(false);
@@ -97,26 +99,31 @@ export default function DriverLogin() {
     return valid;
   };
 
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
 
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleRememberMeChange = (event) => {
+    setRememberMe(event.target.checked);
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    setEmail(data.get("email"));
-    setPassword(data.get("password"));
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    
+    
 
-    if (validateForm(data.get("email"),data.get("password"))) {
+    if (validateForm()) {
 
       axios({
         baseURL: "http://localhost:8000/api/v1",
         url: "/driver/signIn",
         method: "post",
         data: {
-          email: data.get("email"),
-          password: data.get("password"),
+          email: email,
+          password: password,
         },
 
         headers: {
@@ -126,7 +133,7 @@ export default function DriverLogin() {
         timeout: 5000,
       })
         .then((response) => {
-          setToken(data.get("email"), response.data.token, "driver");
+          setToken(email, response.data.token, "driver");
           setAlertMessage({
             status: "success",
             alert: "Driver Login Successful..!",
@@ -161,55 +168,15 @@ export default function DriverLogin() {
       }
   
 
-  //http://localhost:8000/api/v1/driver/signIn
-//     http.post("/driver/signIn",{
-//       email: data.get('email'),
-//       password: data.get('password'),
-//     })
-//     .then((res)=>{setToken(data.get('email'),res.data.token,"driver");
-//     setAlertMessage({status:"success",alert:"Driver Login Successful..!"});
-//     setAlertOpen(true);
-//  }).catch(error=>{console.log("login api error",error);
-//  setAlertMessage({status:"error",alert:"Unable to Login Successfully..!"});
-//     setAlertOpen(true);
-
-// });
-
-    // const response=await axios.post('http://localhost:8000/api/v1/admin/signIn', {
-    //   email: data.get('email'),
-    //   password: data.get('password')
-    // },{
-    //   headers: {
-    //       'Content-Type': 'application/json',
-    //   },})
-    // .then((response) => {
-    //   console.log(response.data);
-    // }, (error) => {
-    //   console.log(error);
-    //   alert("Unable to login");
-    // });
-    // console.log("from applogin",response);
-
-    //navigate('/FileUpload');
+  
+    
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header></Header>
-      {/* <Box sx={{ display: "flex", }}>
-        <CssBaseline />
-        <AppBar  sx = {{ background: "white",fontFamily: 'Apple Color Emoji',fontWeight: 100, }}component="nav">
-          
-          <Toolbar
-            sx={{justifyContent: "center",}}
-          >
-            <Typography  sx={{color: 'yellow',}} variant="h3" component="div">
-              West Central Transportation
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </Box> */}
+     
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -226,63 +193,55 @@ export default function DriverLogin() {
           <Typography component="h1" variant="h5">
             Driver Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" noValidate sx={{ mt: 1 }}>
+          <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="email"
+        label="Email Address"
+        name="email"
+        autoComplete="email"
+        autoFocus
+        value={email}
+        onChange={handleEmailChange}
+        error={Boolean(errors.email)}
+        helperText={errors.email}
+      />
             <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              error={Boolean(errors.email)}
-              helperText={errors.email}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              error={Boolean(errors.password)}
-              helperText={errors.password}
-            />
-             {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
-          />
-        </FormControl> */}
+        margin="normal"
+        required
+        fullWidth
+        name="password"
+        label="Password"
+        type="password"
+        id="password"
+        autoComplete="current-password"
+        value={password}
+        onChange={handlePasswordChange}
+        error={Boolean(errors.password)}
+        helperText={errors.password}
+      />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, mb: 2 }}
-            >
-            Sign In
-            </Button>
+        control={
+          <Checkbox
+            name="rememberMe"
+            color="primary"
+            checked={rememberMe}
+            onChange={handleRememberMeChange}
+          />
+        }
+        label="Remember me"
+      />
+           <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={(event)=>handleSubmit(event)}
+                sx={{ mt: 2, mb: 2 }}
+              >
+                Sign In
+              </Button>
             <Grid container>
               <Grid item xs>
                 <Link href="/ForgotPasswordDriver" variant="body2">

@@ -73,41 +73,7 @@ const MyForm = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      // Perform your form submission logic here
-      // axios({
-      //   baseURL: "http://localhost:8000/api/v1",
-      //   url: "/admin/assignRide",
-      //   method: "post",
-      //  data:{
-        
-      //     "rideId":id,
-      //     "driverId":newStatus.driverID
       
-        
-      // },
-        
-      //   headers:  {
-      //     'Content-Type': 'application/json',
-      //     //'Authorization': getToken()
-      //   },
-        
-      //   timeout: 5000,
-      // })
-      //   .then((response) => {
-      //     console.log(response);
-      //     console.log("response.data",response.data.data);
-      //     console.log("message",response.data.message);
-      //     setRidesRows(updatedRows);
-
-
-      //   })
-      //   .catch((error) => {
-      //     if (error.code === "ECONNABORTED") {
-      //       console.log("Request timed out");
-      //     } else {
-      //       console.log("error",error);
-      //     }
-      //   });
 
       console.log("Form submitted:", customer);
       setAlertMessage({status:"success",alert:"Form Sumbitted Successfully, We will contact you soon..!"})

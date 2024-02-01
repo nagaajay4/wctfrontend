@@ -81,16 +81,7 @@ function DriverPastRides() {
         }
       });
     }, []);
-  // useEffect(() => {
-  //   const data = fetchUpComingRides();
-  //   console.log(data);
-  //   setRidesRows(data);
-  // }, []);
-  // const handleDeleteRow = (id) => {
-  //   console.log(id);
-  //   const updatedRows = ridesRows.filter((ridesRows) => ridesRows.RideID !== id);
-  //   setRidesRows(updatedRows);
-  // };
+
   const handleDeleteRow = (id) => {
     console.log(id);
     if (ridesRows.filter((ride) => ride.RideID === id)) {

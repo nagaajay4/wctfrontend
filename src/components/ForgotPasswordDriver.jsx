@@ -144,38 +144,7 @@ export default function ForgotPasswordDriver() {
           setAlertOpen(true);
         }
 
-    // if (validateForm()) {
-
-
-    //     http
-    //     .post("/driver/forgotPassword", {
-    //         email: data.get("email"),
-    //     })
-    //     .then((res) => {
-          
-    //       setAlertMessage({
-    //         status: "success",
-    //         alert: "Password reset link is Successful sent to email..!",
-    //       });
-    //       setAlertOpen(true);
-    //     })
-    //     .catch((error) => {
-    //       console.log("login api error", error);
-    //       setAlertMessage({
-    //         status: "error",
-    //         alert: "Unable to send Password reset link..!",
-    //       });
-    //       setAlertOpen(true);
-    //     });
-    // }
-    // else {
-    //     setAlertMessage({
-    //         status: "warning",
-    //         alert: "please enter correct email to send Password reset link..!",
-    //       });
-    //       setAlertOpen(true);
-
-    // }
+    
    
   };
 

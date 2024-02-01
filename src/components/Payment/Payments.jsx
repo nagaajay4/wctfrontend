@@ -74,12 +74,12 @@ const Payements = () => {
         </IconButton>
       ),
     },
-    { field: "paymentID", headerName: "paymentID", width: 150 },
-    { field: "amount", headerName: "amount", width: 150 },
-    { field: "driverID", headerName: "driverID", width: 200 },
-    { field: "paymentDate", headerName: "paymentDate", width: 200 },
+    { field: "paymentID", headerName: "Payment ID", width: 150 },
+    { field: "amount", headerName: "Amount", width: 150 },
+    { field: "driverID", headerName: "Driver ID", width: 200 },
+    { field: "paymentDate", headerName: "Payment Date", width: 200 },
     // { field: "createdAt", headerName: "createdAt",width: 200 },
-    { field: "updatedAt", headerName: "updatedAt", width: 200 },
+    { field: "updatedAt", headerName: "Updated At", width: 200 },
     { field: "remarks", headerName: "Remarks", width: 200 },
   ];
 
@@ -173,11 +173,11 @@ const Payements = () => {
       if (validateForm()) {
         axios({
           baseURL: "http://localhost:8000/api/v1",
-          url: "/admin/payments",
+          url: `/admin/payments?paymentId=${newPayemnt.paymentID}`,
           method: "post",
-          params: {
-            paymentId: newPayemnt.paymentID,
-          },
+          // params: {
+          //   paymentId: newPayemnt.paymentID,
+          // },
           data: {
             driverId: newPayemnt.driverID,
             amount: newPayemnt.amount,
@@ -273,7 +273,7 @@ const Payements = () => {
               console.log("error", error);
               setAlertMessage({
                 status: "error",
-                alert: "Payment Editted Unsuccesfully, Please try again.!",
+                alert: error,
               });
               setAlertOpen(true);
             }
@@ -336,7 +336,7 @@ const Payements = () => {
               {isEditMode == true ? (
                 <>
                   <TextField
-                    label="paymentID"
+                    label="Payment ID"
                     name="paymentID"
                     value={newPayemnt.paymentID}
                     onChange={(event) => handleChange(event)}
@@ -350,7 +350,7 @@ const Payements = () => {
                     helperText={errors.paymentID}
                   />
                   <TextField
-                    label="amount"
+                    label="Amount"
                     name="amount"
                     value={newPayemnt.amount}
                     onChange={(event) => handleChange(event)}
@@ -358,7 +358,7 @@ const Payements = () => {
                     helperText={errors.amount}
                   />
                   <TextField
-                    label="driverID"
+                    label="Driver ID"
                     name="driverID"
                     value={newPayemnt.driverID}
                     onChange={(event) => handleChange(event)}
@@ -366,7 +366,7 @@ const Payements = () => {
                     helperText={errors.driverID}
                   />
                   <TextField
-                    label="createdAt"
+                    label="Created At"
                     name="createdAt"
                     value={newPayemnt.createdAt}
                     disabled={true}
@@ -375,7 +375,7 @@ const Payements = () => {
                     helperText={errors.createdAt}
                   />
                   <TextField
-                    label="updatedAt"
+                    label="Updated At"
                     name="updatedAt"
                     value={newPayemnt.updatedAt}
                     disabled={true}
@@ -384,7 +384,7 @@ const Payements = () => {
                     helperText={errors.updatedAt}
                   />
                   <TextField
-                    label="remarks"
+                    label="Remarks"
                     name="remarks"
                     value={newPayemnt.remarks}
                     onChange={(event) => handleChange(event)}
@@ -402,7 +402,7 @@ const Payements = () => {
               ) : (
                 <>
                   <TextField
-                    label="driverID"
+                    label="Driver ID"
                     name="driverID"
                     value={newPayemnt.driverID}
                     onChange={(event) => handleChange(event)}
@@ -411,7 +411,7 @@ const Payements = () => {
                     
                   />
                   <TextField
-                    label="amount"
+                    label="Amount"
                     name="amount"
                     value={newPayemnt.amount}
                     onChange={(event) => handleChange(event)}
@@ -419,7 +419,7 @@ const Payements = () => {
                     helperText={errors.amount}
                   />
                   <TextField
-                    label="remarks"
+                    label="Remarks"
                     name="remarks"
                     value={newPayemnt.remarks}
                     onChange={(event) => handleChange(event)}
@@ -478,6 +478,22 @@ const Payements = () => {
             />
           </Paper>
         </Container>
+      </div>
+      <div>
+        <Snackbar
+          open={alertOpen}
+          autoHideDuration={6000}
+          onClose={handleAlertClose}
+        >
+          <Alert
+            onClose={handleAlertClose}
+            severity={alertMessage.status}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {alertMessage.alert}
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );

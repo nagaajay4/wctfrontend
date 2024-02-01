@@ -130,24 +130,6 @@ const DriverDetails = () => {
     }, []);
 
   
-  // const data = [
-  //   {
-  //     driverID:"1d80308b-868e-4953-aa45-ba74a6f7d5b4",
-  //     driverFirstName: "Nagaajay",
-  //     driverLastName:"K",
-  //     email:"mainajay890@gmail.com",
-  //     password:"mainajay890@gmail.com",
-  //     driverAddress:"Earth PLanet",
-  //     driverPhoneNumber1:"9113092795",
-  //     driverPhoneNumber2:"9113092795",
-  //     vehicleColor:"Black",
-  //     vehicleMake:"BWM",   
-  //     vehicleModel:"X7",
-  //     vehicleLicense:"AXAX098989",
-  //     driverLicense:"ASSASA9889",
-  //     driverSSN:"ASASLP0909090",
-  //   }
-  // ];
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

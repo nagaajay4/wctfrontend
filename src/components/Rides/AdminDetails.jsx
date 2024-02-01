@@ -227,11 +227,7 @@ function AdminDetails() {
       newErrors.role = "role is required";
     }
 
-    // if (!addAdmin.message) {
-    //   valid = false;
-    //   newErrors.message = "Message is required";
-    // }
-
+   
     setErrors(newErrors);
     return valid;
   };
@@ -394,15 +390,7 @@ function AdminDetails() {
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2} margin={2}>
-              {/* {
-            "adminId": "48dd19f0-dcd1-4b2d-8b6f-837c238fd34f",
-            "name": "Seshi",
-            "email": "iamojey@seshi.com",
-            "password": "$2a$10$JBSilVHRG1WiTvwssHQQLODuPxtRnWL6kLBFIvRT7J.PTnGaZKQrS",
-            "role": "SUPER ADMIN",
-            "createdAt": "2024-01-20T12:11:27.881Z",
-            "updatedAt": "2024-01-20T12:11:27.881Z"
-        } */}
+              
               {isEditMode == true ? (
                 <>
                   <TextField
@@ -492,12 +480,7 @@ function AdminDetails() {
                     error={Boolean(errors.password)}
                     helperText={errors.password}
                   />
-                  {/* <TextField
-                    label="Admin role"
-                    name="role"
-                    value={addAdmin.role}
-                    onChange={(event) => handleChange(event)}
-                  /> */}
+                 
                   <FormControl>
                     <InputLabel>Role</InputLabel>
                     <Select

@@ -77,22 +77,7 @@ function HomePageHeader() {
 
 
             </ListItem>
-          {/* <Button >
-                  About Us
-                </Button>
-                <Button onClick={()=>navigate('/Contact')}>
-                  Contact
-                </Button>
-                <Button onClick={()=>navigate('/Mission')}>
-                  Mission
-                </Button> */}
-            {/* {navItems.map((item) => (
-              <ListItem key={item} disablePadding>
-                <ListItemButton sx={{ textAlign: 'center' }}>
-                  <ListItemText primary={item} />
-                </ListItemButton>
-              </ListItem>
-            ))} */}
+          
           </List>
         </Box>
       );

@@ -1,16 +1,10 @@
 import React from "react";
-// import Homepage from '../components/Homepage'
-// import LoginForm from '../components/Login/LoginForm'
-// import LoginPage from '../components/Login/LoginPage'
-// import LoginPageMUI from '../components/Login/LoginPageMUI'
+
 import Header from "../layouts/Header";
 import AdminSidebar from "../layouts/AdminSidebar";
-// import AdminSidebarusing from '../layouts/AdminSidebarusing'
-// import Footer from '../layouts/Footer'
-// import ParseCSVData from '../components/ParseCSVData'
+
 import FileUpload from "../components/FileUpload";
-// import Navbar from '../components/Rides/Navbar'
-// import HeaderMusic from '../layouts/HeaderMusic'
+
 import { Route, Routes } from "react-router-dom";
 import AdminLogin from "../components/AdminLogin";
 import ActiveRides from '../components/Rides/ActiveRides'
@@ -43,7 +37,6 @@ function Routings() {
       <div>
         <Routes>
           
-          {/* <Route path="/" element={<MyForm />}></Route> */}
           <Route path="/AdminLogin" element={<AdminLogin />}></Route>
 
           <Route path="/Header" element={<Header />} />

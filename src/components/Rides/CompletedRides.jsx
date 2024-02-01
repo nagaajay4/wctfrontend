@@ -87,15 +87,9 @@ const CompletedRides = () => {
           console.log(error.message);
         }
       });
-    //const data = fetchUpComingRides();
-    //console.log(data);
-    //etRidesRows(data);
+    
   }, []);
-  // const handleDeleteRow = (id) => {
-  //   console.log(id);
-  //   const updatedRows = ridesRows.filter((ridesRows) => ridesRows.RideID !== id);
-  //   setRidesRows(updatedRows);
-  // };
+
   const handleDeleteRow = (id) => {
     console.log(id);
     if (ridesRows.filter((ride) => ride.RideID === id)) {
@@ -125,36 +119,7 @@ const CompletedRides = () => {
   };
 
   const rideColumns = [
-    // {
-    //   field: "edit",
-    //   headerName: "Edit",
-    //   sortable: false,
-    //   width: 80,
-    //   disableClickEventBubbling: true,
-    //   renderCell: (params) => (
-    //     <IconButton color="primary" onClick={() => handleEditRow(params.id)}>
-    //       <EditIcon />
-    //     </IconButton>
-    //   ),
-    // },
-    // {
-    //   field: "Driver",
-    //   headerName: "Assign Driver",
-    //   minWidth: 120,
-    //   renderCell: (params) => (
-    //     <Select
-    //       value={params.value}
-    //       onChange={(e) => handleStatusChange(params.id, e.target.value)}
-    //     >
-    //       <MenuItem value="">None </MenuItem>
-
-    //       <MenuItem value="null">None </MenuItem>
-    //       <MenuItem value="Nagaajay">Nagaajay</MenuItem>
-    //       <MenuItem value="Darwin">Darwin</MenuItem>
-    //       <MenuItem value="Zak">Zak</MenuItem>
-    //     </Select>
-    //   ),
-    // },
+   
     {
       field: "edit",
       headerName: "View",
@@ -182,24 +147,7 @@ const CompletedRides = () => {
     { field: "Dropoff_Address", headerName: "Dropoff Address" },
     { field: "Pickup_Directions", headerName: "Pickup Directions" },
      
-    // {
-    //   field: "delete",
-    //   headerName: "Delete",
-    //   sortable: false,
-    //   width: 80,
-    //   disableClickEventBubbling: true,
-    //   renderCell: (params) => (
-    //     <IconButton
-    //       color="secondary"
-    //       onClick={() => {
-    //         console.log(params);
-    //         handleDeleteRow(params.id);
-    //       }}
-    //     >
-    //       <DeleteIcon />
-    //     </IconButton>
-    //   ),
-    // },
+    
   ];
 
   const [open, openchange] = useState(false);
@@ -251,26 +199,7 @@ const CompletedRides = () => {
     //console.log(ride);
     closepopup();
   };
-  // const handleAddRide=()=> {
-  //   setIsEditMode(false);
-  //   setRide({
-  //     RideID: "",
-  //     Ride_Status: "",
-  //     Ride_Date: "",
-  //     Customer_FirstName: "",
-  //     Customer_LastName: "",
-  //     Phone_Number: "",
-  //     Transportation_Type: "",
-  //     Pick_Up_Time: "",
-  //     Arrival_Time: "",
-  //     Estimated_Distance: "",
-  //     Pickup_Address: "",
-  //     Dropoff_Address: "",
-  //     Pickup_Directions: "",
-  //     Driver: "",
-  //   });
-  //   functionopenpopup();
-  // }
+  
   const [isEditMode,setIsEditMode]=useState(false);
   const handleEditRow = (id) => {
     // Implement your edit logic here
@@ -305,21 +234,7 @@ const CompletedRides = () => {
 
   return (
     <>
-     {/* <Stack spacing={2} sx={{ width: '100%' }}>
-      <Button variant="outlined" onClick={handleSnackbarClick}>
-        Open success snackbar
-      </Button>
-      <Snackbar open={snackbaropen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-          This is a success message!
-        </Alert>
-      </Snackbar>
-      <Alert severity="error">This is an error message!</Alert>
-      <Alert severity="warning">This is a warning message!</Alert>
-      <Alert severity="info">This is an information message!</Alert>
-      <Alert severity="success">This is a success message!</Alert>
-    </Stack> */}
-    {/* <AdminSidebar items={["AppLogin","UpComingRides","FileUpload"]}></AdminSidebar> */}
+     
       <AdminSidebar />
       <Typography variant="h3" sx={{marginBottom:'12px',color:'#004080'}}>
         Completed Rides
@@ -510,34 +425,14 @@ const CompletedRides = () => {
                 }}
               />
               
-        {/* <FormControl>
-        <InputLabel>Driver</InputLabel>
-        <Select
-          name="Driver"
-          value={ride.Driver}
-          onChange={handleChange}
-          label="Driver"
-        >
-          {drivers.map((driver) => (
-            <MenuItem key={driver} value={driver}>
-              {driver}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
-           
-              {/* <FormControlLabel
-                control={<Checkbox defaultChecked color="primary"></Checkbox>}
-                label="Please check the Ride ID"
-              > </FormControlLabel> */}
+        
               <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
                 Close
               </Button>
             </Stack>
           </DialogContent>
           <DialogActions>
-            {/* <Button color="success" variant="contained">Yes</Button>
-                    <Button onClick={closepopup} color="error" variant="contained">Close</Button> */}
+            
           </DialogActions>
         </Dialog>
       </div>
@@ -553,17 +448,7 @@ const CompletedRides = () => {
             alignItems="flex-end"
             // sx={boxDefault}
           >
-            {/* <Button
-              // onClick={functionopenpopup}
-              onClick={(event) => handleAddRide(event)}
-
-              color="primary"
-              variant="contained"
-              sx={{ height: 40 }}
-              startIcon={<AirportShuttleIcon />}
-            >
-              Add Ride
-            </Button> */}
+           
           </Box>
 
           <Paper component={Box} width={1} height={700}>

@@ -102,39 +102,7 @@ const DriverActiveRides = () => {
 
     
   }, []);
-  // const data =[
-  //   {
-  //     "RideID": "2462826",
-  //     "Ride_Status": "PENDING_UPDATE",
-  //     "Ride_Date": "4/21/2023",
-  //     "Customer_FirstName": "ANTHONY",
-  //     "Customer_LastName": "GREEN",
-  //     "Phone_Number": "6127228150",
-  //     "Transportation_Type": "NON_RIDESHARE_SEDAN",
-  //     "Pick_Up_Time": "4/21/2023 07:15 AM (CST)",
-  //     "Arrival_Time": "4/21/2023 07:45 AM (CST)",
-  //     "Estimated_Distance": "51.2577",
-  //     "Pickup_Address": "211 South 4th Street, Olivia, MN, USA",
-  //     "Dropoff_Address": "11 North Minnesota Street, New Ulm, MN, USA",
-  //     "Pickup_Directions": "",
-  //     "Driver_ID":" Nagaajay"
-  //   },
-  //   {
-  //     "RideID": "2483236",
-  //     "Ride_Status": "UPCOMING",
-  //     "Ride_Date": "4/22/2023",
-  //     "Customer_FirstName": "MAGAN",
-  //     "Customer_LastName": "BERRY",
-  //     "Phone_Number": "3208945700",
-  //     "Transportation_Type": "NON_RIDESHARE_SEDAN",
-  //     "Pick_Up_Time": "4/22/2023 10:15 AM (CST)",
-  //     "Arrival_Time": "4/22/2023 10:45 AM (CST)",
-  //     "Estimated_Distance": "28.6124",
-  //     "Pickup_Address": "324 West Weisel Street, Litchfield, MN 55355, USA",
-  //     "Dropoff_Address": "1604 1st St S, Willmar, MN, USA",
-  //     "Pickup_Directions": "-Appointment time: 11:00 AM \n-Pick up time: 10:15 AM \n-Return Time:  11:30 AM",
-  //     "Driver_ID":"Nagaajay"
-  //   }];
+ 
   return (
     <Box display={'flex'}>
       <DriverSidebar />

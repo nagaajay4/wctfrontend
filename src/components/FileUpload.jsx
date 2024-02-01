@@ -49,7 +49,7 @@ const FileUpload = () => {
       formData.append("csvFile", selectedFiles[0]);
   
       try {
-        const response = await axios.post("/admin/fileUpload", formData, {
+        const response = await axios.post("http://localhost:8000/api/v1/admin/fileUpload", formData, {
           headers: {
             'Authorization': getToken(),
             'Content-Type': 'multipart/form-data'
@@ -59,12 +59,12 @@ const FileUpload = () => {
         console.log(response.data);
         setAlertMessage({ status: "success", alert: "File submitted successfully..!" });
         setAlertOpen(true);
-        navigate('/ActiveRides'); // Assuming you have navigate function defined
+        navigate('/ActiveRides'); 
       } catch (error) {
         console.error(error);
         setAlertMessage({ status: "error", alert: "Unable to Submit File, Please try Again..!" });
         setAlertOpen(true);
-        // navigate('/ActiveRides'); // Uncomment if you have the navigate function defined
+        // navigate('/ActiveRides');
       }
     } else {
       console.error('No files upladed');

@@ -26,16 +26,11 @@ export default function Header() {
       <CssBaseline />
       <AppBarStyled position="static">
         <Toolbar>
-          {/* <Grid container direction="row" justifyContent="start" alignItems="start">
-            <LogoImage src={logoImage} alt="Logo" />
-          </Grid> */}
+          
           <Grid container direction="row" justifyContent="center" alignItems="center">
             <LogoImage src={logoImage} alt="Logo" />
           </Grid>
-          {/* <Grid container direction="row" justifyContent="end" alignItems="end">
-            <LogoImage src={logoImage} alt="Logo" />
-          </Grid> */}
-          {/* <LogoutButton color="primary">Logout</LogoutButton> */}
+          
         </Toolbar>
       </AppBarStyled>
     </div>
