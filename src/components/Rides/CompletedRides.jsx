@@ -155,21 +155,7 @@ const CompletedRides = () => {
     //     </Select>
     //   ),
     // },
-    { field: "RideID", headerName: "Ride ID", width: 100 },
-    { field: "Ride_Status", headerName: "Ride Status", width: 150 },
-    {field: "Driver",headerName:"Driver",minWidth: 120,},
-    { field: "Ride_Date", headerName: "Ride Date" },
-    { field: "Customer_FirstName", headerName: "First Name" },
-    { field: "Customer_LastName", headerName: "Last Name" },
-    { field: "Phone_Number", headerName: "Phone_Number" },
-    { field: "Transportation_Type", headerName: "T Type" },
-    { field: "Pick_Up_Time", headerName: "Pickup Time" },
-    { field: "Arrival_Time", headerName: "Arrival Time" },
-    { field: "Estimated_Distance", headerName: "Estimated Distance" },
-    { field: "Pickup_Address", headerName: "Pickup Address" },
-    { field: "Dropoff_Address", headerName: "Dropoff Address" },
-    { field: "Pickup_Directions", headerName: "Pickup Directions" },
-     {
+    {
       field: "edit",
       headerName: "View",
       sortable: false,
@@ -181,6 +167,21 @@ const CompletedRides = () => {
         </IconButton>
       ),
     },
+    { field: "RideID", headerName: "Ride ID", width: 100 },
+    { field: "Ride_Status", headerName: "Ride Status", width: 150 },
+    {field: "Driver_ID",headerName:"Driver ID",minWidth: 120,},
+    { field: "Ride_Date", headerName: "Ride Date" },
+    { field: "Customer_FirstName", headerName: "First Name" },
+    { field: "Customer_LastName", headerName: "Last Name" },
+    { field: "Phone_Number", headerName: "Phone_Number" },
+    { field: "Transportation_Type", headerName: "T Type" },
+    { field: "Pick_Up_Time", headerName: "Pickup Time" },
+    { field: "Arrival_Time", headerName: "Arrival Time" },
+    { field: "Estimated_Distance", headerName: "Estimated Distance" },
+    { field: "Pickup_Address", headerName: "Pickup Address" },
+    { field: "Dropoff_Address", headerName: "Dropoff Address" },
+    { field: "Pickup_Directions", headerName: "Pickup Directions" },
+     
     // {
     //   field: "delete",
     //   headerName: "Delete",
@@ -221,7 +222,7 @@ const CompletedRides = () => {
       Pickup_Address: "",
       Dropoff_Address: "",
       Pickup_Directions: "",
-      Driver: "",
+      Driver_ID: "",
     });
   };
 
@@ -239,7 +240,7 @@ const CompletedRides = () => {
     Pickup_Address: "",
     Dropoff_Address: "",
     Pickup_Directions: "",
-    Driver: "",
+    Driver_ID: "",
   });
   const handleChange = (event) => {
     setRide({ ...ride, [event.target.name]: event.target.value });
@@ -247,7 +248,7 @@ const CompletedRides = () => {
   const drivers = ['Nagaajay', 'Darwin', 'Zak'];
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(ride);
+    //console.log(ride);
     closepopup();
   };
   // const handleAddRide=()=> {
@@ -279,7 +280,7 @@ const CompletedRides = () => {
     {
       alert("Id is not found");
     }
-    console.log(editRide);
+    console.log("editRide",editRide);
     setRide({
       RideID: editRide.RideID,
       Ride_Status: editRide.Ride_Status,
@@ -294,7 +295,7 @@ const CompletedRides = () => {
       Pickup_Address: editRide.Pickup_Address,
       Dropoff_Address: editRide.Dropoff_Address,
       Pickup_Directions: editRide.Pickup_Directions,
-      Driver: editRide.Driver,
+      Driver_ID: editRide.Driver_ID,
     });
     functionopenpopup();
     console.log(`Edit row with ID ${editRide[0]}`);
@@ -328,13 +329,13 @@ const CompletedRides = () => {
         <Dialog
           // fullScreen
           open={open}
-          onClose={closepopup}
+          onClose={()=>closepopup()}
           fullWidth
           maxWidth="sm"
         >
           <DialogTitle>
             Completed Ride Details{" "}
-            <IconButton onClick={closepopup} style={{ float: "right" }}>
+            <IconButton onClick={()=>closepopup()} style={{ float: "right" }}>
               <CloseIcon color="primary"></CloseIcon>
             </IconButton>{" "}
           </DialogTitle>
@@ -497,8 +498,8 @@ const CompletedRides = () => {
                 }}
               />
               <TextField
-                name="Driver"
-                value={ride.Driver}
+                name="Driver_ID"
+                value={ride.Driver_ID}
                 //onChange={handleChange}
                 label="Driver"
                 disabled={true}

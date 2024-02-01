@@ -226,7 +226,7 @@ export default function AdminLogin() {
             </Typography>
             <Box
               component="form"
-              onSubmit={handleSubmit}
+              onSubmit={(event)=>handleSubmit(event)}
               noValidate
               sx={{ mt: 1 }}
             >

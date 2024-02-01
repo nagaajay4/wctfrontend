@@ -30,18 +30,30 @@ import AdminSidebar from "../../layouts/AdminSidebar";
 import axios from "axios";
 import AuthUser from "../AuthUser";
 import { Typography } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 function AdminDetails() {
   const navigate = useNavigate();
   const [adminDetails, setAdminDetails] = useState([]);
   const { http, getToken } = AuthUser();
-  const roles=["ADMIN","SUPER ADMIN"]
-  if(getToken()===null) {
-    navigate('/AdminLogin');
+  const [errors, setErrors] = useState({});
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
+  const handleAlertClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlertOpen(false);
+  };
+
+  const roles = ["ADMIN", "SUPER ADMIN"];
+  if (getToken() === null) {
+    navigate("/AdminLogin");
   }
 
   const [addAdmin, setAddAdmin] = useState({
-    adminId:"",
+    adminId: "",
     name: "",
     email: "",
     password: "",
@@ -135,20 +147,35 @@ function AdminDetails() {
       .then((response) => {
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
+        setAlertMessage({
+          status: "success",
+          alert: "Admin Deleted succesfully..!",
+        });
+        setAlertOpen(true);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to Delete, server time out..!",
+          });
+          setAlertOpen(true);
         } else {
           console.log(error.message);
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to Delete, no data found..!",
+          });
+          setAlertOpen(true);
         }
       });
-      window.location.reload();
+    window.location.reload();
   };
   const handleAddAdmin = () => {
     setIsEditMode(false);
     setAddAdmin({
-        adminId:"",
+      adminId: "",
       name: "",
       email: "",
       password: "",
@@ -172,78 +199,163 @@ function AdminDetails() {
     console.log(event);
     setAddAdmin({ ...addAdmin, [event.target.name]: event.target.value });
   };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {};
+
+    // Email validation
+    if (!addAdmin.email) {
+      valid = false;
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(addAdmin.email)) {
+      valid = false;
+      newErrors.email = "Invalid email address";
+    }
+
+    // validation
+    if (!addAdmin.name) {
+      valid = false;
+      newErrors.name = "Name is required";
+    }
+    if (!addAdmin.password) {
+      valid = false;
+      newErrors.password = "password is required";
+    }
+    if (!addAdmin.role) {
+      valid = false;
+      newErrors.role = "role is required";
+    }
+
+    // if (!addAdmin.message) {
+    //   valid = false;
+    //   newErrors.message = "Message is required";
+    // }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("new admin", addAdmin);
-    if(isEditMode) {
+    if (isEditMode) {
+      if (validateForm()) {
         axios({
-            //http://localhost:PORT/api/v1/admin/updateAdmin
-            baseURL: "http://localhost:8000/api/v1",
-            url: "/admin/updateAdmin",
-            method: "post",
-            data: {
-                adminId:addAdmin.adminId,
-              name: addAdmin.name,
-              email: addAdmin.email,
-              role: addAdmin.role
-            },
+          //http://localhost:PORT/api/v1/admin/updateAdmin
+          baseURL: "http://localhost:8000/api/v1",
+          url: "/admin/updateAdmin",
+          method: "post",
+          data: {
+            adminId: addAdmin.adminId,
+            name: addAdmin.name,
+            email: addAdmin.email,
+            role: addAdmin.role,
+          },
           headers: {
-              "Content-Type": "application/json",
-              Authorization: getToken(),
-            },
-      
-            timeout: 5000,
-          })
-            .then((response) => {
-              console.log(response);
-              console.log("response.data", response.data.data);
-              console.log("message", response.data.message);
-            })
-            .catch((error) => {
-              if (error.code === "ECONNABORTED") {
-                console.log("Request timed out");
-              } else {
-                console.log("error", error);
-              }
-            });
+            "Content-Type": "application/json",
+            Authorization: getToken(),
+          },
 
-    }
-    else {
+          timeout: 5000,
+        })
+          .then((response) => {
+            console.log(response);
+            console.log("response.data", response.data.data);
+            console.log("message", response.data.message);
+            setAlertMessage({
+              status: "success",
+              alert: "Admin Updated succesfully..!",
+            });
+            setAlertOpen(true);
+            closepopup();
+          })
+          .catch((error) => {
+            if (error.code === "ECONNABORTED") {
+              console.log("Request timed out");
+              setAlertMessage({
+                status: "error",
+                alert: "Error with server, timeout..!",
+              });
+              setAlertOpen(true);
+              
+            } else {
+              console.log("error", error);
+              setAlertMessage({
+                status: "error",
+                alert: error,
+              });
+              setAlertOpen(true);
+              
+            }
+          });
+      } else {
+        console.log("validation failed");
+        setAlertMessage({
+          status: "error",
+          alert: "Please fill correct details, and  try Again..!",
+        });
+        setAlertOpen(true);
+      }
+    } else {
+      if (validateForm()) {
         axios({
-            baseURL: "http://localhost:8000/api/v1",
-            url: "/admin/addAdmin",
-            method: "post",
-            data: {
-              name: addAdmin.name,
-              email: addAdmin.email,
-              password: addAdmin.password,
-              role: addAdmin.role,
-            },
+          baseURL: "http://localhost:8000/api/v1",
+          url: "/admin/addAdmin",
+          method: "post",
+          data: {
+            name: addAdmin.name,
+            email: addAdmin.email,
+            password: addAdmin.password,
+            role: addAdmin.role,
+          },
           headers: {
-              "Content-Type": "application/json",
-              Authorization: getToken(),
-            },
-      
-            timeout: 5000,
-          })
-            .then((response) => {
-              console.log(response);
-              console.log("response.data", response.data.data);
-              console.log("message", response.data.message);
-            })
-            .catch((error) => {
-              if (error.code === "ECONNABORTED") {
-                console.log("Request timed out");
-              } else {
-                console.log("error", error);
-              }
-            });
+            "Content-Type": "application/json",
+            Authorization: getToken(),
+          },
 
+          timeout: 5000,
+        })
+          .then((response) => {
+            console.log(response);
+            console.log("response.data", response.data.data);
+            console.log("message", response.data.message);
+            setAlertMessage({
+              status: "success",
+              alert: "Admin Added succesfully..!",
+            });
+            setAlertOpen(true);
+            closepopup();
+          })
+          .catch((error) => {
+            if (error.code === "ECONNABORTED") {
+              console.log("Request timed out");
+              setAlertMessage({
+                status: "success",
+                alert: "Error with server, timeout..!",
+              });
+              setAlertOpen(true);
+            } else {
+              console.log("error", error);
+              setAlertMessage({
+                status: "error",
+                alert: error,
+              });
+              setAlertOpen(true);
+              
+            }
+          });
+      } else {
+        console.log("validation failed");
+        setAlertMessage({
+          status: "error",
+          alert: "Please fill correct details, and  try Again..!",
+        });
+        setAlertOpen(true);
+      }
     }
-    
-    
-    window.location.reload();
-    closepopup();
+
+    //window.location.reload();
   };
   const handleEditRow = (id) => {
     // Implement your edit logic here
@@ -253,7 +365,8 @@ function AdminDetails() {
       alert("Id is not found");
     }
     setAddAdmin(editAdmin);
- 
+    setErrors({});
+
     console.log(`Edit row with ID ${editAdmin}`);
     functionopenpopup();
   };
@@ -316,7 +429,7 @@ function AdminDetails() {
                     value={addAdmin.email}
                     onChange={(event) => handleChange(event)}
                   />
-                  
+
                   <TextField
                     label="Admin password"
                     name="password"
@@ -328,6 +441,7 @@ function AdminDetails() {
                     name="role"
                     value={addAdmin.role}
                     onChange={(event) => handleChange(event)}
+                    helperText={"Please use ADMIN or SUPER ADMIN"}
                   />
                   <TextField
                     label="createdAt"
@@ -358,12 +472,16 @@ function AdminDetails() {
                     name="name"
                     value={addAdmin.name}
                     onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.name)}
+                    helperText={errors.name}
                   />
                   <TextField
                     label="Admin email"
                     name="email"
                     value={addAdmin.email}
                     onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.email)}
+                    helperText={errors.email}
                   />
 
                   <TextField
@@ -371,6 +489,8 @@ function AdminDetails() {
                     name="password"
                     value={addAdmin.password}
                     onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.password)}
+                    helperText={errors.password}
                   />
                   {/* <TextField
                     label="Admin role"
@@ -385,6 +505,8 @@ function AdminDetails() {
                       value={addAdmin.role}
                       onChange={(event) => handleChange(event)}
                       label="Admin role"
+                      error={Boolean(errors.role)}
+                      helperText={errors.role}
                     >
                       {roles.map((role) => (
                         <MenuItem key={role} value={role}>
@@ -445,6 +567,22 @@ function AdminDetails() {
             />
           </Paper>
         </Container>
+      </div>
+      <div>
+        <Snackbar
+          open={alertOpen}
+          autoHideDuration={6000}
+          onClose={handleAlertClose}
+        >
+          <Alert
+            onClose={handleAlertClose}
+            severity={alertMessage.status}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {alertMessage.alert}
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );

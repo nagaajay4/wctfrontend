@@ -111,24 +111,24 @@ function DriverProfiles() {
     //   ),
     // },
     
-    {
-      field: "delete",
-      headerName: "Delete",
-      sortable: false,
-      width: 80,
-      disableClickEventBubbling: true,
-      renderCell: (params) => (
-        <IconButton
-          color="secondary"
-          onClick={() => {
-            console.log(params);
-            handleDeleteRow(params.id);
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
-      ),
-    },
+    // {
+    //   field: "delete",
+    //   headerName: "Delete",
+    //   sortable: false,
+    //   width: 80,
+    //   disableClickEventBubbling: true,
+    //   renderCell: (params) => (
+    //     <IconButton
+    //       color="secondary"
+    //       onClick={() => {
+    //         console.log(params);
+    //         handleDeleteRow(params.id);
+    //       }}
+    //     >
+    //       <DeleteIcon />
+    //     </IconButton>
+    //   ),
+    // },
   ];
 
   
@@ -495,6 +495,7 @@ function DriverProfiles() {
       driverLicense:editDriver.driverLicense,
       driverSSN:editDriver.driverSSN,
     });
+    setErrors({});
     functionopenpopup();
     console.log(`Edit row with ID ${editDriver}`);
    

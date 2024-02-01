@@ -202,7 +202,71 @@ const ActiveRides = () => {
   //   console.log("Status Selected: ", newStatus);
   //   setRidesRows(updatedRows);
   // };
+  const handleStatusChange = (id, newStatus) => {
+    // const updatedRows = ridesRows.map((ridesRows) =>
+    //   ridesRows.RideID === id ? { ...ridesRows, Driver: newStatus } : ridesRows
+    // );
+    // console.log("Ride id: ", id);
+    // console.log("Driver Selected: ", newStatus);
+    // setRidesRows(updatedRows);
+    console.log("id", id);
+    console.log("newStatus", newStatus);
+    const updatedRows = ridesRows.map((ridesRows) =>
+      ridesRows.RideID === id
+        ? { ...ridesRows, Driver: newStatus.driverFirstName }
+        : ridesRows
+    );
+    axios({
+      baseURL: "http://localhost:8000/api/v1",
+      url: "/admin/assignRide",
+      method: "post",
+      data: {
+        rideId: id,
+        driverId: newStatus.driverID,
+      },
 
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getToken(),
+      },
+
+      // timeout: 5000,
+    })
+      .then((response) => {
+        console.log(response);
+        console.log("response.data", response.data.data);
+        console.log("message", response.data.message);
+        const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
+      //setRidesRows(updatedRows);
+        setRidesRows(updatedRows);
+        setAlertMessage({
+          status: "success",
+          alert: "RIde assigned successfully..!",
+        });
+
+        setAlertOpen(true);
+      })
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to assign ride to driver",
+          });
+
+          setAlertOpen(true);
+        } else {
+          console.log("error", error);
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to assign ride to driver",
+          });
+
+          setAlertOpen(true);
+        }
+      });
+    //closepopup();
+  };
   const rideColumns = [
     {
       field: "edit",
@@ -418,6 +482,22 @@ const ActiveRides = () => {
                   },
                 }}
               />
+              <FormControl>
+        <InputLabel>Assign Driver</InputLabel>
+              <Select
+                              label="Assign Driver"
+
+                //value={params.value}
+                onChange={(e) => handleStatusChange(ride.RideID, e.target.value)}
+              >
+                {drivers &&
+                  drivers.map((driver) => (
+                    <MenuItem key={driver.driverID} value={driver}>
+                      {driver.driverFirstName + " " + driver.driverLastName}
+                    </MenuItem>
+                  ))}
+              </Select>
+              </FormControl>
               <TextField
                 label="Ride Status"
                 name="Ride_Status"

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Header from '../../layouts/Header'
+import Header from "../../layouts/Header";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
-import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
+import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatReclineNormal";
 
 import { Container, Paper, Box } from "@mui/material";
 import {
@@ -24,30 +24,41 @@ import {
   InputLabel,
 } from "@mui/material";
 import FormControlContext from "@mui/material/FormControl/FormControlContext";
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
-import { useNavigate } from 'react-router-dom';
-import AdminSidebar from '../../layouts/AdminSidebar';
-import { Typography } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+import AdminSidebar from "../../layouts/AdminSidebar";
+import { Typography } from "@mui/material";
 import AuthUser from "../AuthUser";
-import axios from 'axios';
-
-
+import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const Payements = () => {
-  const [payments, setPayments]=useState([]);
-  const {http,getToken} =AuthUser();
+  const [payments, setPayments] = useState([]);
+  const { http, getToken } = AuthUser();
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
+  const [errors, setErrors] = useState({});
+  const [Apicall,setApiCall]=useState();
+
+  const handleAlertClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlertOpen(false);
+  };
 
   const navigate = useNavigate();
-  const [newPayemnt,setNewpayment]=useState({
-    "paymentID": "",
-    "amount": 0,
-    "driverID": "",
-    "paymentDate": "",
-    "createdAt": "",
-    "updatedAt": "",
-    "remarks":""
+  const [newPayemnt, setNewpayment] = useState({
+    paymentID: "",
+    amount: 0,
+    driverID: "",
+    paymentDate: "",
+    createdAt: "",
+    updatedAt: "",
+    remarks: "",
   });
 
   const paymentColumns = [
@@ -62,16 +73,14 @@ const Payements = () => {
           <EditIcon />
         </IconButton>
       ),
-    },  
+    },
     { field: "paymentID", headerName: "paymentID", width: 150 },
     { field: "amount", headerName: "amount", width: 150 },
-    { field: "driverID", headerName: "driverID",width: 200 },
-    { field: "paymentDate", headerName: "paymentDate",width: 200 },
+    { field: "driverID", headerName: "driverID", width: 200 },
+    { field: "paymentDate", headerName: "paymentDate", width: 200 },
     // { field: "createdAt", headerName: "createdAt",width: 200 },
-    { field: "updatedAt", headerName: "updatedAt",width: 200 },
-    {field:"remarks",headerName:"Remarks",width:200},
-    
-   
+    { field: "updatedAt", headerName: "updatedAt", width: 200 },
+    { field: "remarks", headerName: "Remarks", width: 200 },
   ];
 
   useEffect(() => {
@@ -81,12 +90,12 @@ const Payements = () => {
       url: "/admin/getAllPayments",
       method: "get",
       headers: {
-        Authorization: getToken()
+        Authorization: getToken(),
       },
       timeout: 2000,
     })
       .then((response) => {
-        console.log("response.data",response.data);
+        console.log("response.data", response.data);
         //setRidesRows(response.data.data);
         setPayments(response.data.data);
       })
@@ -97,32 +106,28 @@ const Payements = () => {
           console.log(error.message);
         }
       });
-    
-   
-  },[]);
+  }, [Apicall]);
 
-  const [isEditMode,setIsEditMode]=useState(false);
-  const handleAddPayment=()=> {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const handleAddPayment = () => {
     setIsEditMode(false);
     setNewpayment({
-    "paymentID": "",
-    "amount": "",
-    "driverID": "",
-    "paymentDate": "",
-    "createdAt": "",
-    "updatedAt": "",
-    "remarks":""
+      paymentID: "",
+      amount: 0,
+      driverID: "",
+      paymentDate: "",
+      createdAt: "",
+      updatedAt: "",
+      remarks: "",
     });
     functionopenpopup();
-  }
+  };
   const functionopenpopup = () => {
     openchange(true);
   };
 
   const closepopup = () => {
     openchange(false);
-
-
   };
   const [open, openchange] = useState(false);
   const handleChange = (event) => {
@@ -132,218 +137,310 @@ const Payements = () => {
     console.log(newPayemnt);
   };
 
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {};
+    // driverId:newPayemnt.driverID,
+    // amount:newPayemnt.amount,
+    // remarks:newPayemnt.remarks
+    if (!newPayemnt.driverID) {
+      valid = false;
+      newErrors.driverID = "driverID is required";
+    }
+    if (newPayemnt.amount === 0) {
+      valid = false;
+      newErrors.amount = "amount is required";
+    } else if (newPayemnt.amount < 0) {
+      valid = false;
+      newErrors.amount = "amount should be greater than zero";
+    }
+
+    // if (!newPayemnt.remarks) {
+    //   valid = false;
+    //   newErrors.remarks = "remarks is required";
+    // }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("newPayemnt",newPayemnt);
-    
-    if(isEditMode) {
+    console.log("newPayemnt", newPayemnt);
+
+    if (isEditMode) {
       //http://localhost:8000/api/v1/admin/payments/:paymentId
-      axios({
-        baseURL: "http://localhost:8000/api/v1",
-        url: "/admin/payments",
-        method: "post",
-        params: {
-          paymentId: newPayemnt.paymentID,
-        },
-       data:{
-        driverId:newPayemnt.driverID, 
-        amount:newPayemnt.amount, 
-        remarks:newPayemnt.remarks
-      },
-        
-        headers:  {
-          'Content-Type': 'application/json',
-          'Authorization': getToken()
-        },
-        
-        timeout: 5000,
-      })
-        .then((response) => {
-          console.log(response);
-          console.log("response.data",response.data.data);
-          console.log("message",response.data.message);
-          
+      if (validateForm()) {
+        axios({
+          baseURL: "http://localhost:8000/api/v1",
+          url: "/admin/payments",
+          method: "post",
+          params: {
+            paymentId: newPayemnt.paymentID,
+          },
+          data: {
+            driverId: newPayemnt.driverID,
+            amount: newPayemnt.amount,
+            remarks: newPayemnt.remarks,
+          },
+
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: getToken(),
+          },
+
+          timeout: 5000,
         })
-        .catch((error) => {
-          if (error.code === "ECONNABORTED") {
-            console.log("Request timed out");
-          } else {
-            console.log("error",error);
-          }
+          .then((response) => {
+            console.log(response);
+            console.log("response.data", response.data.data);
+            console.log("message", response.data.message);
+            setAlertMessage({
+              status: "success",
+              alert: "Payment Editted succesfully..!",
+            });
+            
+            setAlertOpen(true);
+            closepopup();
+            setApiCall(1);
+          })
+          .catch((error) => {
+            if (error.code === "ECONNABORTED") {
+              console.log("Request timed out");
+              setAlertMessage({
+                status: "error",
+                alert: "Payment Editted unsuccesfully, Server timeout.!",
+              });
+              setAlertOpen(true);
+            } else {
+              setAlertMessage({
+                status: "error",
+                alert: "Payment Editted Unsuccesfully, Please try again.!",
+              });
+              setAlertOpen(true);
+              console.log("error", error);
+            }
+          });
+      } else {
+        console.log("validation failed");
+        setAlertMessage({
+          status: "error",
+          alert: "Please fill correct details, and  try Again..!",
         });
+        setAlertOpen(true);
+      }
+    } else {
+      if (validateForm()) {
+        axios({
+          baseURL: "http://localhost:8000/api/v1",
+          url: "/admin/createPayment",
+          method: "post",
+          data: {
+            driverId: newPayemnt.driverID,
+            amount: newPayemnt.amount,
+            remarks: newPayemnt.remarks,
+          },
 
-      
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: getToken(),
+          },
 
-    }
-    else {
-      axios({
-        baseURL: "http://localhost:8000/api/v1",
-        url: "/admin/createPayment",
-        method: "post",
-       data:{
-        driverId:newPayemnt.driverID, 
-        amount:newPayemnt.amount, 
-        remarks:newPayemnt.remarks
-      },
-        
-        headers:  {
-          'Content-Type': 'application/json',
-          'Authorization': getToken()
-        },
-        
-        timeout: 5000,
-      })
-        .then((response) => {
-          console.log(response);
-          console.log("response.data",response.data.data);
-          console.log("message",response.data.message);
-          
+          timeout: 5000,
         })
-        .catch((error) => {
-          if (error.code === "ECONNABORTED") {
-            console.log("Request timed out");
-          } else {
-            console.log("error",error);
-          }
+          .then((response) => {
+            console.log(response);
+            console.log("response.data", response.data.data);
+            console.log("message", response.data.message);
+            setAlertMessage({
+              status: "success",
+              alert: "Payment submitted succesfully..!",
+            });
+            setAlertOpen(true);
+           
+            closepopup();
+            setApiCall(1);
+          })
+          .catch((error) => {
+            if (error.code === "ECONNABORTED") {
+              console.log("Request timed out");
+              setAlertMessage({
+                status: "error",
+                alert: "Payment Editted unsuccesfully, Server timeout.!",
+              });
+              setAlertOpen(true);
+            } else {
+              console.log("error", error);
+              setAlertMessage({
+                status: "error",
+                alert: "Payment Editted Unsuccesfully, Please try again.!",
+              });
+              setAlertOpen(true);
+            }
+          });
+      } else {
+        console.log("validation failed");
+        setAlertMessage({
+          status: "error",
+          alert: "Please fill correct details, and  try Again..!",
         });
-
+        setAlertOpen(true);
+      }
     }
-    
-    window.location.reload();
-    closepopup();
+
+    //window.location.reload();
   };
-
- 
 
   const handleEditRow = (id) => {
     // Implement your edit logic here
     setIsEditMode(true);
-    const pays=payments.filter((pay) => pay.paymentID === id)[0];
-    if(pays===null) 
-    {
+    const pays = payments.filter((pay) => pay.paymentID === id)[0];
+    if (pays === null) {
       alert("Id is not found");
     }
     console.log(pays);
     setNewpayment({
-      "paymentID": pays.paymentID,
-      "amount": pays.amount,
-      "driverID": pays.driverID,
-      "paymentDate": pays.paymentDate,
-      "createdAt": pays.createdAt,
-      "updatedAt": pays.updatedAt
+      paymentID: pays.paymentID,
+      amount: pays.amount,
+      driverID: pays.driverID,
+      paymentDate: pays.paymentDate,
+      createdAt: pays.createdAt,
+      updatedAt: pays.updatedAt,
     });
     functionopenpopup();
     console.log(`Edit row with ID ${pays}`);
-   
   };
-
 
   return (
     <>
       <AdminSidebar />
-      <Typography variant="h3" sx={{marginBottom:'12px',color:'#004080'}}>
+      <Typography variant="h3" sx={{ marginBottom: "12px", color: "#004080" }}>
         Payment Details
       </Typography>
       <div>
-          <Dialog
-            // fullScreen
-            open={open}
-            onClose={closepopup}
-            fullWidth
-            maxWidth="sm"
-          >
-            <DialogTitle>
-              Payement Details{" "}
-              <IconButton onClick={closepopup} style={{ float: "right" }}>
-                <CloseIcon color="primary"></CloseIcon>
-              </IconButton>{" "}
-            </DialogTitle>
-            <DialogContent>
-              <Stack spacing={2} margin={2}>
-
+        <Dialog
+          // fullScreen
+          open={open}
+          onClose={closepopup}
+          fullWidth
+          maxWidth="sm"
+        >
+          <DialogTitle>
+            Payement Details{" "}
+            <IconButton onClick={closepopup} style={{ float: "right" }}>
+              <CloseIcon color="primary"></CloseIcon>
+            </IconButton>{" "}
+          </DialogTitle>
+          <DialogContent>
+            <Stack spacing={2} margin={2}>
               {isEditMode == true ? (
-                
-              <>
-               <TextField
-                  label="paymentID"
-                  name="paymentID"
-                  value={newPayemnt.paymentID}
-                  onChange={(event)=>handleChange(event)}
-                  disabled={true}
-                  sx={{
-                    "& .MuiInputBase-input.Mui-disabled": {
-                      WebkitTextFillColor: "black",
-                    },
-                  }}
-                />
-                <TextField
-                  label="amount"
-                  name="amount"
-                  value={newPayemnt.amount}
-                  onChange={(event)=>handleChange(event)}
-                />
-                <TextField
-                  label="driverID"
-                  name="driverID"
-                  value={newPayemnt.driverID}
-                  onChange={(event)=>handleChange(event)}
-                />
-                <TextField
-                  label="createdAt"
-                  name="createdAt"
-                  value={newPayemnt.createdAt}
-                  disabled={true}
-                  onChange={(event)=>handleChange(event)}
-                />
-                <TextField
-                  label="updatedAt"
-                  name="updatedAt"
-                  value={newPayemnt.updatedAt}
-                  disabled={true}
-                  onChange={(event)=>handleChange(event)}
-                />   
-                <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
-                  Submit
-                </Button>
-              
-              </>):(        
-             <>
-             <TextField
-                  label="driverID"
-                  name="driverID"
-                  value={newPayemnt.driverID}
-                  onChange={(event)=>handleChange(event)}
-                />
-              <TextField
-                  label="amount"
-                  name="amount"
-                  value={newPayemnt.amount}
-                  onChange={(event)=>handleChange(event)}
-                />
-                <TextField
-                  label="remarks"
-                  name="remarks"
-                  value={newPayemnt.remarks}
-                  onChange={(event)=>handleChange(event)}
-                />
-                <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
-                  Submit
-                </Button>
-                
-             
-             </>)}
-               
-              </Stack>
-            </DialogContent>
-            <DialogActions>
-              
-            </DialogActions>
-          </Dialog>
+                <>
+                  <TextField
+                    label="paymentID"
+                    name="paymentID"
+                    value={newPayemnt.paymentID}
+                    onChange={(event) => handleChange(event)}
+                    disabled={true}
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                    error={Boolean(errors.paymentID)}
+                    helperText={errors.paymentID}
+                  />
+                  <TextField
+                    label="amount"
+                    name="amount"
+                    value={newPayemnt.amount}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.amount)}
+                    helperText={errors.amount}
+                  />
+                  <TextField
+                    label="driverID"
+                    name="driverID"
+                    value={newPayemnt.driverID}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.driverID)}
+                    helperText={errors.driverID}
+                  />
+                  <TextField
+                    label="createdAt"
+                    name="createdAt"
+                    value={newPayemnt.createdAt}
+                    disabled={true}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.createdAt)}
+                    helperText={errors.createdAt}
+                  />
+                  <TextField
+                    label="updatedAt"
+                    name="updatedAt"
+                    value={newPayemnt.updatedAt}
+                    disabled={true}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.updatedAt)}
+                    helperText={errors.updatedAt}
+                  />
+                  <TextField
+                    label="remarks"
+                    name="remarks"
+                    value={newPayemnt.remarks}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.remarks)}
+                    helperText={errors.remarks}
+                  />
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={(event) => handleSubmit(event)}
+                  >
+                    Submit
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <TextField
+                    label="driverID"
+                    name="driverID"
+                    value={newPayemnt.driverID}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.driverID)}
+                    helperText={errors.driverID}
+                    
+                  />
+                  <TextField
+                    label="amount"
+                    name="amount"
+                    value={newPayemnt.amount}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.amount)}
+                    helperText={errors.amount}
+                  />
+                  <TextField
+                    label="remarks"
+                    name="remarks"
+                    value={newPayemnt.remarks}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.remarks)}
+                    helperText={errors.remarks}
+                  />
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={(event) => handleSubmit(event)}
+                  >
+                    Submit
+                  </Button>
+                </>
+              )}
+            </Stack>
+          </DialogContent>
+          <DialogActions></DialogActions>
+        </Dialog>
       </div>
 
-
-       
       <div style={{ height: "80%", width: "100%" }}>
         <Container>
           <Toolbar />
@@ -383,13 +480,10 @@ const Payements = () => {
         </Container>
       </div>
     </>
-
-    
   );
 };
 
 export default Payements;
-
 
 //Payment ID
 //
