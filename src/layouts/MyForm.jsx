@@ -186,7 +186,7 @@ const MyForm = () => {
                 name="agreeToTerms"
               />
             }
-            label="you affirm your agreement to receive communications from us in accordance with our"
+            label="By selecting this checkbox, you affirm your agreement to receive communications from us in accordance with our"
           />
 
           {/* Anchor tags */}

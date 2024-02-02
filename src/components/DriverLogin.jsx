@@ -250,7 +250,7 @@ export default function DriverLogin() {
               }
               label={
                 <Typography>
-                  You affirm your agreement to receive communications from us in
+                  By selecting this checkbox, You affirm your agreement to receive communications from us in
                   accordance with our{" "}
                   <Link
                     href="/#/PrivacyPolicy"
