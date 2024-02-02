@@ -36,6 +36,8 @@ import Alert from '@mui/material/Alert';
 
 
 function DriverProfiles() {
+
+
   const navigate = useNavigate();
   const [driverDetails,setDriverDetails]=useState([]);
   const {http,getToken} =AuthUser();
@@ -43,17 +45,7 @@ function DriverProfiles() {
   const [alertMessage,setAlertMessage]=useState({status:"",alert:""});
   const [errors, setErrors] = useState({});
   const [countnewdriver,setCountnewdriver]=useState();
-  const handleAlertClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setAlertOpen(false);
-  };
-
-  if(getToken()===null) {
-    navigate('/AdminLogin');
-  }
-
+  const [isEditMode,setIsEditMode]=useState(false);
 
   const [newdriver,setNewdriver]= useState({
     driverID:"",
@@ -71,37 +63,16 @@ function DriverProfiles() {
     driverLicense:"",
     driverSSN:"",
   });
-  const driverColumns = [
-    { field: "driverID", headerName: "driverID", width: 100 },
-    { field: "driverFirstName", headerName: "driverFirstName", width: 150 },
-    { field: "driverLastName", headerName: "driverLastName" },
-    { field: "email", headerName: "email" },
-    { field: "password", headerName: "password" },
-    { field: "driverAddress", headerName: "driverAddress" },
-    { field: "driverPhoneNumber1", headerName: "driverPhoneNumber1" },
-    { field: "driverPhoneNumber2", headerName: "driverPhoneNumber2" },
-    { field: "vehicleColor", headerName: "vehicleColor" },
-    { field: "vehicleMake", headerName: "vehicleMake" },
-    { field: "vehicleModel", headerName: "vehicleModel" },
-    { field: "vehicleLicense", headerName: "vehicleLicense" },
-    { field: "driverLicense", headerName: "driverLicense" },
-    { field: "driverSSN", headerName: "driverSSN" },
-    {
-      field: "edit",
-      headerName: "Edit",
-      sortable: false,
-      width: 80,
-      disableClickEventBubbling: true,
-      renderCell: (params) => (
-        <IconButton color="primary" onClick={() => handleEditRow(params.id)}>
-          <EditIcon />
-        </IconButton>
-      ),
-    },
-   
-  ];
+  if(getToken()===null) {
+    navigate('/AdminLogin');
+  }
 
-  
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
+  };
 
   useEffect(() => {
     console.log("token",getToken());
@@ -129,7 +100,43 @@ function DriverProfiles() {
       });
   
   }, [countnewdriver]);
-  const [isEditMode,setIsEditMode]=useState(false);
+
+ 
+
+ 
+  const driverColumns = [
+    { field: "driverID", headerName: "driverID", width: 100 },
+    { field: "driverFirstName", headerName: "driverFirstName", width: 150 },
+    { field: "driverLastName", headerName: "driverLastName" },
+    { field: "email", headerName: "email" },
+    // { field: "password", headerName: "password" },
+    { field: "driverAddress", headerName: "driverAddress" },
+    { field: "driverPhoneNumber1", headerName: "driverPhoneNumber1" },
+    { field: "driverPhoneNumber2", headerName: "driverPhoneNumber2" },
+    { field: "vehicleColor", headerName: "vehicleColor" },
+    { field: "vehicleMake", headerName: "vehicleMake" },
+    { field: "vehicleModel", headerName: "vehicleModel" },
+    { field: "vehicleLicense", headerName: "vehicleLicense" },
+    { field: "driverLicense", headerName: "driverLicense" },
+    { field: "driverSSN", headerName: "driverSSN" },
+    {
+      field: "edit",
+      headerName: "Edit",
+      sortable: false,
+      width: 80,
+      disableClickEventBubbling: true,
+      renderCell: (params) => (
+        <IconButton color="primary" onClick={() => handleEditRow(params.id)}>
+          <EditIcon />
+        </IconButton>
+      ),
+    },
+   
+  ];
+
+  
+
+  
   const handleDeleteRow = (id) => {
     console.log(id);
     if (driverDetails.filter((driver) => driver.driverID === id)) {
@@ -216,6 +223,9 @@ function DriverProfiles() {
       if (!newdriver.password) {
         valid = false;
         newErrors.password = "password is required";
+      }else if((newdriver.password).length<8) {
+        valid = false;
+        newErrors.password = "password is less than 8 characters";
       }
       if (!newdriver.driverAddress) {
         valid = false;
@@ -260,7 +270,7 @@ function DriverProfiles() {
       if (validateForm()) {
         axios({
           baseURL: "http://localhost:8000/api/v1",
-          url: `/admin/updateDriverDetails?driverId=${newdriver.driverID}`,
+          url: `/admin/updateDriverDetails/${newdriver.driverID}`,
           method: "post",
           // params: {
           //   driverId: newdriver.driverID,
@@ -295,6 +305,8 @@ function DriverProfiles() {
             console.log("message",response.data.message);
             setCountnewdriver(1);
             closepopup();
+            setAlertMessage({status:"success",alert:"Driver updated successfully!"}) 
+        setAlertOpen(true);
             
           })
           .catch((error) => {
@@ -306,14 +318,13 @@ function DriverProfiles() {
               console.log("error",error);
               setAlertMessage({status:"error",alert:error}) 
             setAlertOpen(true);
-            setAlertMessage({status:"success",alert:"Driver updated successfully!"}) 
-        setAlertOpen(true);
+            
             }
           });
         }
         else {
           console.log("validation failed");
-          setAlertMessage({status:"error",alert:"Please fill all the details, and  try Again..!"}) 
+          setAlertMessage({status:"error",alert:"Please Check all the details, and  try Again..!"}) 
           setAlertOpen(true);
         }
 
@@ -351,10 +362,11 @@ function DriverProfiles() {
           console.log(response);
           console.log("response.data",response.data.data);
           console.log("message",response.data.message);
-          setCountnewdriver(1);
+          
           closepopup();
           setAlertMessage({status:"success",alert:"Driver added successfully!"}) 
         setAlertOpen(true);
+        setCountnewdriver(1);
           //window.location.reload();
           //setDriverDetails(response.data.data);
           //setRidesRows(response.data.data);
@@ -365,8 +377,8 @@ function DriverProfiles() {
             setAlertMessage({status:"error",alert:"server timeout request"}) 
             setAlertOpen(true);
           } else {
-            console.log("error",error);
-            setAlertMessage({status:"error",alert:error}) 
+            console.log("error",error.message);
+            setAlertMessage({status:"error",alert:error.message}) 
             setAlertOpen(true);
           }
         });
@@ -449,14 +461,14 @@ function DriverProfiles() {
                   },
                 }}
                 autoFocus
-                error={Boolean(errors.driverID)}
-                helperText={errors.driverID}
+                // error={Boolean(errors.driverID)}
+                // helperText={errors.driverID}
               />}
               <TextField
                 label="Driver FirstName"
                 name="driverFirstName"
                 value={newdriver.driverFirstName}
-               onChange={handleChange}
+               onChange={(event)=>handleChange(event)}
                autoFocus
                 error={Boolean(errors.driverFirstName)}
                 helperText={errors.driverFirstName}
@@ -465,7 +477,7 @@ function DriverProfiles() {
                 label="Driver LastName"
                 name="driverLastName"
                 value={newdriver.driverLastName}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.driverLastName)}
                 helperText={errors.driverLastName}
@@ -474,25 +486,25 @@ function DriverProfiles() {
                 label="Driver Email"
                 name="email"
                 value={newdriver.email}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.email)}
                 helperText={errors.email}
               />
-              <TextField
+              {!isEditMode && <TextField
                 label="Driver password"
                 name="password"
                 value={newdriver.password}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.password)}
                 helperText={errors.password}
-              />
+              />}
               <TextField
                 label="Driver Address"
                 name="driverAddress"
                 value={newdriver.driverAddress}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.driverAddress)}
                 helperText={errors.driverAddress}
@@ -501,7 +513,7 @@ function DriverProfiles() {
                 label="Driver Phone number1"
                 name="driverPhoneNumber1"
                 value={newdriver.driverPhoneNumber1}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.driverPhoneNumber1)}
                 helperText={errors.driverPhoneNumber1}
@@ -510,14 +522,14 @@ function DriverProfiles() {
                 label="Driver Phone number2"
                 name="driverPhoneNumber2"
                 value={newdriver.driverPhoneNumber2}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
 
               />
               <TextField
                 label="Driver vehicle Color"
                 name="vehicleColor"
                 value={newdriver.vehicleColor}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.vehicleColor)}
                 helperText={errors.vehicleColor}
@@ -526,7 +538,7 @@ function DriverProfiles() {
                 label="Driver vehicle Make"
                 name="vehicleMake"
                 value={newdriver.vehicleMake}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.vehicleMake)}
                 helperText={errors.vehicleMake}
@@ -535,7 +547,7 @@ function DriverProfiles() {
                 label="Driver vehicle Model"
                 name="vehicleModel"
                 value={newdriver.vehicleModel}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.vehicleModel)}
                 helperText={errors.vehicleModel}
@@ -544,7 +556,7 @@ function DriverProfiles() {
                 label="Driver vehicle License"
                 name="vehicleLicense"
                 value={newdriver.vehicleLicense}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.vehicleLicense)}
                 helperText={errors.vehicleLicense}
@@ -553,7 +565,7 @@ function DriverProfiles() {
                 label="Driver vehicle License"
                 name="driverLicense"
                 value={newdriver.driverLicense}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.driverLicense)}
                 helperText={errors.driverLicense}
@@ -562,7 +574,7 @@ function DriverProfiles() {
                 label="Driver SSN"
                 name="driverSSN"
                 value={newdriver.driverSSN}
-                onChange={handleChange}
+                onChange={(event)=>handleChange(event)}
                 autoFocus
                 error={Boolean(errors.driverSSN)}
                 helperText={errors.driverSSN}
@@ -620,7 +632,7 @@ function DriverProfiles() {
         </Container>
       </div>
       <div>
-        <Snackbar
+      <Snackbar
           open={alertOpen}
           autoHideDuration={6000}
           onClose={handleAlertClose}
@@ -631,7 +643,9 @@ function DriverProfiles() {
             variant="filled"
             sx={{ width: "100%" }}
           >
-            {alertMessage.alert}
+            {typeof alertMessage.alert === "object"
+              ? JSON.stringify(alertMessage.alert)
+              : alertMessage.alert}
           </Alert>
         </Snackbar>
       </div>

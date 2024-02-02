@@ -40,6 +40,7 @@ function AdminDetails() {
   const [errors, setErrors] = useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
+  const [countnewadmin,setCountnewadmin]=useState();
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -65,13 +66,13 @@ function AdminDetails() {
   const [editAdmin, setEditAdmin] = useState({});
 
   const adminColumns = [
-    { field: "adminId", headerName: "adminId", width: 100 },
-    { field: "name", headerName: "name", width: 150 },
-    { field: "email", headerName: "email" },
-    { field: "password", headerName: "password" },
-    { field: "role", headerName: "role" },
-    { field: "createdAt", headerName: "createdAt" },
-    { field: "updatedAt", headerName: "updatedAt" },
+    { field: "adminId", headerName: "Admin Id", width: 120 },
+    { field: "name", headerName: "Name", width: 150 },
+    { field: "email", headerName: "Email" },
+    // { field: "password", headerName: "password" },
+    { field: "role", headerName: "Role" },
+    // { field: "createdAt", headerName: "createdAt" },
+    // { field: "updatedAt", headerName: "updatedAt" },
 
     {
       field: "edit",
@@ -105,7 +106,7 @@ function AdminDetails() {
     },
   ];
 
-  useEffect(() => {
+  async function fetchData() {
     console.log("token", getToken());
     axios({
       baseURL: "http://localhost:8000/api/v1",
@@ -120,6 +121,7 @@ function AdminDetails() {
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
         setAdminDetails(response.data.data);
+        
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -128,7 +130,11 @@ function AdminDetails() {
           console.log(error.message);
         }
       });
-  }, []);
+    
+  }
+  useEffect(() => {
+    fetchData()
+  }, [])
   const [isEditMode, setIsEditMode] = useState(false);
   const handleDeleteRow = (id) => {
     console.log(id);
@@ -152,6 +158,8 @@ function AdminDetails() {
           alert: "Admin Deleted succesfully..!",
         });
         setAlertOpen(true);
+        fetchData();
+        //setCountnewadmin((countnewadmin)=>countnewadmin+1);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -221,8 +229,11 @@ function AdminDetails() {
     if (!addAdmin.password) {
       valid = false;
       newErrors.password = "password is required";
+    } else if((addAdmin.password).length<8) {
+      valid = false;
+      newErrors.password = "password is less than 8 characters";
     }
-    if (!addAdmin.role) {
+    if (!addAdmin.role) { 
       valid = false;
       newErrors.role = "role is required";
     }
@@ -265,6 +276,8 @@ function AdminDetails() {
             });
             setAlertOpen(true);
             closepopup();
+            fetchData();
+            //setCountnewadmin((countnewadmin)=>countnewadmin+1);
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
@@ -322,6 +335,8 @@ function AdminDetails() {
             });
             setAlertOpen(true);
             closepopup();
+            fetchData();
+            //setCountnewadmin((countnewadmin)=>countnewadmin+1);
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
@@ -418,12 +433,12 @@ function AdminDetails() {
                     onChange={(event) => handleChange(event)}
                   />
 
-                  <TextField
+                  {/* <TextField
                     label="Admin password"
                     name="password"
                     value={addAdmin.password}
                     onChange={(event) => handleChange(event)}
-                  />
+                  /> */}
                   <TextField
                     label="Admin role"
                     name="role"
@@ -431,7 +446,7 @@ function AdminDetails() {
                     onChange={(event) => handleChange(event)}
                     helperText={"Please use ADMIN or SUPER ADMIN"}
                   />
-                  <TextField
+                  {/* <TextField
                     label="createdAt"
                     name="createdAt"
                     value={addAdmin.createdAt}
@@ -444,7 +459,7 @@ function AdminDetails() {
                     value={addAdmin.updatedAt}
                     disabled={true}
                     onChange={(event) => handleChange(event)}
-                  />
+                  /> */}
                   <Button
                     color="primary"
                     variant="contained"
@@ -552,7 +567,7 @@ function AdminDetails() {
         </Container>
       </div>
       <div>
-        <Snackbar
+      <Snackbar
           open={alertOpen}
           autoHideDuration={6000}
           onClose={handleAlertClose}
@@ -563,7 +578,9 @@ function AdminDetails() {
             variant="filled"
             sx={{ width: "100%" }}
           >
-            {alertMessage.alert}
+            {typeof alertMessage.alert === "object"
+              ? JSON.stringify(alertMessage.alert)
+              : alertMessage.alert}
           </Alert>
         </Snackbar>
       </div>

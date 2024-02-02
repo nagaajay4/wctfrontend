@@ -35,7 +35,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+      West Central Transportation, Inc (WCTI)
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -115,7 +115,7 @@ export default function DriverLogin() {
     
     
 
-    if (validateForm()) {
+    if (validateForm(email,password)) {
 
       axios({
         baseURL: "http://localhost:8000/api/v1",

@@ -74,27 +74,8 @@ const AssignedRides = () => {
   };
 
   useEffect(() => {
-    axios({
-      baseURL: "http://localhost:8000/api/v1",
-      url: "/admin/assignedRides",
-      method: "get",
-      headers: {
-        Authorization: getToken(),
-      },
-      timeout: 2000,
-    })
-      .then((response) => {
-        console.log("response.data", response.data);
-        setRidesRows(response.data.data);
-      })
-      .catch((error) => {
-        if (error.code === "ECONNABORTED") {
-          console.log("Request timed out");
-        } else {
-          console.log(error.message);
-        }
-      });
-
+    
+    fetchData();
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/admin/drivers",
@@ -118,6 +99,29 @@ const AssignedRides = () => {
 
     
   }, []);
+  async function fetchData() {
+    axios({
+      baseURL: "http://localhost:8000/api/v1",
+      url: "/admin/assignedRides",
+      method: "get",
+      headers: {
+        Authorization: getToken(),
+      },
+      timeout: 2000,
+    })
+      .then((response) => {
+        console.log("response.data", response.data);
+        setRidesRows(response.data.data);
+      })
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+        } else {
+          console.log(error.message);
+        }
+      });
+
+  }
 
   const handleDeleteRow = (id) => {
     console.log(id);
@@ -158,6 +162,7 @@ const AssignedRides = () => {
         });
 
         setAlertOpen(true);
+        fetchData();
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -226,6 +231,7 @@ const AssignedRides = () => {
         });
 
         setAlertOpen(true);
+        fetchData();
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -244,6 +250,7 @@ const AssignedRides = () => {
           });
 
           setAlertOpen(true);
+          fetchData();
         }
       });
     //closepopup();

@@ -114,7 +114,7 @@ function DriverPastRides() {
    
     { field: "RideID", headerName: "Ride ID", width: 100 },
     { field: "Ride_Status", headerName: "Ride Status", width: 150 },
-    {field: "Driver",headerName:"Driver",minWidth: 120,},
+    // {field: "Driver",headerName:"Driver",minWidth: 120,},
     { field: "Ride_Date", headerName: "Ride Date" },
     { field: "Customer_FirstName", headerName: "First Name" },
     { field: "Customer_LastName", headerName: "Last Name" },

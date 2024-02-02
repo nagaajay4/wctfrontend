@@ -29,6 +29,8 @@ import Contact from "../components/Contact";
 
 import ForgotPasswordAdmin from "../components/ForgotPasswordAdmin"
 import ForgotPasswordDriver from "../components/ForgotPasswordDriver"
+import jwt from 'jsonwebtoken';
+
 
 
 function Routings() {
@@ -36,10 +38,10 @@ function Routings() {
     <>
       <div>
         <Routes>
+        <Route path="/Header" element={<Header />} />
           
+          //Admin Routes
           <Route path="/AdminLogin" element={<AdminLogin />}></Route>
-
-          <Route path="/Header" element={<Header />} />
           <Route path="/FileUpload" element={<FileUpload />}></Route>
           <Route path="/ActiveRides" element={<ActiveRides />}></Route>
           <Route path="/AssignedRides" element={<AssignedRides />}></Route>
@@ -50,7 +52,7 @@ function Routings() {
           <Route path="/AdminDetails" element={<AdminDetails />}></Route>
           <Route path="/ForgotPasswordAdmin" element={<ForgotPasswordAdmin />}></Route>
 
-
+          //Driver Routes
           <Route path="/DriverLogin" element={<DriverLogin />}></Route>
           <Route path="/DriverDetails" element={<DriverDetails />}></Route>
           <Route path="/DriverPayments" element={<DriverPayments />}></Route>
@@ -58,6 +60,7 @@ function Routings() {
           <Route path="/DriverActiveRides" element={<DriverActiveRides />}></Route>
           <Route path="/ForgotPasswordDriver" element={<ForgotPasswordDriver />}></Route>
 
+          //Home website routes
           <Route path="/" element={<Home />}></Route>
           <Route path="/PrivacyPolicy" element={<PrivacyPolicy />}></Route>
           <Route path="/TermsOfUse" element={<TermsOfUse />}></Route>

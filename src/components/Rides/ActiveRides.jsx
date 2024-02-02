@@ -156,6 +156,11 @@ const ActiveRides = () => {
           });
           setAlertOpen(true);
         } else {
+          setAlertMessage({
+            status: "error",
+            alert: error.response.data.error,
+          });
+          setAlertOpen(true);
           console.log("error", error);
         }
       });
@@ -329,14 +334,27 @@ const ActiveRides = () => {
         .then((response) => {
           console.log("response.data", response);
           setRide({ ...ride, [event.target.name]: event.target.value });
-
+          const updatedRows = ridesRows.filter((rides) => rides.RideID !== ride.RideID);
+        //setRidesRows(updatedRows);
+        setRidesRows(updatedRows);
+          setAlertMessage({
+            status: "success",
+            alert: "RIde assigned successfully..!",
+          });
+  
+          setAlertOpen(true);
           //setRidesRows(response.data.data);
         })
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
             console.log("Request timed out");
           } else {
-            console.log(error.message);
+            setAlertMessage({
+              status: "error",
+              alert: error.response.data.error,
+            });
+            setAlertOpen(true);
+            console.log("error",error);
           }
         });
     }
@@ -459,7 +477,7 @@ const ActiveRides = () => {
                 value={ride.Ride_Date}
                 onChange={handleChange}
               />
-              <TextField
+              {/* <TextField
                 id="datetime-local"
                 label="Next appointment"
                 type="datetime-local"
@@ -469,7 +487,7 @@ const ActiveRides = () => {
                 InputLabelProps={{
                   shrink: true,
                 }}
-              />
+              /> */}
               <TextField
                 label="Customer First Name"
                 name="Customer_FirstName"
@@ -585,9 +603,9 @@ const ActiveRides = () => {
         </Container>
       </div>
       <div>
-        <Snackbar
+      <Snackbar
           open={alertOpen}
-          autoHideDuration={3000}
+          autoHideDuration={6000}
           onClose={handleAlertClose}
         >
           <Alert
@@ -596,7 +614,9 @@ const ActiveRides = () => {
             variant="filled"
             sx={{ width: "100%" }}
           >
-            {alertMessage.alert}
+            {typeof alertMessage.alert === "object"
+              ? JSON.stringify(alertMessage.alert)
+              : alertMessage.alert}
           </Alert>
         </Snackbar>
       </div>

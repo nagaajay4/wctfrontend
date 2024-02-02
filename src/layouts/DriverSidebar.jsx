@@ -20,6 +20,14 @@ import MailIcon from '@mui/icons-material/Mail';
 import logoImage from '../assests/westCentralTransportationedited.png';
 import { useNavigate } from 'react-router-dom';
 import AuthUser from '../components/AuthUser';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
+import AirlineSeatReclineExtraIcon from '@mui/icons-material/AirlineSeatReclineExtra';
+import DepartureBoardIcon from '@mui/icons-material/DepartureBoard';
+
+
+
 
 
 
@@ -153,7 +161,7 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  <MailIcon />
+                  <TimeToLeaveIcon />
                 </ListItemIcon>
                 <ListItemText primary="Driver Active Rides" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -173,7 +181,7 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  <MailIcon />
+                  <AirlineSeatReclineExtraIcon />
                 </ListItemIcon>
                 <ListItemText primary="Driver Details" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -193,7 +201,7 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  <MailIcon />
+                  <DepartureBoardIcon />
                 </ListItemIcon>
                 <ListItemText primary="Driver Past Rides" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -213,7 +221,7 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  <MailIcon />
+                  <MonetizationOnIcon />
                 </ListItemIcon>
                 <ListItemText primary="Driver Payments" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -233,7 +241,7 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  <MailIcon />
+                  <ExitToAppIcon />
                 </ListItemIcon>
                 <ListItemText primary="Logout Driver" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>

@@ -34,6 +34,7 @@ import AuthUser from "../AuthUser";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { format } from 'date-fns';
 
 const Payements = () => {
   const [payments, setPayments] = useState([]);
@@ -41,7 +42,7 @@ const Payements = () => {
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
-  const [Apicall,setApiCall]=useState();
+  const [Apicall, setApiCall] = useState();
 
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -53,7 +54,7 @@ const Payements = () => {
   const navigate = useNavigate();
   const [newPayemnt, setNewpayment] = useState({
     paymentID: "",
-    amount: 0,
+    amount: "",
     driverID: "",
     paymentDate: "",
     createdAt: "",
@@ -74,12 +75,12 @@ const Payements = () => {
         </IconButton>
       ),
     },
-    { field: "paymentID", headerName: "Payment ID", width: 150 },
+    { field: "paymentID", headerName: "Payment ID", width: 200 },
     { field: "amount", headerName: "Amount", width: 150 },
-    { field: "driverID", headerName: "Driver ID", width: 200 },
-    { field: "paymentDate", headerName: "Payment Date", width: 200 },
+    { field: "driverID", headerName: "Driver ID", width: 150 },
+    { field: "paymentDate", headerName: "Payment Date", width: 250,valueFormatter: (params) => format(new Date(params.value), 'MMMM d, yyyy hh:mm a'), },
     // { field: "createdAt", headerName: "createdAt",width: 200 },
-    { field: "updatedAt", headerName: "Updated At", width: 200 },
+    // { field: "updatedAt", headerName: "Updated At", width: 200 },
     { field: "remarks", headerName: "Remarks", width: 200 },
   ];
 
@@ -90,6 +91,7 @@ const Payements = () => {
       url: "/admin/getAllPayments",
       method: "get",
       headers: {
+        "Content-Type": "application/json",
         Authorization: getToken(),
       },
       timeout: 2000,
@@ -113,7 +115,7 @@ const Payements = () => {
     setIsEditMode(false);
     setNewpayment({
       paymentID: "",
-      amount: 0,
+      amount: "",
       driverID: "",
       paymentDate: "",
       createdAt: "",
@@ -136,29 +138,25 @@ const Payements = () => {
     setNewpayment({ ...newPayemnt, [event.target.name]: event.target.value });
     console.log(newPayemnt);
   };
-
+  function isValidPositiveDecimal(str) {
+    const numericValue = parseFloat(str);
+    return !isNaN(numericValue) && isFinite(numericValue) && numericValue > 0;
+}
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
-    // driverId:newPayemnt.driverID,
-    // amount:newPayemnt.amount,
-    // remarks:newPayemnt.remarks
+   
     if (!newPayemnt.driverID) {
       valid = false;
       newErrors.driverID = "driverID is required";
     }
-    if (newPayemnt.amount === 0) {
+    if (newPayemnt.amount === "") {
       valid = false;
-      newErrors.amount = "amount is required";
-    } else if (newPayemnt.amount < 0) {
+      newErrors.amount = "Amount is required";
+    } else if (!isValidPositiveDecimal(newPayemnt.amount)) {
       valid = false;
-      newErrors.amount = "amount should be greater than zero";
+      newErrors.amount = "Amount should be valid and greater than zero";
     }
-
-    // if (!newPayemnt.remarks) {
-    //   valid = false;
-    //   newErrors.remarks = "remarks is required";
-    // }
 
     setErrors(newErrors);
     return valid;
@@ -166,14 +164,16 @@ const Payements = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("newPayemnt", newPayemnt);
+    
 
     if (isEditMode) {
+      console.log("newPayemnt", newPayemnt);
+      console.log("getToken",getToken());
       //http://localhost:8000/api/v1/admin/payments/:paymentId
       if (validateForm()) {
         axios({
           baseURL: "http://localhost:8000/api/v1",
-          url: `/admin/payments?paymentId=${newPayemnt.paymentID}`,
+          url: `/admin/payments/${newPayemnt.paymentID}`,
           method: "post",
           // params: {
           //   paymentId: newPayemnt.paymentID,
@@ -199,7 +199,7 @@ const Payements = () => {
               status: "success",
               alert: "Payment Editted succesfully..!",
             });
-            
+
             setAlertOpen(true);
             closepopup();
             setApiCall(1);
@@ -231,6 +231,8 @@ const Payements = () => {
       }
     } else {
       if (validateForm()) {
+        console.log("newPayemnt",newPayemnt);
+        console.log("getToken",getToken());
         axios({
           baseURL: "http://localhost:8000/api/v1",
           url: "/admin/createPayment",
@@ -257,7 +259,7 @@ const Payements = () => {
               alert: "Payment submitted succesfully..!",
             });
             setAlertOpen(true);
-           
+
             closepopup();
             setApiCall(1);
           })
@@ -266,14 +268,15 @@ const Payements = () => {
               console.log("Request timed out");
               setAlertMessage({
                 status: "error",
-                alert: "Payment Editted unsuccesfully, Server timeout.!",
+                alert: "Unable to edit Payment, Server timeout.!",
               });
               setAlertOpen(true);
             } else {
               console.log("error", error);
+              console.log("error.data", error.response);
               setAlertMessage({
                 status: "error",
-                alert: error,
+                alert: error.response.data.error,
               });
               setAlertOpen(true);
             }
@@ -306,6 +309,8 @@ const Payements = () => {
       paymentDate: pays.paymentDate,
       createdAt: pays.createdAt,
       updatedAt: pays.updatedAt,
+      remarks:pays.remarks
+
     });
     functionopenpopup();
     console.log(`Edit row with ID ${pays}`);
@@ -365,7 +370,7 @@ const Payements = () => {
                     error={Boolean(errors.driverID)}
                     helperText={errors.driverID}
                   />
-                  <TextField
+                  {/* <TextField
                     label="Created At"
                     name="createdAt"
                     value={newPayemnt.createdAt}
@@ -373,8 +378,8 @@ const Payements = () => {
                     onChange={(event) => handleChange(event)}
                     error={Boolean(errors.createdAt)}
                     helperText={errors.createdAt}
-                  />
-                  <TextField
+                  /> */}
+                  {/* <TextField
                     label="Updated At"
                     name="updatedAt"
                     value={newPayemnt.updatedAt}
@@ -382,7 +387,7 @@ const Payements = () => {
                     onChange={(event) => handleChange(event)}
                     error={Boolean(errors.updatedAt)}
                     helperText={errors.updatedAt}
-                  />
+                  /> */}
                   <TextField
                     label="Remarks"
                     name="remarks"
@@ -408,7 +413,6 @@ const Payements = () => {
                     onChange={(event) => handleChange(event)}
                     error={Boolean(errors.driverID)}
                     helperText={errors.driverID}
-                    
                   />
                   <TextField
                     label="Amount"
@@ -491,7 +495,9 @@ const Payements = () => {
             variant="filled"
             sx={{ width: "100%" }}
           >
-            {alertMessage.alert}
+            {typeof alertMessage.alert === "object"
+              ? JSON.stringify(alertMessage.alert)
+              : alertMessage.alert}
           </Alert>
         </Snackbar>
       </div>

@@ -20,6 +20,22 @@ import MailIcon from "@mui/icons-material/Mail";
 import logoImage from "../assests/westCentralTransportationedited.png";
 import { useNavigate } from "react-router-dom";
 import AuthUser from "../components/AuthUser";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import CarCrashIcon from '@mui/icons-material/CarCrash';
+import DepartureBoardIcon from '@mui/icons-material/DepartureBoard';
+import NoCrashIcon from '@mui/icons-material/NoCrash';
+import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+
+
+
+
+
+
+
+
 
 const drawerWidth = 240;
 
@@ -163,7 +179,7 @@ export default function MiniDrawer() {
                     justifyContent: "center",
                   }}
                 >
-                  <MailIcon />
+                  <UploadFileIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="File Upload"
@@ -190,7 +206,7 @@ export default function MiniDrawer() {
                     justifyContent: "center",
                   }}
                 >
-                  <MailIcon />
+                  <CarCrashIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="Un-assigned Rides" sx={{ opacity: open ? 1 : 0 }}
@@ -216,7 +232,7 @@ export default function MiniDrawer() {
                     justifyContent: "center",
                   }}
                 >
-                  <MailIcon />
+                  <DepartureBoardIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="Assigned Rides"
@@ -243,7 +259,7 @@ export default function MiniDrawer() {
                     justifyContent: "center",
                   }}
                 >
-                  <MailIcon />
+                  <NoCrashIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="Completed Rides"
@@ -270,7 +286,7 @@ export default function MiniDrawer() {
                     justifyContent: "center",
                   }}
                 >
-                  <MailIcon />
+                  <AirlineSeatReclineNormalIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="Drivers Detail Admin"
@@ -297,7 +313,7 @@ export default function MiniDrawer() {
                     justifyContent: "center",
                   }}
                 >
-                  <MailIcon />
+                  <MonetizationOnIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="Payments"
@@ -324,7 +340,7 @@ export default function MiniDrawer() {
                     justifyContent: "center",
                   }}
                 >
-                  <MailIcon />
+                  <AdminPanelSettingsIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="Admin Details"
@@ -353,7 +369,7 @@ export default function MiniDrawer() {
                     justifyContent: "center",
                   }}
                 >
-                  <MailIcon />
+                  <ExitToAppIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="Logout Admin"

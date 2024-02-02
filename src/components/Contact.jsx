@@ -30,7 +30,7 @@ function Contact() {
                     Phone No. 
                 </Typography>
                 <Typography variant='h6' textAlign={'left'}>
-                    (612) 636-9533         
+                    (320) 894-4265        
                 </Typography>
                 <Typography variant="h5" textAlign={'left'} gutterBottom style={{color: "#808000", padding: "1rem 0 1rem 0",}}>
                     Email: 
