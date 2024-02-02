@@ -27,11 +27,11 @@ function Footer() {
                     We Care about your safety.
                 </Typography>
                 <Typography color={'#E5E4E2'} variant="body1" gutterBottom>
-                    West Central region, Minnesota | Phone:
+                    West Central region, Minnesota | Phone: (320) 894-4265
                 </Typography>
                 <Container>
                 <Typography color={'#E5E4E2'} variant="h6" gutterBottom>
-                    Hours: 5AM - 6PM (M-F) || Weekends hours available as well. Additionally, we accommodate early morning and evening hours if needed. Please call to confirm.
+                    Hours: 5AM - 6PM (M-F) || Weekends hours available as well. Additionally, we accommodate early morning and evening hours if needed. Please call (320) 894-4265 to confirm.
                 </Typography>
                 </Container>
             </Box>

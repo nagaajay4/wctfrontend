@@ -1,44 +1,47 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/AppBar";
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Header from '../layouts/Header'
-import { useNavigate } from 'react-router-dom';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import axios from 'axios';
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Header from "../layouts/Header";
+import { useNavigate } from "react-router-dom";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import axios from "axios";
 import AuthUser from "./AuthUser";
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-
- 
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
-      West Central Transportation, Inc (WCTI)
-      </Link>{' '}
+        West Central Transportation, Inc (WCTI)
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -48,35 +51,35 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function DriverLogin() {
-
-  const {http,setToken} =AuthUser();
+  const { http, setToken } = AuthUser();
 
   const navigate = useNavigate();
-  const [email,setEmail]=React.useState('');
-  const [password,setPassword]=React.useState('');
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState({});
   const [rememberMe, setRememberMe] = React.useState(false);
-
-
+  const [agreeToCommunications, setAgreeToCommunications] = React.useState(false);
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [alertOpen, setAlertOpen] = React.useState(false);
-  const [alertMessage,setAlertMessage]=React.useState({status:"",alert:""});
+  const [alertMessage, setAlertMessage] = React.useState({
+    status: "",
+    alert: "",
+  });
 
-   const handleAlertClose = (event, reason) => {
-    if (reason === 'clickaway') {
+  const handleAlertClose = (event, reason) => {
+    if (reason === "clickaway") {
       return;
     }
     setAlertOpen(false);
   };
-
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  const validateForm = (getemail,getpassword) => {
+  const validateForm = (getemail, getpassword) => {
     let valid = true;
     const newErrors = {};
 
@@ -93,6 +96,13 @@ export default function DriverLogin() {
     if (!getpassword) {
       valid = false;
       newErrors.password = "password is required";
+    }else if((getpassword).length<8) {
+      valid = false;
+      newErrors.password = "password is less than 8 characters";
+    }
+    if(!agreeToCommunications) {
+      valid = false;
+      newErrors.agreeToCommunications = "Please agree to the terms";
     }
 
     setErrors(newErrors);
@@ -110,13 +120,14 @@ export default function DriverLogin() {
   const handleRememberMeChange = (event) => {
     setRememberMe(event.target.checked);
   };
+  const handleAgreeToCommunicationsChange = (event) => {
+    setAgreeToCommunications(event.target.checked);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    
 
-    if (validateForm(email,password)) {
-
+    if (validateForm(email, password)) {
       axios({
         baseURL: "http://localhost:8000/api/v1",
         url: "/driver/signIn",
@@ -151,97 +162,126 @@ export default function DriverLogin() {
             setAlertOpen(true);
           } else {
             console.log("login api error", error);
-          setAlertMessage({
-            status: "error",
-            alert: "Unable to Login Successfully..!",
-          });
-          setAlertOpen(true);
+            setAlertMessage({
+              status: "error",
+              alert: "Unable to Login Successfully..!",
+            });
+            setAlertOpen(true);
           }
         });
+    } else {
+      setAlertMessage({
+        status: "warning",
+        alert: "please enter correct email and Password..!",
+      });
+      setAlertOpen(true);
     }
-    else {
-        setAlertMessage({
-          status: "warning",
-          alert: "please enter correct email and Password..!",
-        });
-        setAlertOpen(true);
-      }
-  
-
-  
-    
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Header></Header>
-     
+
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
             marginTop: 6,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Driver Sign in
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
-          <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="email"
-        label="Email Address"
-        name="email"
-        autoComplete="email"
-        autoFocus
-        value={email}
-        onChange={handleEmailChange}
-        error={Boolean(errors.email)}
-        helperText={errors.email}
-      />
             <TextField
-        margin="normal"
-        required
-        fullWidth
-        name="password"
-        label="Password"
-        type="password"
-        id="password"
-        autoComplete="current-password"
-        value={password}
-        onChange={handlePasswordChange}
-        error={Boolean(errors.password)}
-        helperText={errors.password}
-      />
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={email}
+              onChange={handleEmailChange}
+              error={Boolean(errors.email)}
+              helperText={errors.email}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={handlePasswordChange}
+              error={Boolean(errors.password)}
+              helperText={errors.password}
+            />
+            {/* <FormControlLabel
+              control={
+                <Checkbox
+                  name="rememberMe"
+                  color="primary"
+                  checked={rememberMe}
+                  onChange={handleRememberMeChange}
+                />
+              }
+              label="Remember me"
+            /> */}
+
             <FormControlLabel
-        control={
-          <Checkbox
-            name="rememberMe"
-            color="primary"
-            checked={rememberMe}
-            onChange={handleRememberMeChange}
-          />
-        }
-        label="Remember me"
-      />
-           <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                onClick={(event)=>handleSubmit(event)}
-                sx={{ mt: 2, mb: 2 }}
-              >
-                Sign In
-              </Button>
+              control={
+                <Checkbox
+                  checked={agreeToCommunications}
+                  onChange={handleAgreeToCommunicationsChange}
+                  name="agreeToCommunications"
+                />
+              }
+              label={
+                <Typography>
+                  You affirm your agreement to receive communications from us in
+                  accordance with our{" "}
+                  <Link
+                    href="/#/PrivacyPolicy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Privacy policy
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    href="/#/TermsOfUse"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Terms of use
+                  </Link>
+                </Typography>
+              }
+            />
+            {errors.agreeToCommunications && (
+          <div style={{ color: "red" }}>{errors.agreeToCommunications}</div>
+        )}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              onClick={(event) => handleSubmit(event)}
+              sx={{ mt: 2, mb: 2 }}
+            >
+              Sign In
+            </Button>
             <Grid container>
               <Grid item xs>
                 <Link href="/ForgotPasswordDriver" variant="body2">
@@ -259,18 +299,21 @@ export default function DriverLogin() {
         <Copyright sx={{ mt: 4, mb: 2 }} />
       </Container>
       <div>
-      
-      <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleAlertClose}>
-        <Alert
+        <Snackbar
+          open={alertOpen}
+          autoHideDuration={6000}
           onClose={handleAlertClose}
-          severity={alertMessage.status}
-          variant="filled"
-          sx={{ width: '100%' }}
         >
-          {alertMessage.alert}
-        </Alert>
-      </Snackbar>
-    </div>
+          <Alert
+            onClose={handleAlertClose}
+            severity={alertMessage.status}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {alertMessage.alert}
+          </Alert>
+        </Snackbar>
+      </div>
     </ThemeProvider>
   );
 }
