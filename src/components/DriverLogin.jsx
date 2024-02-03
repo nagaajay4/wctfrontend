@@ -58,7 +58,8 @@ export default function DriverLogin() {
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState({});
   const [rememberMe, setRememberMe] = React.useState(false);
-  const [agreeToCommunications, setAgreeToCommunications] = React.useState(false);
+  const [agreeToCommunications, setAgreeToCommunications] =
+    React.useState(false);
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [alertOpen, setAlertOpen] = React.useState(false);
@@ -96,11 +97,11 @@ export default function DriverLogin() {
     if (!getpassword) {
       valid = false;
       newErrors.password = "password is required";
-    }else if((getpassword).length<8) {
+    } else if (getpassword.length < 8) {
       valid = false;
       newErrors.password = "password is less than 8 characters";
     }
-    if(!agreeToCommunications) {
+    if (!agreeToCommunications) {
       valid = false;
       newErrors.agreeToCommunications = "Please agree to the terms";
     }
@@ -250,10 +251,10 @@ export default function DriverLogin() {
               }
               label={
                 <Typography>
-                  By selecting this checkbox, You affirm your agreement to receive communications from us in
-                  accordance with our{" "}
+                  By selecting this checkbox, You affirm your agreement to
+                  receive communications from us in accordance with our{" "}
                   <Link
-                    href="/#/PrivacyPolicy"
+                    href="/PrivacyPolicy"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -261,7 +262,7 @@ export default function DriverLogin() {
                   </Link>{" "}
                   and{" "}
                   <Link
-                    href="/#/TermsOfUse"
+                    href="/TermsOfUse"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -271,8 +272,8 @@ export default function DriverLogin() {
               }
             />
             {errors.agreeToCommunications && (
-          <div style={{ color: "red" }}>{errors.agreeToCommunications}</div>
-        )}
+              <div style={{ color: "red" }}>{errors.agreeToCommunications}</div>
+            )}
             <Button
               type="submit"
               fullWidth

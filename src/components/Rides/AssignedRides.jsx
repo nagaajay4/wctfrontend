@@ -588,7 +588,7 @@ const AssignedRides = () => {
         </Container>
       </div>
       <div>
-        <Snackbar
+      <Snackbar
           open={alertOpen}
           autoHideDuration={6000}
           onClose={handleAlertClose}
@@ -599,7 +599,9 @@ const AssignedRides = () => {
             variant="filled"
             sx={{ width: "100%" }}
           >
-            {alertMessage.alert}
+            {typeof alertMessage.alert === "object"
+              ? JSON.stringify(alertMessage.alert)
+              : alertMessage.alert}
           </Alert>
         </Snackbar>
       </div>

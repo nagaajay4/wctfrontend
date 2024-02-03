@@ -7,6 +7,10 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import axios from 'axios';
+import Alert from '@mui/material/Alert';
+
+
 
 const MyForm = () => {
   const [customer, setCustomer] = useState({
@@ -24,6 +28,12 @@ const MyForm = () => {
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
+      return;
+    }
+    setAlertOpen(false);
+  };
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
       return;
     }
     setAlertOpen(false);
@@ -48,13 +58,16 @@ const MyForm = () => {
       valid = false;
       newErrors.name = "Name is required";
     }
-    if (!customer.address) {
-      valid = false;
-      newErrors.address = "Address is required";
-    }
+    // if (!customer.address) {
+    //   valid = false;
+    //   newErrors.address = "Address is required";
+    // }
     if (!customer.phoneNumber) {
       valid = false;
       newErrors.phoneNumber = "Phone number is required";
+    }else if((customer.phoneNumber).length!==10) {
+      valid = false;
+      newErrors.phoneNumber = "phoneNumber must be 10 digits";
     }
     if (!customer.message) {
       valid = false;
@@ -84,20 +97,68 @@ const MyForm = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      console.log("Form submitted:", customer);
-      setAlertMessage({
-        status: "success",
-        alert: "Form Submitted Successfully, We will contact you soon..!",
-      });
-      setAlertOpen(true);
-    } else {
-      console.log("Form validation failed");
-      setAlertMessage({
-        status: "error",
-        alert: "Unable to Submit Form, Please try Again..!",
-      });
-      setAlertOpen(true);
-    }
+      if (validateForm()) {
+        axios({
+          baseURL: "http://localhost:8000/api/v1",
+          url: "/form/createForm",
+          method: "post",
+         data:{
+            email:customer.email,
+            name:customer.name,
+            phoneNumber:customer.phoneNumber,
+            message:customer.message  
+        },
+          
+          headers:  {
+            'Content-Type': 'application/json',
+          },
+          
+          timeout: 5000,
+        })
+          .then((response) => {
+            console.log("Form submitted:", customer);
+            setAlertMessage({
+              status: "success",
+              alert: "Form Submitted Successfully, We will contact you soon..!",
+            });
+            setAlertOpen(true);
+            setCustomer({
+              name: "",
+              phoneNumber: "",
+              email: "",
+              address: "",
+              message: "",
+              agreeToTerms: false,
+            });
+            //window.location.reload();
+            //setDriverDetails(response.data.data);
+            //setRidesRows(response.data.data);
+          })
+          .catch((error) => {
+            if (error.code === "ECONNABORTED") {
+              console.log("Request timed out");
+              setAlertMessage({status:"error",alert:"server timeout request"}) 
+              setAlertOpen(true);
+            } else {
+              console.log("error",error.message);
+              setAlertMessage({status:"error",alert:error.message}) 
+              setAlertOpen(true);
+            }
+          });
+        }
+        else {
+          console.log("Form validation failed");
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to Submit Form, Please try Again..!",
+          });
+          setAlertOpen(true);
+        }
+
+
+
+     
+    } 
   };
 
   return (
@@ -143,7 +204,7 @@ const MyForm = () => {
           error={Boolean(errors.phoneNumber)}
           helperText={errors.phoneNumber}
         />
-        <TextField
+        {/* <TextField
           margin="normal"
           required
           // fullWidth
@@ -156,7 +217,7 @@ const MyForm = () => {
           onChange={(e) => handleChange(e)}
           error={Boolean(errors.address)}
           helperText={errors.address}
-        />
+        /> */}
 
         <TextField
           margin="normal"
@@ -190,11 +251,11 @@ const MyForm = () => {
           />
 
           {/* Anchor tags */}
-          <a href="/#/PrivacyPolicy" target="_blank" rel="noopener noreferrer">
+          <a href="/PrivacyPolicy" target="_blank" rel="noopener noreferrer">
             Privacy policy
           </a>
           {" and "}
-          <a href="/#/TermsOfUse" target="_blank" rel="noopener noreferrer">
+          <a href="/TermsOfUse" target="_blank" rel="noopener noreferrer">
             Terms of use
           </a>
         </span>
@@ -210,19 +271,21 @@ const MyForm = () => {
       </Stack>
 
       <div>
-        <Snackbar
+      <Snackbar
           open={alertOpen}
           autoHideDuration={6000}
-          onClose={handleClose}
+          onClose={handleAlertClose}
         >
-          <MuiAlert
-            onClose={handleClose}
+          <Alert
+            onClose={handleAlertClose}
             severity={alertMessage.status}
             variant="filled"
             sx={{ width: "100%" }}
           >
-            {alertMessage.alert}
-          </MuiAlert>
+            {typeof alertMessage.alert === "object"
+              ? JSON.stringify(alertMessage.alert)
+              : alertMessage.alert}
+          </Alert>
         </Snackbar>
       </div>
     </Box>

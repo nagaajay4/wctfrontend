@@ -38,7 +38,7 @@ function Copyright(props) {
     >
       {"Copyright © "}
       <Link color="inherit" href="/">
-      West Central Transportation, Inc (WCTI)
+        West Central Transportation, Inc (WCTI)
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -65,7 +65,6 @@ export default function AdminLogin() {
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
-
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleAlertClose = (event, reason) => {
@@ -115,9 +114,8 @@ export default function AdminLogin() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     //const data = new FormData(event.currentTarget);
-   
-    if (validateForm()) {
 
+    if (validateForm()) {
       axios({
         baseURL: "http://localhost:8000/api/v1",
         url: "/admin/signIn",
@@ -152,29 +150,20 @@ export default function AdminLogin() {
             setAlertOpen(true);
           } else {
             console.log("login api error", error);
-          setAlertMessage({
-            status: "error",
-            alert: "Unable to Login Successfully..!",
-          });
-          setAlertOpen(true);
+            setAlertMessage({
+              status: "error",
+              alert: "Unable to Login Successfully..!",
+            });
+            setAlertOpen(true);
           }
         });
+    } else {
+      setAlertMessage({
+        status: "warning",
+        alert: "please enter correct email and Password..!",
+      });
+      setAlertOpen(true);
     }
-    else {
-        setAlertMessage({
-          status: "warning",
-          alert: "please enter correct email and Password..!",
-        });
-        setAlertOpen(true);
-      }
-
-
-
-
-
-
-
-    
   };
 
   return (
@@ -182,7 +171,7 @@ export default function AdminLogin() {
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
         <Header></Header>
-        
+
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
@@ -199,57 +188,52 @@ export default function AdminLogin() {
             <Typography component="h1" variant="h5">
               Admin Sign in
             </Typography>
-            <Box
-              component="form"
-              
-              noValidate
-              sx={{ mt: 1 }}
-            >
+            <Box component="form" noValidate sx={{ mt: 1 }}>
               <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="email"
-        label="Email Address"
-        name="email"
-        autoComplete="email"
-        autoFocus
-        value={email}
-        onChange={handleEmailChange}
-        error={Boolean(errors.email)}
-        helperText={errors.email}
-      />
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                value={email}
+                onChange={handleEmailChange}
+                error={Boolean(errors.email)}
+                helperText={errors.email}
+              />
               <TextField
-        margin="normal"
-        required
-        fullWidth
-        name="password"
-        label="Password"
-        type="password"
-        id="password"
-        autoComplete="current-password"
-        value={password}
-        onChange={handlePasswordChange}
-        error={Boolean(errors.password)}
-        helperText={errors.password}
-      />
-             
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={handlePasswordChange}
+                error={Boolean(errors.password)}
+                helperText={errors.password}
+              />
+
               <FormControlLabel
-        control={
-          <Checkbox
-            name="rememberMe"
-            color="primary"
-            checked={rememberMe}
-            onChange={handleRememberMeChange}
-          />
-        }
-        label="Remember me"
-      />
+                control={
+                  <Checkbox
+                    name="rememberMe"
+                    color="primary"
+                    checked={rememberMe}
+                    onChange={handleRememberMeChange}
+                  />
+                }
+                label="Remember me"
+              />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                onClick={(event)=>handleSubmit(event)}
+                onClick={(event) => handleSubmit(event)}
                 sx={{ mt: 2, mb: 2 }}
               >
                 Sign In

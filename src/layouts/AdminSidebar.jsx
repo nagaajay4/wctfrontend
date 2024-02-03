@@ -348,6 +348,186 @@ export default function MiniDrawer() {
                 />
               </ListItemButton>
             </ListItem>
+           
+
+            {/* User */}
+            <ListItem
+              disablePadding
+              sx={{ display: "block" }}
+              
+            >
+              <span>
+                <ListItemText
+                  primary="User Requests"
+                  sx={{ paddingBlockStart:2, opacity: open ? 1 : 0 }}
+                />
+                </span>
+              
+            </ListItem>
+
+            <ListItem
+              disablePadding
+              sx={{ display: "block" }}
+              onClick={() => navigate("/UnAssignedUsers")}
+            >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CarCrashIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Un-assigned Users" sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem
+              disablePadding
+              sx={{ display: "block" }}
+              onClick={() => navigate("/AssignedUsers")}
+            >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <DepartureBoardIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Assigned Users"
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem
+              disablePadding
+              sx={{ display: "block" }}
+              onClick={() => navigate("/CompletedUsers")}
+            >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <NoCrashIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Completed Users"
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+
+             {/* User */}
+             <ListItem
+              disablePadding
+              sx={{ display: "block" }}
+              
+            >
+              <span>
+                <ListItemText
+                  primary="User Form Data"
+                  sx={{ paddingBlockStart:2, opacity: open ? 1 : 0 }}
+                />
+                </span>
+              
+            </ListItem>
+
+            <ListItem
+              disablePadding
+              sx={{ display: "block" }}
+              onClick={() => navigate("/FormDetails")}
+            >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CarCrashIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Form Details" sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem
+              disablePadding
+              sx={{ display: "block" }}
+              onClick={() => navigate("/ContactedForms")}
+            >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <DepartureBoardIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Contacted Forms"
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+
+            
+
+            
+
+           
+
+
+
+
+            {/* Logout */}
             <ListItem
               disablePadding
               sx={{ display: "block" }}

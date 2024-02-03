@@ -30,6 +30,13 @@ import Contact from "../components/Contact";
 import ForgotPasswordAdmin from "../components/ForgotPasswordAdmin"
 import ForgotPasswordDriver from "../components/ForgotPasswordDriver"
 
+import AssignedUsers from "../components/Users/AssignedUsers";
+import CompletedUsers from "../components/Users/CompletedUsers";
+import UnAssignedUsers from "../components/Users/UnAssignedUsers";
+
+import ContactedForms from "../components/FormData/ContactedForms";
+import FormDetails from "../components/FormData/FormDetails";
+
 
 
 function Routings() {
@@ -39,33 +46,43 @@ function Routings() {
         <Routes>
         <Route path="/Header" element={<Header />} />
           
-          //Admin Routes
-          <Route path="/AdminLogin" element={<AdminLogin />}></Route>
-          <Route path="/FileUpload" element={<FileUpload />}></Route>
-          <Route path="/ActiveRides" element={<ActiveRides />}></Route>
-          <Route path="/AssignedRides" element={<AssignedRides />}></Route>
-          <Route path="/CompletedRides" element={<CompletedRides />}></Route>
-          <Route path="/AdminSidebar" element={<AdminSidebar />}></Route>
-          <Route path="/Payments" element={<Payments /> }></Route>
-          <Route path="/DriverProfiles" element={<DriverProfiles />}></Route>
-          <Route path="/AdminDetails" element={<AdminDetails />}></Route>
-          <Route path="/ForgotPasswordAdmin" element={<ForgotPasswordAdmin />}></Route>
+          {/* //Admin Routes */}
+          <Route exact path="/AdminLogin" element={<AdminLogin />}></Route>
+          <Route exact path="/FileUpload" element={<FileUpload />}></Route>
+          <Route exact path="/ActiveRides" element={<ActiveRides />}></Route>
+          <Route exact path="/AssignedRides" element={<AssignedRides />}></Route>
+          <Route exact path="/CompletedRides" element={<CompletedRides />}></Route>
+          <Route exactpath="/AdminSidebar" element={<AdminSidebar />}></Route>
+          <Route exact path="/Payments" element={<Payments /> }></Route>
+          <Route exact path="/DriverProfiles" element={<DriverProfiles />}></Route>
+          <Route exact path="/AdminDetails" element={<AdminDetails />}></Route>
+          <Route exact path="/ForgotPasswordAdmin" element={<ForgotPasswordAdmin />}></Route>
 
-          //Driver Routes
-          <Route path="/DriverLogin" element={<DriverLogin />}></Route>
-          <Route path="/DriverDetails" element={<DriverDetails />}></Route>
-          <Route path="/DriverPayments" element={<DriverPayments />}></Route>
-          <Route path="/DriverPastRides" element={<DriverPastRides />}></Route>
-          <Route path="/DriverActiveRides" element={<DriverActiveRides />}></Route>
-          <Route path="/ForgotPasswordDriver" element={<ForgotPasswordDriver />}></Route>
+          {/* //Driver Routes */}
+          <Route exact path="/DriverLogin" element={<DriverLogin />}></Route>
+          <Route exact path="/DriverDetails" element={<DriverDetails />}></Route>
+          <Route exact path="/DriverPayments" element={<DriverPayments />}></Route>
+          <Route exact path="/DriverPastRides" element={<DriverPastRides />}></Route>
+          <Route exact path="/DriverActiveRides" element={<DriverActiveRides />}></Route>
+          <Route exact path="/ForgotPasswordDriver" element={<ForgotPasswordDriver />}></Route>
 
-          //Home website routes
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/PrivacyPolicy" element={<PrivacyPolicy />}></Route>
-          <Route path="/TermsOfUse" element={<TermsOfUse />}></Route>
-          <Route path="/Contact" element={<Contact />}></Route>  
-          <Route path="/AboutUs" element={<AboutUs />}></Route>  
-          <Route path="/Mission" element={<Mission />}></Route> 
+          {/* //Home website routes */}
+          <Route exact path="/" element={<Home />}></Route>
+          <Route exact path="/PrivacyPolicy" element={<PrivacyPolicy />}></Route>
+          <Route exact path="/TermsOfUse" element={<TermsOfUse />}></Route>
+          <Route exact path="/Contact" element={<Contact />}></Route>  
+          <Route exact path="/AboutUs" element={<AboutUs />}></Route>  
+          <Route exact path="/Mission" element={<Mission />}></Route> 
+
+          {/* //From Data */}
+          <Route exact path="/ContactedForms" element={<ContactedForms />}></Route>
+          <Route exact path="/FormDetails" element={<FormDetails />}></Route>
+
+
+          {/* //User Routes */}
+          <Route exact path="/AssignedUsers" element={<AssignedUsers />}></Route>
+          <Route exact path="/CompletedUsers" element={<CompletedUsers />}></Route>
+          <Route exact path="/UnAssignedUsers" element={<UnAssignedUsers />}></Route>
 
         </Routes>
       </div>

@@ -432,7 +432,7 @@ function DriverProfiles() {
     Drivers Details
       </Typography>
     <div>
-    {/* <div>DriversDetail</div> */}
+   
         <Dialog
           // fullScreen
           open={open}
