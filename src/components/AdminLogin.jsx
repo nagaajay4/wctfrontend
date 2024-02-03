@@ -37,7 +37,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="/">
       West Central Transportation, Inc (WCTI)
       </Link>{" "}
       {new Date().getFullYear()}
