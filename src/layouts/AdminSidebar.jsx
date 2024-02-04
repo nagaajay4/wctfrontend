@@ -115,7 +115,7 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { token, logout } = AuthUser();
+  const { token, logout,getRole } = AuthUser();
   const logoutUser = () => {
     if (token !== undefined) {
       logout("admin");
@@ -323,7 +323,8 @@ export default function MiniDrawer() {
                 />
               </ListItemButton>
             </ListItem>
-            <ListItem
+
+            {(getRole()==="SUPER ADMIN") && <ListItem
               disablePadding
               sx={{ display: "block" }}
               onClick={() => navigate("/AdminDetails")}
@@ -349,7 +350,7 @@ export default function MiniDrawer() {
                   sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
-            </ListItem>
+            </ListItem>}
            
 
             {/* User */}

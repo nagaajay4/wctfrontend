@@ -31,49 +31,243 @@ import AuthUser from "../AuthUser";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import NoCrashSharpIcon from "@mui/icons-material/NoCrashSharp";
+import CancelIcon from '@mui/icons-material/Cancel';
 
-const AssignedUsers = () => {
-  const [ridesRows, setRidesRows] = useState([]);
+
+
+function AssignedUsers() {
+  const [usersRows, setUsersRows] = useState([]);
   const { http, getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
+  const [errors, setErrors] = useState({});
+
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
+      setAlertOpen(false);
       return;
     }
-    setAlertOpen(false);
   };
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    rideDate: "",
+    pickUpTime: "",
+    pickUpAddress: "",
+    dropOffAddress: "",
+    phoneNumber: "",
+    instructions: "",
+  });
+  const [viewUser, setViewUser] = useState({
+    rideId: "",
+    rideStatus: "",
+    firstName: "",
+    lastName: "",
+    rideDate: "",
+    pickUpTime: "",
+    pickUpAddress: "",
+    dropOffAddress: "",
+    phoneNumber: "",
+    instructions: "",
+    driverId: "",
+    createdAt: "",
+    updatedAt: "",
+  });
 
-  //const drivers = ['Nagaajay', 'Darwin', 'Zak'];
+  const userColumns = [
+    {
+      field: "edit",
+      headerName: "Edit",
+      sortable: false,
+      width: 50,
+      disableClickEventBubbling: true,
+      renderCell: (params) => (
+        <IconButton color="primary" onClick={() => handleEditRow(params.id)}>
+          <EditIcon />
+        </IconButton>
+      ),
+    },
+    {
+      field: "Driver",
+      headerName: "Assign Driver",
+      minWidth: 120,
+      renderCell: (params) => (
+        <Select
+          value={params.value}
+          onChange={(e) =>
+            handleDriverChange(String(params.id), e.target.value)
+          }
+        >
+          {drivers &&
+            drivers.map((driver) => (
+              <MenuItem key={driver.driverID} value={driver}>
+                {driver.driverFirstName + " " + driver.driverLastName}
+              </MenuItem>
+            ))}
+        </Select>
+      ),
+    },
+    {
+      field: "rideStatus",
+      headerName: "Ride Status",
+      minWidth: 120,
+    },
+    {
+      field: "Ride_Status",
+      headerName: "Complete Ride",
+      width: 80,
+      renderCell: (params) => (
+        <IconButton
+          color="primary"
+          onClick={(e) => handleRideStatusChange(String(params.id), e.target.value)}
+        >
+          <NoCrashSharpIcon />
+        </IconButton>
+       
+      ),
+      width: 80,
+    },
+    {
+      field: "Ride_Statuss",
+      headerName: "Cancel Ride",
+      width: 80,
+      renderCell: (params) => (
+        <IconButton
+          color="primary"
+          onClick={(e) => handleRideStatusCancel(String(params.id), e.target.value)}
+        >
+          <CancelIcon />
+        </IconButton>
+       
+      ),
+      width: 80,
+    },
 
-  const navigate = useNavigate();
-  if (getToken() === null) {
-    navigate("/AdminLogin");
-  }
+    { field: "rideId", headerName: "Ride ID", width: 100 },
+    {field:"driverId", headerName:"Driver",width:100},
+    { field: "rideDate", headerName: "Ride Date" },
+    { field: "firstName", headerName: "First Name" },
+    { field: "lastName", headerName: "Last Name" },
+    { field: "phoneNumber", headerName: "Phone Number" },
+    { field: "Transportation_Type", headerName: "T Type" },
+    { field: "pickUpTime", headerName: "Pickup Time" },
 
-  useEffect(() => {
+    { field: "pickUpAddress", headerName: "Pickup Address" },
+    { field: "dropOffAddress", headerName: "Dropoff Address" },
+    { field: "instructions", headerName: "Pickup Instructions" },
+    { field: "createdAt", headerName: "Created At" },
+    { field: "updatedAt", headerName: "Updated At" },
+  ];
+  const handleRideStatusChange = (id, newStatus) => {
+    
     axios({
       baseURL: "http://localhost:8000/api/v1",
-      url: "/admin/unAssignedRides",
-      method: "get",
+      url: "/admin/updateUserRideAsCompleted",
+      method: "post",
+      data: {
+        rideId: id,
+      },
+
       headers: {
+        "Content-Type": "application/json",
         Authorization: getToken(),
       },
-      timeout: 2000,
+
+      timeout: 5000,
     })
       .then((response) => {
-        console.log("response.data", response.data);
-        setRidesRows(response.data.data);
+        console.log(response);
+        console.log("response.data", response.data.data);
+        console.log("message", response.data.message);
+        fetchData();
+        setAlertMessage({
+          status: "success",
+          alert: "Ride marked completed successfully..!",
+        });
+
+        setAlertOpen(true);
+        fetchData();
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to mark ride as completed..!",
+          });
+
+          setAlertOpen(true);
         } else {
-          console.log(error.message);
+          console.log("error", error);
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to mark ride as completed..!",
+          });
+
+          setAlertOpen(true);
         }
       });
+    console.log("Ride id: ", id);
+    console.log("Status Selected: ", newStatus);
+  };
 
+  const handleRideStatusCancel = (id, newStatus) => {
+    
+    axios({
+      baseURL: "http://localhost:8000/api/v1",
+      url: "/admin/updateUserRideAsCancelled",
+      method: "post",
+      data: {
+        rideId: id,
+      },
+
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getToken(),
+      },
+
+      timeout: 5000,
+    })
+      .then((response) => {
+        console.log(response);
+        console.log("response.data", response.data.data);
+        console.log("message", response.data.message);
+        fetchData();
+        setAlertMessage({
+          status: "success",
+          alert: "Ride marked Cancelled successfully..!",
+        });
+
+        setAlertOpen(true);
+        fetchData();
+      })
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to mark ride as Cancelled..!",
+          });
+
+          setAlertOpen(true);
+        } else {
+          console.log("error", error);
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to mark ride as Cancelled..!",
+          });
+
+          setAlertOpen(true);
+        }
+      });
+    console.log("Ride id: ", id);
+    console.log("Status Selected: ", newStatus);
+  };
+
+  useEffect(() => {
+    fetchData();
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/admin/drivers",
@@ -84,7 +278,7 @@ const AssignedUsers = () => {
       timeout: 2000,
     })
       .then((response) => {
-        console.log("response.data", response.data);
+        console.log("response.data drivers", response.data);
         setDrivers(response.data.data);
       })
       .catch((error) => {
@@ -96,31 +290,40 @@ const AssignedUsers = () => {
       });
   }, []);
 
-  const handleDeleteRow = (id) => {
-    console.log(id);
-    if (ridesRows.filter((ride) => ride.RideID === id)) {
-      const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-      setRidesRows(updatedRows);
-    } else {
-      alert("ID is already deleted...!");
-    }
-  };
-
-  const handleEditCellChange = (params) => {
-    const updatedRows = [...ridesRows];
-    updatedRows[params.RideID - 1] = {
-      ...updatedRows[params.id - 1],
-      [params.field]: params.props.value,
-    };
-    setRidesRows(updatedRows);
-  };
-  const handleDriverChange = (id, newStatus) => {
-    console.log("id", id);
-    console.log("newStatus", newStatus);
-
+  async function fetchData() {
     axios({
       baseURL: "http://localhost:8000/api/v1",
-      url: "/admin/assignRide",
+      url: "/admin/getUserAssignedRides",
+      method: "get",
+      headers: {
+        Authorization: getToken(),
+      },
+      timeout: 2000,
+    })
+      .then((response) => {
+        console.log("response.data", response.data);
+        setUsersRows(response.data.data);
+      })
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+        } else {
+          console.log(error.message);
+        }
+      });
+  }
+
+  const handleStatusChange = (id, newStatus) => {
+    console.log("id", id);
+    console.log("newStatus", newStatus);
+    // const updatedRows = usersRows.map((usersRows) =>
+    // usersRows.rideId === id
+    //     ? { ...usersRows, Driver: newStatus.driverFirstName }
+    //     : usersRows
+    // );
+    axios({
+      baseURL: "http://localhost:8000/api/v1",
+      url: "/admin/updateUserRides",
       method: "post",
       data: {
         rideId: id,
@@ -138,9 +341,8 @@ const AssignedUsers = () => {
         console.log(response);
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
-        const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-        //setRidesRows(updatedRows);
-        setRidesRows(updatedRows);
+
+        fetchData();
         setAlertMessage({
           status: "success",
           alert: "Ride Assigned succesfully..!",
@@ -152,32 +354,31 @@ const AssignedUsers = () => {
           console.log("Request timed out");
           setAlertMessage({
             status: "error",
-            alert: "Unable to Assign RIDE, Please try Again..!",
+            alert: "Unable to Assign RIDE time out, Please try Again..!",
           });
           setAlertOpen(true);
         } else {
           setAlertMessage({
             status: "error",
-            alert: error.response.data.error,
+            alert: "Unable to Assign RIDE, Please try Again..!",
           });
           setAlertOpen(true);
+          fetchData();
           console.log("error", error);
         }
       });
-    closepopup();
+    //closepopup();
   };
-
-  const handleStatusChange = (id, newStatus) => {
-    console.log("id", id);
+  const handleDriverChange = (id, newStatus) => {
+    //console.log("id", id);
     console.log("newStatus", newStatus);
-    const updatedRows = ridesRows.map((ridesRows) =>
-      ridesRows.RideID === id
-        ? { ...ridesRows, Driver: newStatus.driverFirstName }
-        : ridesRows
-    );
+    //const rideID=""+id;
+    console.log("id", id);
+    console.log("type of id", typeof id);
+
     axios({
       baseURL: "http://localhost:8000/api/v1",
-      url: "/admin/assignRide",
+      url: "/admin/assignUserRideToDriver",
       method: "post",
       data: {
         rideId: id,
@@ -189,236 +390,236 @@ const AssignedUsers = () => {
         Authorization: getToken(),
       },
 
-      // timeout: 5000,
+      timeout: 5000,
     })
       .then((response) => {
         console.log(response);
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
-        const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-        //setRidesRows(updatedRows);
-        setRidesRows(updatedRows);
+
+        fetchData();
         setAlertMessage({
           status: "success",
-          alert: "RIde assigned successfully..!",
+          alert: "Ride Assigned succesfully..!",
         });
-
         setAlertOpen(true);
-        closepopup();
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setAlertMessage({
             status: "error",
-            alert: "Unable to assign ride to driver",
+            alert: "Unable to Assign RIDE time out, Please try Again..!",
           });
-
           setAlertOpen(true);
         } else {
-          console.log("error", error);
           setAlertMessage({
             status: "error",
-            alert: "Unable to assign ride to driver",
+            alert: "Unable to Assign RIDE, Please try Again..!",
           });
-
           setAlertOpen(true);
+          fetchData();
+          console.log("error", error);
         }
       });
     //closepopup();
   };
-  const rideColumns = [
-    {
-      field: "edit",
-      headerName: "Edit",
-      sortable: false,
-      width: 80,
-      disableClickEventBubbling: true,
-      renderCell: (params) => (
-        <IconButton color="primary" onClick={() => handleEditRow(params.id)}>
-          <EditIcon />
-        </IconButton>
-      ),
-    },
-    {
-      field: "Driver",
-      headerName: "Assign Driver",
-      minWidth: 120,
-      renderCell: (params) => (
-        <Select
-          value={params.value}
-          onChange={(e) => handleDriverChange(params.id, e.target.value)}
-        >
-          {drivers &&
-            drivers.map((driver) => (
-              <MenuItem key={driver.driverID} value={driver}>
-                {driver.driverFirstName + " " + driver.driverLastName}
-              </MenuItem>
-            ))}
-        </Select>
-      ),
-    },
-    {
-      field: "Ride_Status",
-      headerName: "Ride Status",
-      minWidth: 120,
-    },
 
-    { field: "RideID", headerName: "Ride ID", width: 100 },
-    // { field: "Ride_Status", headerName: "Ride Status", width: 150 },
-    { field: "Ride_Date", headerName: "Ride Date" },
-    { field: "Customer_FirstName", headerName: "First Name" },
-    { field: "Customer_LastName", headerName: "Last Name" },
-    { field: "Phone_Number", headerName: "Phone_Number" },
-    { field: "Transportation_Type", headerName: "T Type" },
-    { field: "Pick_Up_Time", headerName: "Pickup Time" },
-    { field: "Arrival_Time", headerName: "Arrival Time" },
-    { field: "Estimated_Distance", headerName: "Estimated Distance" },
-    { field: "Pickup_Address", headerName: "Pickup Address" },
-    { field: "Dropoff_Address", headerName: "Dropoff Address" },
-    { field: "Pickup_Directions", headerName: "Pickup Directions" },
-  ];
-
-  const [open, openchange] = useState(false);
-  const functionopenpopup = () => {
-    openchange(true);
-  };
-  const closepopup = () => {
-    openchange(false);
-    setRide({
-      RideID: "",
-      Ride_Status: "",
-      Ride_Date: "",
-      Customer_FirstName: "",
-      Customer_LastName: "",
-      Phone_Number: "",
-      Transportation_Type: "",
-      Pick_Up_Time: "",
-      Arrival_Time: "",
-      Estimated_Distance: "",
-      Pickup_Address: "",
-      Dropoff_Address: "",
-      Pickup_Directions: "",
-      Driver: "",
+  const handleEditRow = (id) => {
+    // Implement your edit logic here
+    setIsEditMode(true);
+    const tempView = usersRows.filter((user) => user.rideId === id)[0];
+    if (tempView === null) {
+      alert("Id is not found");
+    }
+    console.log(tempView);
+    setViewUser({
+      rideId: tempView.rideId,
+      rideStatus: tempView.rideStatus,
+      firstName: tempView.firstName,
+      lastName: tempView.lastName,
+      rideDate: tempView.rideDate,
+      pickUpTime: tempView.pickUpTime,
+      pickUpAddress: tempView.pickUpAddress,
+      dropOffAddress: tempView.dropOffAddress,
+      phoneNumber: tempView.phoneNumber,
+      instructions: tempView.instructions,
+      driverId: tempView.driverId,
+      createdAt: tempView.createdAt,
+      updatedAt: tempView.updatedAt,
     });
+    functionopenpopup();
+  };
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {};
+
+    if (!user.firstName) {
+      valid = false;
+      newErrors.firstName = "First Name is required";
+    }
+    if (!user.lastName) {
+      valid = false;
+      newErrors.lastName = "Last Name is required";
+    }
+    if (!user.rideDate) {
+      valid = false;
+      newErrors.rideDate = "Ride Date is required";
+    }
+    if (!user.pickUpTime) {
+      valid = false;
+      newErrors.pickUpTime = "Pick Up Time is required";
+    }
+
+    if (!user.pickUpAddress) {
+      valid = false;
+      newErrors.pickUpAddress = "PickUp Address is required";
+    }
+    if (!user.dropOffAddress) {
+      valid = false;
+      newErrors.dropOffAddress = "Drop Off Address is required";
+    }
+
+    if (!user.phoneNumber) {
+      valid = false;
+      newErrors.phoneNumber = "Phone number is required";
+    } else if (user.phoneNumber.length !== 10) {
+      valid = false;
+      newErrors.phoneNumber = "phoneNumber must be 10 digits";
+    }
+    setErrors(newErrors);
+    return valid;
   };
 
-  const [ride, setRide] = useState({
-    RideID: "",
-    Ride_Status: "",
-    Ride_Date: "",
-    Customer_FirstName: "",
-    Customer_LastName: "",
-    Phone_Number: "",
-    Transportation_Type: "",
-    Pick_Up_Time: "",
-    Arrival_Time: "",
-    Estimated_Distance: "",
-    Pickup_Address: "",
-    Dropoff_Address: "",
-    Pickup_Directions: "",
-    Driver: "",
-  });
-  //Driver change
-  const handleChange = (event) => {
-    if (event.target.value !== null) {
+  const handleSubmitNewUser = (event) => {
+    event.preventDefault();
+    console.log("user", user.firstName);
+    if (validateForm()) {
       axios({
         baseURL: "http://localhost:8000/api/v1",
-        url: "/admin/assignRide",
+        url: "/admin/addUserRide",
         method: "post",
+
+        data: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          rideDate: user.rideDate,
+          pickUpTime: user.pickUpTime,
+          pickUpAddress: user.pickUpAddress,
+          dropOffAddress: user.dropOffAddress,
+          phoneNumber: user.phoneNumber,
+          instructions: user.instructions,
+        },
+
         headers: {
+          "Content-Type": "application/json",
           Authorization: getToken(),
         },
-        timeout: 2000,
+
+        timeout: 5000,
       })
         .then((response) => {
-          console.log("response.data", response);
-          setRide({ ...ride, [event.target.name]: event.target.value });
-          const updatedRows = ridesRows.filter((rides) => rides.RideID !== ride.RideID);
-        //setRidesRows(updatedRows);
-        setRidesRows(updatedRows);
+          console.log(response);
+          console.log("response.data", response.data.details);
+          console.log("message", response.data.message);
+          fetchData();
+          closepopup();
           setAlertMessage({
             status: "success",
-            alert: "RIde assigned successfully..!",
+            alert: "User Added successfully!",
           });
-  
           setAlertOpen(true);
-          //setRidesRows(response.data.data);
         })
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
             console.log("Request timed out");
-          } else {
             setAlertMessage({
               status: "error",
-              alert: error.response.data.error,
+              alert: "server timeout request",
             });
             setAlertOpen(true);
-            console.log("error",error);
+          } else {
+            console.log("error", error);
+            setAlertMessage({ status: "error", alert: error });
+            setAlertOpen(true);
           }
         });
+    } else {
+      console.log("validation failed");
+      setAlertMessage({
+        status: "error",
+        alert: "Please Check all the details, and  try Again..!",
+      });
+      setAlertOpen(true);
     }
+    // /closepopup();
   };
-  const rideStatus = ["UPCOMING", "PENDING_UPDATE", "COMPLETED"];
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(ride);
-    closepopup();
+
+  const handleChange = (event) => {
+    setUser({
+      ...user,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleDateChange = (newDate) => {
+    setUser({
+      ...user,
+      rideDate: newDate,
+    });
+  };
+
+  const handleTimeChange = (newTime) => {
+    setUser({
+      ...user,
+      pickUpTime: newTime,
+    });
+  };
+  const [open, openchange] = useState(false);
+  const functionopenpopup = () => {
+    openchange(true);
+  };
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const closepopup = () => {
+    openchange(false);
+    setUser({
+      firstName: "",
+      lastName: "",
+      rideDate: "",
+      pickUpTime: "",
+      pickUpAddress: "",
+      dropOffAddress: "",
+      phoneNumber: "",
+      instructions: "",
+    });
   };
   const handleAddRide = () => {
     setIsEditMode(false);
-    setRide({
-      RideID: "",
-      Ride_Status: "",
-      Ride_Date: "",
-      Customer_FirstName: "",
-      Customer_LastName: "",
-      Phone_Number: "",
-      Transportation_Type: "",
-      Pick_Up_Time: "",
-      Arrival_Time: "",
-      Estimated_Distance: "",
-      Pickup_Address: "",
-      Dropoff_Address: "",
-      Pickup_Directions: "",
-      Driver: "",
+    setUser({
+      firstName: "",
+      lastName: "",
+      rideDate: "",
+      pickUpTime: "",
+      pickUpAddress: "",
+      dropOffAddress: "",
+      phoneNumber: "",
+      instructions: "",
     });
     functionopenpopup();
   };
-  const [isEditMode, setIsEditMode] = useState(false);
-  const handleEditRow = (id) => {
-    // Implement your edit logic here
-    setIsEditMode(true);
-    const editRide = ridesRows.filter((ride) => ride.RideID === id)[0];
-    if (editRide === null) {
-      alert("Id is not found");
-    }
-    console.log(editRide);
-    setRide({
-      RideID: editRide.RideID,
-      Ride_Status: editRide.Ride_Status,
-      Ride_Date: editRide.Ride_Date,
-      Customer_FirstName: editRide.Customer_FirstName,
-      Customer_LastName: editRide.Customer_LastName,
-      Phone_Number: editRide.Phone_Number,
-      Transportation_Type: editRide.Transportation_Type,
-      Pick_Up_Time: editRide.Pick_Up_Time,
-      Arrival_Time: editRide.Arrival_Time,
-      Estimated_Distance: editRide.Estimated_Distance,
-      Pickup_Address: editRide.Pickup_Address,
-      Dropoff_Address: editRide.Dropoff_Address,
-      Pickup_Directions: editRide.Pickup_Directions,
-      Driver: editRide.Driver,
-    });
-    functionopenpopup();
-    console.log(`Edit row with ID ${editRide[0]}`);
+
+  const handleClose = (event) => {
+    event.preventDefault();
+    console.log();
+    closepopup();
   };
 
   return (
     <>
       <AdminSidebar />
       <Typography variant="h3" sx={{ marginBottom: "12px", color: "#004080" }}>
-        Un-assigned Rides
+        Assigned User Rides
       </Typography>
       <div>
         <Dialog
@@ -428,140 +629,359 @@ const AssignedUsers = () => {
           fullWidth
           maxWidth="sm"
         >
-          <DialogTitle>
-            Ride Details{" "}
-            <IconButton onClick={closepopup} style={{ float: "right" }}>
-              <CloseIcon color="primary"></CloseIcon>
-            </IconButton>{" "}
-          </DialogTitle>
-          <DialogContent>
-            <Stack spacing={2} margin={2}>
-              <TextField
-                label="Ride ID"
-                name="RideID"
-                value={ride.RideID}
-                onChange={handleChange}
-                disabled={isEditMode}
-                sx={{
-                  "& .MuiInputBase-input.Mui-disabled": {
-                    WebkitTextFillColor: "black",
-                  },
-                }}
-              />
-              <FormControl>
-                <InputLabel>Assign Driver</InputLabel>
-                <Select
-                  label="Assign Driver"
-                  //value={params.value}
-                  onChange={(e) =>
-                    handleStatusChange(ride.RideID, e.target.value)
-                  }
-                >
-                  {drivers &&
-                    drivers.map((driver) => (
-                      <MenuItem key={driver.driverID} value={driver}>
-                        {driver.driverFirstName + " " + driver.driverLastName}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              <TextField
-                label="Ride Status"
-                name="Ride_Status"
-                value={ride.Ride_Status}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Ride Date"
-                name="Ride_Date"
-                value={ride.Ride_Date}
-                onChange={handleChange}
-              />
-              {/* <TextField
-                id="datetime-local"
-                label="Next appointment"
-                type="datetime-local"
-                value={ride.Ride_Date}
-                defaultValue="2017-05-24T10:30"
-                sx={{ width: 250 }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              /> */}
-              <TextField
-                label="Customer First Name"
-                name="Customer_FirstName"
-                value={ride.Customer_FirstName}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Customer Last Name"
-                name="Customer_LastName"
-                value={ride.Customer_LastName}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Phone Number"
-                name="Phone_Number"
-                value={ride.Phone_Number}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Transportation Type"
-                name="Transportation_Type"
-                value={ride.Transportation_Type}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Pick Up Time"
-                name="Pick_Up_Time"
-                value={ride.Pick_Up_Time}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Arrival Time"
-                name="Arrival_Time"
-                value={ride.Arrival_Time}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Estimated Distance"
-                name="Estimated_Distance"
-                value={ride.Estimated_Distance}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Pickup Address"
-                name="Pickup_Address"
-                value={ride.Pickup_Address}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Dropoff Address"
-                name="Dropoff_Address"
-                value={ride.Dropoff_Address}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Pickup Directions"
-                name="Pickup_Directions"
-                value={ride.Pickup_Directions}
-                onChange={handleChange}
-              />
+          {isEditMode ? (
+            <>
+              <DialogTitle>
+                View User Details{" "}
+                <IconButton onClick={closepopup} style={{ float: "right" }}>
+                  <CloseIcon color="primary"></CloseIcon>
+                </IconButton>{" "}
+              </DialogTitle>
+              <DialogContent>
+                <Stack spacing={2} margin={2}>
+                  <TextField
+                    label="Ride ID"
+                    name="rideId"
+                    value={viewUser.rideId}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+                   <TextField
+                    label="Driver ID"
+                    name="driverId"
+                    value={viewUser.driverId}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
 
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={(event) => handleSubmit(event)}
-              >
-                Submit
-              </Button>
-            </Stack>
-          </DialogContent>
-          <DialogActions></DialogActions>
+                  <TextField
+                    label="Ride Status"
+                    name="rideStatus"
+                    value={viewUser.rideStatus}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+                  <FormControl>
+                    <InputLabel>Assign Driver</InputLabel>
+                    <Select
+                      label="Assign Driver"
+                      //value={params.value}
+                      onChange={(e) =>
+                        handleStatusChange(String(viewUser.rideId), e.target.value)
+                      }
+                    >
+                      {drivers &&
+                        drivers.map((driver) => (
+                          <MenuItem key={driver.driverID} value={driver}>
+                            {driver.driverFirstName +
+                              " " +
+                              driver.driverLastName}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+
+                  <TextField
+                    label="First Name"
+                    name="firstName"
+                    value={viewUser.firstName}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Last Name"
+                    name="lastName"
+                    value={viewUser.lastName}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Ride Date"
+                    name="rideDate"
+                    value={viewUser.rideDate}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Pick-Up Time"
+                    name="pickUpTime"
+                    value={viewUser.pickUpTime}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Pick-Up Address"
+                    name="pickUpAddress"
+                    value={viewUser.pickUpAddress}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Drop-Off Address"
+                    name="dropOffAddress"
+                    value={viewUser.dropOffAddress}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Phone Number"
+                    name="phoneNumber"
+                    value={viewUser.phoneNumber}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Instructions"
+                    name="instructions"
+                    value={viewUser.instructions}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Driver ID"
+                    name="driverId"
+                    value={viewUser.driverId}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Created At"
+                    name="createdAt"
+                    value={viewUser.createdAt}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="Updated At"
+                    name="updatedAt"
+                    value={viewUser.updatedAt}
+                    fullWidth
+                    margin="normal"
+                    disabled
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                  />
+
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={(event) => handleClose(event)}
+                  >
+                    Close
+                  </Button>
+                </Stack>
+              </DialogContent>
+              <DialogActions></DialogActions>{" "}
+            </>
+          ) : (
+            <>
+              <DialogTitle>
+                Add User Details{" "}
+                <IconButton onClick={closepopup} style={{ float: "right" }}>
+                  <CloseIcon color="primary"></CloseIcon>
+                </IconButton>{" "}
+              </DialogTitle>
+              <DialogContent>
+                <Stack spacing={2} margin={2}>
+                  <div>
+                    <TextField
+                      label="First Name"
+                      name="firstName"
+                      value={user.firstName}
+                      onChange={handleChange}
+                      fullWidth
+                      margin="normal"
+                      autoFocus
+                      error={Boolean(errors.firstName)}
+                      helperText={errors.firstName}
+                    />
+
+                    <TextField
+                      label="Last Name"
+                      name="lastName"
+                      value={user.lastName}
+                      onChange={handleChange}
+                      fullWidth
+                      margin="normal"
+                      autoFocus
+                      error={Boolean(errors.lastName)}
+                      helperText={errors.lastName}
+                    />
+
+                    <TextField
+                      label="Ride Date"
+                      name="rideDate"
+                      value={user.rideDate}
+                      onChange={handleChange}
+                      fullWidth
+                      margin="normal"
+                      autoFocus
+                      error={Boolean(errors.rideDate)}
+                      helperText={errors.rideDate}
+                    />
+
+                    <TextField
+                      label="Pick-Up Time"
+                      name="pickUpTime"
+                      value={user.pickUpTime}
+                      onChange={handleChange}
+                      fullWidth
+                      margin="normal"
+                      autoFocus
+                      error={Boolean(errors.pickUpTime)}
+                      helperText={errors.pickUpTime}
+                    />
+
+                    <TextField
+                      label="Pick-Up Address"
+                      name="pickUpAddress"
+                      value={user.pickUpAddress}
+                      onChange={handleChange}
+                      fullWidth
+                      margin="normal"
+                      autoFocus
+                      error={Boolean(errors.pickUpAddress)}
+                      helperText={errors.pickUpAddress}
+                    />
+
+                    <TextField
+                      label="Drop-Off Address"
+                      name="dropOffAddress"
+                      value={user.dropOffAddress}
+                      onChange={handleChange}
+                      fullWidth
+                      margin="normal"
+                      autoFocus
+                      error={Boolean(errors.dropOffAddress)}
+                      helperText={errors.dropOffAddress}
+                    />
+
+                    <TextField
+                      label="Phone Number"
+                      name="phoneNumber"
+                      value={user.phoneNumber}
+                      onChange={handleChange}
+                      fullWidth
+                      margin="normal"
+                      autoFocus
+                      error={Boolean(errors.phoneNumber)}
+                      helperText={errors.phoneNumber}
+                    />
+
+                    <TextField
+                      label="Instructions"
+                      name="instructions"
+                      value={user.instructions}
+                      onChange={handleChange}
+                      fullWidth
+                      margin="normal"
+                    />
+                  </div>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={(event) => handleSubmitNewUser(event)}
+                  >
+                    Submit
+                  </Button>
+                </Stack>
+              </DialogContent>
+              <DialogActions></DialogActions>
+            </>
+          )}
         </Dialog>
       </div>
-
       <div style={{ height: "80%", width: "100%" }}>
         <Container>
           <Toolbar />
@@ -581,19 +1001,19 @@ const AssignedUsers = () => {
               sx={{ height: 40 }}
               startIcon={<AirportShuttleIcon />}
             >
-              Add Ride
+              Add User Ride
             </Button> */}
           </Box>
 
           <Paper component={Box} width={1} height={700}>
-            {ridesRows && (
+            {usersRows && (
               <DataGrid
-                rows={ridesRows}
-                columns={rideColumns}
+                rows={usersRows}
+                columns={userColumns}
                 pageSize={5}
-                getRowId={(ridesRows) => ridesRows.RideID}
+                getRowId={(usersRows) => usersRows.rideId}
                 // checkboxSelection
-                onEditCellChangeCommitted={handleEditCellChange}
+                //onEditCellChangeCommitted={handleEditCellChange}
                 components={{
                   Toolbar: GridToolbar,
                 }}
@@ -603,7 +1023,7 @@ const AssignedUsers = () => {
         </Container>
       </div>
       <div>
-      <Snackbar
+        <Snackbar
           open={alertOpen}
           autoHideDuration={6000}
           onClose={handleAlertClose}
@@ -622,6 +1042,6 @@ const AssignedUsers = () => {
       </div>
     </>
   );
-};
+}
 
 export default AssignedUsers;

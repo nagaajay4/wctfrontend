@@ -27,6 +27,8 @@ import axios from "axios";
 import AuthUser from "./AuthUser";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 function Copyright(props) {
   return (
@@ -75,8 +77,9 @@ export default function DriverLogin() {
     setAlertOpen(false);
   };
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -216,19 +219,32 @@ export default function DriverLogin() {
               helperText={errors.email}
             />
             <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={handlePasswordChange}
-              error={Boolean(errors.password)}
-              helperText={errors.password}
-            />
+      margin="normal"
+      required
+      fullWidth
+      name="password"
+      label="Password"
+      type={showPassword ? "text" : "password"}
+      id="password"
+      autoComplete="current-password"
+      value={password}
+      onChange={handlePasswordChange}
+      error={Boolean(errors.password)}
+      helperText={errors.password}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="toggle password visibility"
+              onClick={togglePasswordVisibility}
+              edge="end"
+            >
+              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+    />
             {/* <FormControlLabel
               control={
                 <Checkbox

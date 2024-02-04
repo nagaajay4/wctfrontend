@@ -10,7 +10,6 @@ export default function AuthUser() {
         const userToken = JSON.parse(tokenString);
         if(userToken!==null) {
             return userToken;
-
         }
         else {
             return null;
@@ -22,18 +21,28 @@ export default function AuthUser() {
         const userData = JSON.parse(userString);
         return userData;
     }
+    const getRole=()=> {
+        const userString = sessionStorage.getItem('role');
+        const userData = JSON.parse(userString);
+        return userData;
+    }
 
     const [token, setToken] = useState(getToken());
     const [user,setUser]= useState(getUser());
+    const [role,setRole]=useState(getRole())
 
     
     
     const saveToken = (user,token,userRole)=> {
         sessionStorage.setItem('token',JSON.stringify(token));
         sessionStorage.setItem('user',JSON.stringify(user));
+        sessionStorage.setItem('role',JSON.stringify(userRole));
         setToken(token);
         setUser(user);
-       if(userRole==="admin" && token!='' && user!='') {
+        setRole(role);
+       if(userRole==="ADMIN" && token!='' && user!='') {
+        navigate('/FileUpload');
+       } else  if(userRole==="SUPER ADMIN" && token!='' && user!='') {
         navigate('/FileUpload');
        }
        else if(userRole==="driver" && token!='' && user!='') {
@@ -63,6 +72,7 @@ export default function AuthUser() {
     return {
         setToken:saveToken,
         token,
+        getRole,
         user,
         getToken,
         http,

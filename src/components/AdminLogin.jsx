@@ -27,6 +27,8 @@ import axios from "axios";
 import AuthUser from "./AuthUser";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 function Copyright(props) {
   return (
@@ -66,7 +68,9 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -132,7 +136,7 @@ export default function AdminLogin() {
         timeout: 5000,
       })
         .then((response) => {
-          setToken(email, response.data.token, "admin");
+          setToken(email, response.data.token, response.data.role);
           setAlertMessage({
             status: "success",
             alert: "Admin Login Successful..!",
@@ -209,13 +213,30 @@ export default function AdminLogin() {
                 fullWidth
                 name="password"
                 label="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 autoComplete="current-password"
                 value={password}
                 onChange={handlePasswordChange}
                 error={Boolean(errors.password)}
                 helperText={errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={togglePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <FormControlLabel

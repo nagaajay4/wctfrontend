@@ -34,7 +34,7 @@ import AuthUser from "../AuthUser";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
 const Payements = () => {
   const [payments, setPayments] = useState([]);
@@ -42,6 +42,8 @@ const Payements = () => {
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
+  const [drivers, setDrivers] = useState([]);
+
   const [Apicall, setApiCall] = useState();
 
   const handleAlertClose = (event, reason) => {
@@ -78,9 +80,14 @@ const Payements = () => {
     { field: "paymentID", headerName: "Payment ID", width: 200 },
     { field: "amount", headerName: "Amount", width: 150 },
     { field: "driverID", headerName: "Driver ID", width: 150 },
-    { field: "paymentDate", headerName: "Payment Date", width: 250,valueFormatter: (params) => format(new Date(params.value), 'MMMM d, yyyy hh:mm a'), },
-    // { field: "createdAt", headerName: "createdAt",width: 200 },
-    // { field: "updatedAt", headerName: "Updated At", width: 200 },
+    {
+      field: "paymentDate",
+      headerName: "Payment Date",
+      width: 250,
+      valueFormatter: (params) =>
+        format(new Date(params.value), "MMMM d, yyyy hh:mm a"),
+    },
+    
     { field: "remarks", headerName: "Remarks", width: 200 },
   ];
 
@@ -100,6 +107,27 @@ const Payements = () => {
         console.log("response.data", response.data);
         //setRidesRows(response.data.data);
         setPayments(response.data.data);
+      })
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+        } else {
+          console.log(error.message);
+        }
+      });
+
+    axios({
+      baseURL: "http://localhost:8000/api/v1",
+      url: "/admin/drivers",
+      method: "get",
+      headers: {
+        Authorization: getToken(),
+      },
+      timeout: 2000,
+    })
+      .then((response) => {
+        console.log("response.data", response.data);
+        setDrivers(response.data.data);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -141,11 +169,11 @@ const Payements = () => {
   function isValidPositiveDecimal(str) {
     const numericValue = parseFloat(str);
     return !isNaN(numericValue) && isFinite(numericValue) && numericValue > 0;
-}
+  }
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
-   
+
     if (!newPayemnt.driverID) {
       valid = false;
       newErrors.driverID = "driverID is required";
@@ -164,11 +192,10 @@ const Payements = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
 
     if (isEditMode) {
       console.log("newPayemnt", newPayemnt);
-      console.log("getToken",getToken());
+      console.log("getToken", getToken());
       //http://localhost:8000/api/v1/admin/payments/:paymentId
       if (validateForm()) {
         axios({
@@ -231,8 +258,8 @@ const Payements = () => {
       }
     } else {
       if (validateForm()) {
-        console.log("newPayemnt",newPayemnt);
-        console.log("getToken",getToken());
+        console.log("newPayemnt", newPayemnt);
+        console.log("getToken", getToken());
         axios({
           baseURL: "http://localhost:8000/api/v1",
           url: "/admin/createPayment",
@@ -309,11 +336,18 @@ const Payements = () => {
       paymentDate: pays.paymentDate,
       createdAt: pays.createdAt,
       updatedAt: pays.updatedAt,
-      remarks:pays.remarks
-
+      remarks: pays.remarks,
     });
     functionopenpopup();
     console.log(`Edit row with ID ${pays}`);
+  };
+
+  const handleStatusChange = (newStatus) => {
+  console.log(newStatus);
+  setNewpayment({
+    ...newPayemnt,
+    driverID: newStatus.driverID
+  });
   };
 
   return (
@@ -406,14 +440,32 @@ const Payements = () => {
                 </>
               ) : (
                 <>
-                  <TextField
+                  {/* <TextField
                     label="Driver ID"
                     name="driverID"
                     value={newPayemnt.driverID}
                     onChange={(event) => handleChange(event)}
                     error={Boolean(errors.driverID)}
                     helperText={errors.driverID}
-                  />
+                  /> */}
+                  <FormControl>
+                    <InputLabel>Driver Name</InputLabel>
+                    <Select
+                      label="Driver Name"
+                      onChange={(e) =>
+                        handleStatusChange(e.target.value)
+                      }
+                    >
+                      {drivers &&
+                        drivers.map((driver) => (
+                          <MenuItem key={driver.driverID} value={driver}>
+                            {driver.driverFirstName +
+                              " " +
+                              driver.driverLastName}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
                   <TextField
                     label="Amount"
                     name="amount"

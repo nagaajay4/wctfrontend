@@ -92,7 +92,9 @@ function UnAssignedUsers() {
       renderCell: (params) => (
         <Select
           value={params.value}
-          onChange={(e) => handleDriverChange(String(params.id), e.target.value)}
+          onChange={(e) =>
+            handleDriverChange(String(params.id), e.target.value)
+          }
         >
           {drivers &&
             drivers.map((driver) => (
@@ -113,8 +115,7 @@ function UnAssignedUsers() {
     { field: "rideDate", headerName: "Ride Date" },
     { field: "firstName", headerName: "First Name" },
     { field: "lastName", headerName: "Last Name" },
-    { field: "Phone_Number", headerName: "Phone_Number" },
-    { field: "Transportation_Type", headerName: "T Type" },
+    { field: "phoneNumber", headerName: "Phone Number" },
     { field: "pickUpTime", headerName: "Pickup Time" },
 
     { field: "pickUpAddress", headerName: "Pickup Address" },
@@ -170,13 +171,14 @@ function UnAssignedUsers() {
       });
   }
 
-  const handleDriverChange = (id, newStatus) => {
-    //console.log("id", id);
+  const handleStatusChange = (id, newStatus) => {
+    console.log("id", id);
     console.log("newStatus", newStatus);
-    //const rideID=""+id;
-    console.log("id",id );
-    console.log("type of id",typeof(id));
-
+    // const updatedRows = usersRows.map((usersRows) =>
+    // usersRows.rideId === id
+    //     ? { ...usersRows, Driver: newStatus.driverFirstName }
+    //     : usersRows
+    // );
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/admin/assignUserRideToDriver",
@@ -197,7 +199,7 @@ function UnAssignedUsers() {
         console.log(response);
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
-       
+
         fetchData();
         setAlertMessage({
           status: "success",
@@ -223,7 +225,62 @@ function UnAssignedUsers() {
           console.log("error", error);
         }
       });
-    closepopup();
+    //closepopup();
+  };
+  const handleDriverChange = (id, newStatus) => {
+    //console.log("id", id);
+    console.log("newStatus", newStatus);
+    //const rideID=""+id;
+    console.log("id", id);
+    console.log("type of id", typeof id);
+
+    axios({
+      baseURL: "http://localhost:8000/api/v1",
+      url: "/admin/assignUserRideToDriver",
+      method: "post",
+      data: {
+        rideId: id,
+        driverId: newStatus.driverID,
+      },
+
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getToken(),
+      },
+
+      timeout: 5000,
+    })
+      .then((response) => {
+        console.log(response);
+        console.log("response.data", response.data.data);
+        console.log("message", response.data.message);
+
+        fetchData();
+        setAlertMessage({
+          status: "success",
+          alert: "Ride Assigned succesfully..!",
+        });
+        setAlertOpen(true);
+      })
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to Assign RIDE time out, Please try Again..!",
+          });
+          setAlertOpen(true);
+        } else {
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to Assign RIDE, Please try Again..!",
+          });
+          setAlertOpen(true);
+          fetchData();
+          console.log("error", error);
+        }
+      });
+    //closepopup();
   };
 
   const handleEditRow = (id) => {
@@ -294,7 +351,7 @@ function UnAssignedUsers() {
 
   const handleSubmitNewUser = (event) => {
     event.preventDefault();
-    console.log("user",user.firstName);
+    console.log("user", user.firstName);
     if (validateForm()) {
       axios({
         baseURL: "http://localhost:8000/api/v1",
@@ -467,6 +524,25 @@ function UnAssignedUsers() {
                       },
                     }}
                   />
+                  <FormControl>
+                    <InputLabel>Assign Driver</InputLabel>
+                    <Select
+                      label="Assign Driver"
+                      //value={params.value}
+                      onChange={(e) =>
+                        handleStatusChange(String(viewUser.rideId), e.target.value)
+                      }
+                    >
+                      {drivers &&
+                        drivers.map((driver) => (
+                          <MenuItem key={driver.driverID} value={driver}>
+                            {driver.driverFirstName +
+                              " " +
+                              driver.driverLastName}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
 
                   <TextField
                     label="First Name"
