@@ -78,7 +78,7 @@ function Home() {
                   <ListItem style={appStyles.listItem}>Chiropractors</ListItem>
                   <ListItem style={appStyles.listItem}>Geriatric Day Care Center</ListItem>
                   <ListItem style={appStyles.listItem}>Massage Therapist</ListItem>
-                  <ListItem style={appStyles.listItem}>...and more!</ListItem>
+                  <ListItem style={appStyles.listItem}>....and more!</ListItem>
                 </List>
             </Box>
         </Container>
