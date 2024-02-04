@@ -33,6 +33,7 @@ import ForgotPasswordDriver from "../components/ForgotPasswordDriver"
 import AssignedUsers from "../components/Users/AssignedUsers";
 import CompletedUsers from "../components/Users/CompletedUsers";
 import UnAssignedUsers from "../components/Users/UnAssignedUsers";
+import CancelledUsers from "../components/Users/CancelledUsers"
 
 import ContactedForms from "../components/FormData/ContactedForms";
 import FormDetails from "../components/FormData/FormDetails";
@@ -83,6 +84,8 @@ function Routings() {
           <Route exact path="/AssignedUsers" element={<AssignedUsers />}></Route>
           <Route exact path="/CompletedUsers" element={<CompletedUsers />}></Route>
           <Route exact path="/UnAssignedUsers" element={<UnAssignedUsers />}></Route>
+          <Route exact path="/CancelledUsers" element={<CancelledUsers />}></Route>
+
 
         </Routes>
       </div>

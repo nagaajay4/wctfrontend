@@ -172,7 +172,7 @@ import Comfort from '../assests/CardImages/Comfort.jpg';
       sx={{ background: '#B6B6B4', overflow: 'auto' }}
     >
       {/* Card 1 */}
-      <Card sx={{ maxWidth: 345, maxHeight: 500, marginBottom: { xs: 2, md: 0 } }}>
+      <Card sx={{ maxWidth: 345, maxHeight: 500, marginBottom: { xs: 2, md: 0 } }}  >
         <CardActionArea>
           <CardMedia component="img" height="300" image={Safety} />
           <CardContent sx={{ background: '#E5E4E2' }}>

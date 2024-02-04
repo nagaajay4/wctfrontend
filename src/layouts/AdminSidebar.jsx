@@ -28,6 +28,8 @@ import NoCrashIcon from '@mui/icons-material/NoCrash';
 import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import WrongLocationIcon from '@mui/icons-material/WrongLocation';
+
 
 
 
@@ -443,6 +445,33 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Completed Users"
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+            <ListItem
+              disablePadding
+              sx={{ display: "block" }}
+              onClick={() => navigate("/CancelledUsers")}
+            >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <WrongLocationIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Cancelled Users"
                   sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
