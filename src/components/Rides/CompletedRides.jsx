@@ -47,9 +47,7 @@ const CompletedRides = () => {
 
 
   const [snackbaropen, setSnackbaropen] = React.useState(false);
-  if(getToken()===null) {
-    navigate('/AdminLogin');
-  }
+  
 
   const handleSnackbarClick = () => {
     setSnackbaropen(true);
@@ -65,6 +63,9 @@ const CompletedRides = () => {
 
 
   useEffect(() => {
+    if(getToken()===null) {
+      navigate('/AdminLogin');
+    }
 
     //http://localhost:8000/api/v1/admin/completedRides
     axios({

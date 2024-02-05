@@ -48,9 +48,7 @@ const AssignedRides = () => {
   const navigate = useNavigate();
   //const drivers = ['Nagaajay', 'Darwin', 'Zak'];
   const [drivers, setDrivers] = useState([]);
-  if (getToken() === null) {
-    navigate("/AdminLogin");
-  }
+ 
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -102,6 +100,9 @@ const AssignedRides = () => {
   };
 
   useEffect(() => {
+    if (getToken() === null) {
+      navigate("/AdminLogin");
+    }
     
     fetchData();
     axios({

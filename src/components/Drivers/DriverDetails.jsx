@@ -102,11 +102,12 @@ const DriverDetails = () => {
   const {http,getToken} =AuthUser();
   const navigate = useNavigate()
 
-  if(getToken()===null) {
-    navigate('/DriverLogin');
-  }
-
+ 
   useEffect(() => {
+    if(getToken()===null) {
+      navigate('/DriverLogin');
+    }
+  
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/driver/getDetails",

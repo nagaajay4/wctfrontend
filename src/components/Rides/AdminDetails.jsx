@@ -49,10 +49,7 @@ function AdminDetails() {
   };
 
   const roles = ["ADMIN", "SUPER ADMIN"];
-  if (getToken() === null) {
-    navigate("/AdminLogin");
-  }
-
+ 
   const [addAdmin, setAddAdmin] = useState({
     adminId: "",
     name: "",
@@ -133,6 +130,10 @@ function AdminDetails() {
     
   }
   useEffect(() => {
+    if (getToken() === null) {
+      navigate("/AdminLogin");
+    }
+  
     fetchData()
   }, [])
   const [isEditMode, setIsEditMode] = useState(false);

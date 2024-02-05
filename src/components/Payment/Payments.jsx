@@ -118,6 +118,10 @@ const Payements = () => {
   }
 
   useEffect(() => {
+    if (getToken() === null) {
+      navigate("/AdminLogin");
+    }
+  
    
     fetchData();
     axios({

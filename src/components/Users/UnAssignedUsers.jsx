@@ -32,11 +32,14 @@ import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
+
 function UnAssignedUsers() {
   const [usersRows, setUsersRows] = useState([]);
   const { http, getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -125,6 +128,9 @@ function UnAssignedUsers() {
     { field: "updatedAt", headerName: "Updated At" },
   ];
   useEffect(() => {
+    if(getToken()===null) {
+      navigate('/AdminLogin');
+    }
     fetchData();
     axios({
       baseURL: "http://localhost:8000/api/v1",

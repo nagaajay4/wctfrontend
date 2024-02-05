@@ -63,9 +63,7 @@ function DriverProfiles() {
     driverLicense:"",
     driverSSN:"",
   });
-  if(getToken()===null) {
-    navigate('/AdminLogin');
-  }
+  
 
   const handleAlertClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -75,6 +73,9 @@ function DriverProfiles() {
   };
 
   useEffect(() => {
+    if(getToken()===null) {
+      navigate('/AdminLogin');
+    }
     console.log("token",getToken());
     axios({
       baseURL: "http://localhost:8000/api/v1",

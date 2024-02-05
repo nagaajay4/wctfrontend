@@ -31,7 +31,7 @@ function AboutUs() {
               Offering the best non-emergency medical transport
             </Typography>
             <Typography variant='h6' textAlign={'left'}>
-              We are committed to helping seniors, vets, and passengers with disabilities get wherever they need to go; we care about every single client and their needs. Our friendly, caring drivers will provide the best non-emergency medical transportation service in the Central Iowa area. At CCT, we have decades of experience and certified by the State of Iowa.
+              We are committed to helping seniors, vets, and passengers with disabilities get wherever they need to go; we care about every single client and their needs. Our friendly, caring drivers will provide the best non-emergency medical transportation service in the Central Iowa area. At WCT, we have decades of experience and certified by the State of Iowa.
             </Typography>
             <Typography variant="h4" gutterBottom style={{color: "#808000", padding: "1rem 0 1rem 0",}}>
               We help you get to medical appointments

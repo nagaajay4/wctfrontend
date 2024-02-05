@@ -52,9 +52,7 @@ const ActiveRides = () => {
   //const drivers = ['Nagaajay', 'Darwin', 'Zak'];
 
   const navigate = useNavigate();
-  if (getToken() === null) {
-    navigate("/AdminLogin");
-  }
+  
   const filterData = () => {
     // Filter data based on the date range
     console.log("startDate: ", startDate);
@@ -106,6 +104,9 @@ const ActiveRides = () => {
   }
 
   useEffect(() => {
+    if(getToken()===null) {
+      navigate('/AdminLogin');
+    }
     fetchData();
     axios({
       baseURL: "http://localhost:8000/api/v1",

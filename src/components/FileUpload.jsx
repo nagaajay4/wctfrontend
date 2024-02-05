@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Typography, Box } from '@mui/material';
 import Header from '../layouts/Header';
 import { useNavigate } from 'react-router-dom';
@@ -22,9 +22,7 @@ const FileUpload = () => {
   };
 
   const navigate = useNavigate();
-  if(getToken()===null) {
-    navigate('/AdminLogin');
-  }
+  
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
@@ -34,6 +32,12 @@ const FileUpload = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  useEffect(()=> {
+    if(getToken()===null) {
+      navigate('/AdminLogin');
+    }
+
+  },[]);
 
   const handleOk = () => {
     navigate('/ActiveRides');

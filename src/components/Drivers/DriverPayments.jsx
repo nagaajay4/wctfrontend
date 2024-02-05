@@ -42,10 +42,7 @@ function DriverPayments() {
  
   const {http,getToken} =AuthUser();
   const navigate = useNavigate();
-  if(getToken()===null) {
-    navigate('/DriverLogin');
-  }
-
+ 
   const [newPayemnt,setNewpayment]=useState({
     "paymentID": "",
     "amount": 0,
@@ -79,6 +76,10 @@ function DriverPayments() {
     
   ];
   useEffect(() => {
+    if(getToken()===null) {
+      navigate('/DriverLogin');
+    }
+  
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/driver/payments",

@@ -41,9 +41,7 @@ function DriverPastUsers() {
   const [ridesRows, setRidesRows] = useState([]);
   const {http,getToken} =AuthUser();
   const navigate = useNavigate();
-  if(getToken()===null) {
-    navigate('/DriverLogin');
-  }
+  
 
   const [snackbaropen, setSnackbaropen] = React.useState(false);
 
@@ -60,6 +58,9 @@ function DriverPastUsers() {
   };
 
   useEffect(() => {
+    if(getToken()===null) {
+        navigate('/DriverLogin');
+      }
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/driver/getCompletedUserRides",

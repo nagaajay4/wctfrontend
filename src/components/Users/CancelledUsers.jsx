@@ -34,11 +34,14 @@ import Alert from "@mui/material/Alert";
 import NoCrashSharpIcon from "@mui/icons-material/NoCrashSharp";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
+
 function CancelledUsers() {
   const [usersRows, setUsersRows] = useState([]);
   const { http, getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -110,6 +113,9 @@ function CancelledUsers() {
   ];
 
   useEffect(() => {
+    if(getToken()===null) {
+      navigate('/AdminLogin');
+    }
     fetchData();
    
   }, []);

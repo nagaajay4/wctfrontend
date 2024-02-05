@@ -97,6 +97,9 @@ const DriverActiveRides = () => {
 
 
   useEffect(() => {
+    if(getToken()===null) {
+      navigate('/DriverLogin');
+    }
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/driver/assignedRides",

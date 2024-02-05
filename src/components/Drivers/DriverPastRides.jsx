@@ -41,9 +41,7 @@ function DriverPastRides() {
   const [ridesRows, setRidesRows] = useState([]);
   const {http,getToken} =AuthUser();
   const navigate = useNavigate();
-  if(getToken()===null) {
-    navigate('/DriverLogin');
-  }
+  
 
   const [snackbaropen, setSnackbaropen] = React.useState(false);
 
@@ -60,6 +58,9 @@ function DriverPastRides() {
   };
 
   useEffect(() => {
+    if(getToken()===null) {
+      navigate('/DriverLogin');
+    }
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/driver/completedRides",
@@ -161,7 +162,6 @@ function DriverPastRides() {
       Pickup_Address: "",
       Dropoff_Address: "",
       Pickup_Directions: "",
-      Driver: "",
     });
   };
 
@@ -179,7 +179,6 @@ function DriverPastRides() {
     Pickup_Address: "",
     Dropoff_Address: "",
     Pickup_Directions: "",
-    Driver: "",
   });
   const handleChange = (event) => {
     setRide({ ...ride, [event.target.name]: event.target.value });
@@ -215,7 +214,6 @@ function DriverPastRides() {
       Pickup_Address: editRide.Pickup_Address,
       Dropoff_Address: editRide.Dropoff_Address,
       Pickup_Directions: editRide.Pickup_Directions,
-      Driver: editRide.Driver,
     });
     functionopenpopup();
     console.log(`Edit row with ID ${editRide[0]}`);
@@ -403,7 +401,7 @@ function DriverPastRides() {
                       },
                     }}
                   />
-                  <TextField
+                  {/* <TextField
                     name="Driver"
                     value={ride.Driver}
                     //onChange={handleChange}
@@ -415,7 +413,7 @@ function DriverPastRides() {
                       },
                     }}
                   />
-                  
+                   */}
       
               
                   <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
