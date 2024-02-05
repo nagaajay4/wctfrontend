@@ -8,8 +8,9 @@ import MyForm from "../layouts/MyForm";
 
 const appStyles = {
   container: {
-    background: "linear-gradient(to bottom right, #EAEEE9 50%, #FFFFF0)",
-    fontFamily: "sansSerif",
+    background: 'linear-gradient(to bottom right, #ffdbc3 50%, #FFF3FF)',
+    fontFamily: 'Georgia, serif',
+    color: '#36013F'
   },
 };
 function Contact() {

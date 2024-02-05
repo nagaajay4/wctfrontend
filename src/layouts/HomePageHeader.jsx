@@ -83,7 +83,7 @@ function HomePageHeader() {
       );
   return (
     <Box>
-    <AppBar component="nav" sx={{background: "white"}}>
+    <AppBar component="nav" sx={{background: "#ffdbc3"}}>
         <Toolbar>
         <IconButton
             color="black"
@@ -99,13 +99,13 @@ function HomePageHeader() {
             <LogoImage src={logoImage} alt="Logo" />
             </Button>
             <Box sx={{ display: { xs: 'none', sm: 'block' }}} alignContent={'flex-end'}>
-                <Button onClick={()=>navigate('/AboutUs')}>
+                <Button onClick={()=>navigate('/AboutUs')} sx={{color:"#B80000"}}>
                   About Us
                 </Button>
-                <Button onClick={()=>navigate('/Contact')}>
+                <Button onClick={()=>navigate('/Contact')} sx={{color:"#B80000"}}>
                   Contact
                 </Button>
-                <Button onClick={()=>navigate('/Mission')}>
+                <Button onClick={()=>navigate('/Mission')} sx={{color:"#B80000"}}>
                   Mission
                 </Button>
             </Box>
