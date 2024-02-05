@@ -38,8 +38,7 @@ const typoStyle = {
 
 
 
-const RideDetails = ({ ride }) => {
-  
+const RideDetails = ({ ride }) => { 
   return (
     <>
       <Paper elevation={3} style={rideDetailsStyles.paper}>
@@ -63,8 +62,32 @@ const RideDetails = ({ ride }) => {
   );
 };
 
+
+const UserRideDetails = ({ ride }) => { 
+  return (
+    <>
+      <Paper elevation={3} style={rideDetailsStyles.paper}>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Ride ID</Typography> {ride.rideId}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Ride Status</Typography> {ride.rideStatus}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Ride Date</Typography> {ride.rideDate}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Customer Name</Typography> {`${ride.firstName} ${ride.lastName}`}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Phone Number</Typography> {ride.phoneNumber}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Pickup Time</Typography> {ride.pickUpTime}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Pickup Address</Typography> {ride.pickUpAddress}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Dropoff Address</Typography> {ride.dropOffAddress}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Pickup Directions</Typography> {ride.instructions || 'N/A'}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Driver</Typography> {ride.driverId || 'N/A'}</Grid>
+        </Grid>
+      </Paper>
+    </>
+  );
+};
+
+
 const DriverActiveRides = () => {
   const [myrides,setMyRides]=useState([]);
+  const [userrides,setUserRides]=useState([]);
   const {http,getToken} =AuthUser();
   const navigate = useNavigate()
 
@@ -94,6 +117,26 @@ const DriverActiveRides = () => {
           console.log(error.message);
         }
       });
+      axios({
+        baseURL: "http://localhost:8000/api/v1",
+        url: "/driver/getAssignedUserRides",
+        method: "get",
+        headers: {
+          Authorization: getToken()
+        },
+        timeout: 2000,
+      })
+        .then((response) => {
+          console.log("response.data user",response.data);
+          setUserRides(response.data.data);
+        })
+        .catch((error) => {
+          if (error.code === "ECONNABORTED") {
+            console.log("Request timed out");
+          } else {
+            console.log(error.message);
+          }
+        });
 
       
 
@@ -112,6 +155,14 @@ const DriverActiveRides = () => {
         </Typography>
         {myrides.map((ride, index) => (
           <RideDetails key={index} ride={ride} />
+        ))}
+
+
+        <Typography variant="h3" sx={{marginTop:'60px',color:'#004080'}}>
+          Drivers Active Rides For User
+        </Typography>
+        {userrides.map((ride, index) => (
+          <UserRideDetails key={index} ride={ride} />
         ))}
       </div>
     </Box>

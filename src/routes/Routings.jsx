@@ -12,6 +12,7 @@ import AssignedRides from '../components/Rides/AssignedRides'
 import CompletedRides from '../components/Rides/CompletedRides'
 import DriverPayments from "../components/Drivers/DriverPayments";
 import DriverDetails from "../components/Drivers/DriverDetails";
+import DriverPastUsers from "../components/Drivers/DriverPastUsers"
 import DriverActiveRides from "../components/Drivers/DriverActiveRides";
 import DriverProfiles from '../components/Rides/DriverProfiles';
 import AdminDetails from '../components/Rides/AdminDetails';
@@ -64,6 +65,7 @@ function Routings() {
           <Route exact path="/DriverDetails" element={<DriverDetails />}></Route>
           <Route exact path="/DriverPayments" element={<DriverPayments />}></Route>
           <Route exact path="/DriverPastRides" element={<DriverPastRides />}></Route>
+          <Route exact path="/DriverPastUsers" element={<DriverPastUsers />}></Route>
           <Route exact path="/DriverActiveRides" element={<DriverActiveRides />}></Route>
           <Route exact path="/ForgotPasswordDriver" element={<ForgotPasswordDriver />}></Route>
 

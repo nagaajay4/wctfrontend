@@ -85,67 +85,61 @@ export default function ForgotPasswordDriver() {
     setErrors(newErrors);
     return valid;
   };
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    setEmail(data.get("email"));
-    console.log({
-      email: data.get("email"),
-    });
     //http://localhost:8000/api/v1/driver/forgotPassword
 
     if (validateForm()) {
-        axios({
-          baseURL: "http://localhost:8000/api/v1",
-          url: "/driver/forgotPassword",
-          method: "post",
-          data: {
-            email: data.get("email"),
-          },
-  
-          headers: {
-            "Content-Type": "application/json",
-          },
-  
-          timeout: 5000,
-        })
-          .then((response) => {
-            setAlertMessage({
-              status: "success",
-              alert: "Password reset link is Successful sent to email..!",
-            });
-            setAlertOpen(true);
-          })
-          .catch((error) => {
-            if (error.code === "ECONNABORTED") {
-              console.log("Request timed out");
-              setAlertMessage({
-                status: "error",
-                alert: "Unable to send Password reset link server error..!",
-              });
-  
-              setAlertOpen(true);
-            } else {
-              console.log("login api error", error);
-              setAlertMessage({
-                status: "error",
-                alert: "Unable to send Password reset link..!",
-              });
-              setAlertOpen(true);
-            }
-          });
-      }
-      else {
+      axios({
+        baseURL: "http://localhost:8000/api/v1",
+        url: "/driver/forgotPassword",
+        method: "post",
+        data: {
+          email: email,
+        },
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        timeout: 5000,
+      })
+        .then((response) => {
           setAlertMessage({
-            status: "warning",
-            alert: "please enter correct email to send Password reset link..!",
+            status: "success",
+            alert: "Password reset link is Successful sent to email..!",
           });
           setAlertOpen(true);
-        }
+        })
+        .catch((error) => {
+          if (error.code === "ECONNABORTED") {
+            console.log("Request timed out");
+            setAlertMessage({
+              status: "error",
+              alert: "Unable to send Password reset link server error..!",
+            });
 
-    
-   
+            setAlertOpen(true);
+          } else {
+            console.log("login api error", error);
+            setAlertMessage({
+              status: "error",
+              alert: "Unable to send Password reset link..!",
+            });
+            setAlertOpen(true);
+          }
+        });
+    } else {
+      setAlertMessage({
+        status: "warning",
+        alert: "please enter correct email to send Password reset link..!",
+      });
+      setAlertOpen(true);
+    }
   };
 
   return (
@@ -170,12 +164,7 @@ export default function ForgotPasswordDriver() {
             <Typography component="h1" variant="h5">
               Reset Password for Driver
             </Typography>
-            <Box
-              component="form"
-              onSubmit={(event)=>{handleSubmit(event)}}
-              noValidate
-              sx={{ mt: 1 }}
-            >
+            <Box  sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -185,15 +174,19 @@ export default function ForgotPasswordDriver() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={email}
+                onChange={handleEmailChange}
                 error={Boolean(errors.email)}
                 helperText={errors.email}
               />
 
-              
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
+                onClick={(event) => {
+                  handleSubmit(event);
+                }}
                 sx={{ mt: 2, mb: 2 }}
               >
                 Send link

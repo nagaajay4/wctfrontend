@@ -206,6 +206,26 @@ export default function MiniDrawer() {
                 <ListItemText primary="Driver Past Rides" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
+            <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>navigate('/DriverPastUsers')}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <DepartureBoardIcon />
+                </ListItemIcon>
+                <ListItemText primary="User Past Rides" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
             <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>navigate('/DriverPayments')}>
               <ListItemButton
                 sx={{

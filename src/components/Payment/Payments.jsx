@@ -90,8 +90,8 @@ const Payements = () => {
     
     { field: "remarks", headerName: "Remarks", width: 200 },
   ];
-
-  useEffect(() => {
+  async function fetchData() {
+    console.log("token", getToken());
     axios({
       //http://localhost:8000/api/v1/admin/getAllPayments
       baseURL: "http://localhost:8000/api/v1",
@@ -115,7 +115,11 @@ const Payements = () => {
           console.log(error.message);
         }
       });
+  }
 
+  useEffect(() => {
+   
+    fetchData();
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/admin/drivers",
@@ -136,7 +140,7 @@ const Payements = () => {
           console.log(error.message);
         }
       });
-  }, [Apicall]);
+  }, []);
 
   const [isEditMode, setIsEditMode] = useState(false);
   const handleAddPayment = () => {
@@ -229,7 +233,7 @@ const Payements = () => {
 
             setAlertOpen(true);
             closepopup();
-            setApiCall(1);
+            fetchData();
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
@@ -288,7 +292,7 @@ const Payements = () => {
             setAlertOpen(true);
 
             closepopup();
-            setApiCall(1);
+            fetchData();
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {

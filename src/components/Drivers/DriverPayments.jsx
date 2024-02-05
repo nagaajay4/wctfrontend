@@ -72,8 +72,8 @@ function DriverPayments() {
     { field: "amount", headerName: "amount", width: 150 },
     { field: "driverID", headerName: "driverID",width: 150 },
     { field: "paymentDate", headerName: "paymentDate",width: 150 },
-    { field: "createdAt", headerName: "createdAt",width: 200 },
-    { field: "updatedAt", headerName: "updatedAt",width: 200 },
+    // { field: "createdAt", headerName: "createdAt",width: 200 },
+    // { field: "updatedAt", headerName: "updatedAt",width: 200 },
     
    
     
@@ -211,7 +211,7 @@ function DriverPayments() {
                       },
                     }}
                   />
-                  <TextField
+                  {/* <TextField
                     label="createdAt"
                     name="createdAt"
                     value={newPayemnt.createdAt}
@@ -222,13 +222,14 @@ function DriverPayments() {
                         WebkitTextFillColor: "black",
                       },
                     }}
-                  />
+                  /> */}
                   <TextField
                     label="updatedAt"
                     name="updatedAt"
                     value={newPayemnt.updatedAt}
                     disabled={isEditMode}
                     onChange={handleChange}
+                    
                     sx={{
                       "& .MuiInputBase-input.Mui-disabled": {
                         WebkitTextFillColor: "black",

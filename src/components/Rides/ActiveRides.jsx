@@ -34,10 +34,14 @@ import Alert from "@mui/material/Alert";
 
 const ActiveRides = () => {
   const [ridesRows, setRidesRows] = useState([]);
+  const [filteredData,setFilteredData] = useState([]);
   const { http, getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -51,8 +55,33 @@ const ActiveRides = () => {
   if (getToken() === null) {
     navigate("/AdminLogin");
   }
+  const filterData = () => {
+    // Filter data based on the date range
+    console.log("startDate: ", startDate);
+    console.log("endDate: ", endDate);
+    if(startDate!=="" && endDate!=="") {
+      const filteredRows = filteredData.filter((ride) => {
+        const rideDate = new Date(ride.Ride_Date);
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        return rideDate >= start && rideDate <= end;
+      });
+      setRidesRows(filteredRows);
+    }
+    else {
+      fetchData();
 
-  useEffect(() => {
+    }
+   
+  };
+  const clearFilter = () => {
+    // Reset the date filters to their default state
+    setStartDate("");
+    setEndDate("");
+    fetchData();
+  };
+  async function fetchData() {
+    console.log("token", getToken());
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/admin/unAssignedRides",
@@ -65,6 +94,7 @@ const ActiveRides = () => {
       .then((response) => {
         console.log("response.data", response.data);
         setRidesRows(response.data.data);
+        setFilteredData(response.data.data);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -73,7 +103,10 @@ const ActiveRides = () => {
           console.log(error.message);
         }
       });
+  }
 
+  useEffect(() => {
+    fetchData();
     axios({
       baseURL: "http://localhost:8000/api/v1",
       url: "/admin/drivers",
@@ -138,9 +171,10 @@ const ActiveRides = () => {
         console.log(response);
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
-        const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-        //setRidesRows(updatedRows);
-        setRidesRows(updatedRows);
+        //const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
+        fetchData();
+       
+        
         setAlertMessage({
           status: "success",
           alert: "Ride Assigned succesfully..!",
@@ -195,9 +229,10 @@ const ActiveRides = () => {
         console.log(response);
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
-        const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-        //setRidesRows(updatedRows);
-        setRidesRows(updatedRows);
+        fetchData();
+        // const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
+        // //setRidesRows(updatedRows);
+        // setRidesRows(updatedRows);
         setAlertMessage({
           status: "success",
           alert: "RIde assigned successfully..!",
@@ -334,14 +369,16 @@ const ActiveRides = () => {
         .then((response) => {
           console.log("response.data", response);
           setRide({ ...ride, [event.target.name]: event.target.value });
-          const updatedRows = ridesRows.filter((rides) => rides.RideID !== ride.RideID);
-        //setRidesRows(updatedRows);
-        setRidesRows(updatedRows);
+          const updatedRows = ridesRows.filter(
+            (rides) => rides.RideID !== ride.RideID
+          );
+          //setRidesRows(updatedRows);
+          setRidesRows(updatedRows);
           setAlertMessage({
             status: "success",
             alert: "RIde assigned successfully..!",
           });
-  
+
           setAlertOpen(true);
           //setRidesRows(response.data.data);
         })
@@ -354,7 +391,7 @@ const ActiveRides = () => {
               alert: error.response.data.error,
             });
             setAlertOpen(true);
-            console.log("error",error);
+            console.log("error", error);
           }
         });
     }
@@ -573,17 +610,40 @@ const ActiveRides = () => {
             alignItems="flex-end"
             // sx={boxDefault}
           >
-            {/* <Button
-              // onClick={functionopenpopup}
-              onClick={(event) => handleAddRide(event)}
+            <Stack direction="row" spacing={2} marginTop={2}>
+            <TextField
+              label="Start Date"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
+              InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
+            />
+            <TextField
+              label="End Date"
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
+              InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
+            />
+            <Button
               color="primary"
               variant="contained"
-              sx={{ height: 40 }}
-              startIcon={<AirportShuttleIcon />}
+              onClick={() => filterData()}
             >
-              Add Ride
-            </Button> */}
+              Apply Filter
+            </Button>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => clearFilter()}
+            >
+              Clear Filter
+            </Button>
+          </Stack>
           </Box>
+          
 
           <Paper component={Box} width={1} height={700}>
             {ridesRows && (
@@ -603,7 +663,7 @@ const ActiveRides = () => {
         </Container>
       </div>
       <div>
-      <Snackbar
+        <Snackbar
           open={alertOpen}
           autoHideDuration={6000}
           onClose={handleAlertClose}

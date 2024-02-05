@@ -68,6 +68,9 @@ export default function ForgotPasswordAdmin() {
     }
     setAlertOpen(false);
   };
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
 
   const validateForm = () => {
     let valid = true;
@@ -88,10 +91,9 @@ export default function ForgotPasswordAdmin() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    setEmail(data.get("email"));
+    
     console.log({
-      email: data.get("email"),
+      email: email
     });
     //http://localhost:8000/api/v1/admin/forgotPassword
 
@@ -101,7 +103,7 @@ export default function ForgotPasswordAdmin() {
         url: "/admin/forgotPassword",
         method: "post",
         data: {
-          email: data.get("email"),
+          email: email,
         },
 
         headers: {
@@ -135,18 +137,13 @@ export default function ForgotPasswordAdmin() {
             setAlertOpen(true);
           }
         });
+    } else {
+      setAlertMessage({
+        status: "warning",
+        alert: "please enter correct email to send Password reset link..!",
+      });
+      setAlertOpen(true);
     }
-    else {
-        setAlertMessage({
-          status: "warning",
-          alert: "please enter correct email to send Password reset link..!",
-        });
-        setAlertOpen(true);
-      }
-    
-   
-
-
   };
 
   return (
@@ -173,9 +170,6 @@ export default function ForgotPasswordAdmin() {
             </Typography>
             <Box
               component="form"
-              onSubmit={(event) => {
-                handleSubmit(event);
-              }}
               noValidate
               sx={{ mt: 1 }}
             >
@@ -188,6 +182,8 @@ export default function ForgotPasswordAdmin() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={email}
+                onChange={handleEmailChange}
                 error={Boolean(errors.email)}
                 helperText={errors.email}
               />
@@ -196,6 +192,9 @@ export default function ForgotPasswordAdmin() {
                 type="submit"
                 fullWidth
                 variant="contained"
+                onClick={(event) => {
+                  handleSubmit(event);
+                }}
                 sx={{ mt: 2, mb: 2 }}
               >
                 Send link

@@ -219,32 +219,36 @@ export default function DriverLogin() {
               helperText={errors.email}
             />
             <TextField
-      margin="normal"
-      required
-      fullWidth
-      name="password"
-      label="Password"
-      type={showPassword ? "text" : "password"}
-      id="password"
-      autoComplete="current-password"
-      value={password}
-      onChange={handlePasswordChange}
-      error={Boolean(errors.password)}
-      helperText={errors.password}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={togglePasswordVisibility}
-              edge="end"
-            >
-              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-    />
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={handlePasswordChange}
+              error={Boolean(errors.password)}
+              helperText={errors.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={togglePasswordVisibility}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
             {/* <FormControlLabel
               control={
                 <Checkbox
