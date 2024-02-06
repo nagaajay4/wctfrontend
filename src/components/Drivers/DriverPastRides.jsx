@@ -1,72 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-
 import { Container, Paper, Box, Typography } from "@mui/material";
-import MuiAlert from '@mui/material/Alert';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import DriverSidebar from '../../layouts/DriverSidebar'
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import DriverSidebar from "../../layouts/DriverSidebar";
 import AuthUser from "../AuthUser";
-import axios from 'axios';
-
-
+import axios from "axios";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
-import Toolbar from "@mui/material/Toolbar";
-import { useNavigate } from 'react-router-dom';
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+import { useNavigate } from "react-router-dom";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+
 
 function DriverPastRides() {
   const [ridesRows, setRidesRows] = useState([]);
-  const {http,getToken} =AuthUser();
+  const {  getToken } = AuthUser();
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down(500));
   
-
-  const [snackbaropen, setSnackbaropen] = React.useState(false);
-
-  const handleSnackbarClick = () => {
-    setSnackbaropen(true);
-  };
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setSnackbaropen(false);
-  };
-
   useEffect(() => {
-    if(getToken()===null) {
-      navigate('/DriverLogin');
+    if (getToken() === null) {
+      navigate("/DriverLogin");
     }
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/driver/completedRides",
       method: "get",
       headers: {
-        Authorization: getToken()
+        Authorization: getToken(),
       },
       timeout: 2000,
     })
       .then((response) => {
-        console.log("response.data",response.data);
+        console.log("response.data", response.data);
         setRidesRows(response.data.data);
       })
       .catch((error) => {
@@ -76,18 +53,7 @@ function DriverPastRides() {
           console.log(error.message);
         }
       });
-    }, []);
-
-  const handleDeleteRow = (id) => {
-    console.log(id);
-    if (ridesRows.filter((ride) => ride.RideID === id)) {
-      const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-      setRidesRows(updatedRows);
-    } else {
-      alert("ID is already deleted...!");
-    }
-  };
-
+  }, []);
 
   const handleEditCellChange = (params) => {
     const updatedRows = [...ridesRows];
@@ -97,20 +63,10 @@ function DriverPastRides() {
     };
     setRidesRows(updatedRows);
   };
-  const handleStatusChange = (id, newStatus) => {
-    const updatedRows = ridesRows.map((ridesRows) =>
-      ridesRows.RideID === id ? { ...ridesRows, Driver: newStatus } : ridesRows
-    );
-    console.log("Ride id: ", id);
-    console.log("Driver Selected: ", newStatus);
-    setRidesRows(updatedRows);
-  };
 
   const rideColumns = [
-   
     { field: "RideID", headerName: "Ride ID", width: 100 },
     { field: "Ride_Status", headerName: "Ride Status", width: 150 },
-    // {field: "Driver",headerName:"Driver",minWidth: 120,},
     { field: "Ride_Date", headerName: "Ride Date" },
     { field: "Customer_FirstName", headerName: "First Name" },
     { field: "Customer_LastName", headerName: "Last Name" },
@@ -122,7 +78,7 @@ function DriverPastRides() {
     { field: "Pickup_Address", headerName: "Pickup Address" },
     { field: "Dropoff_Address", headerName: "Dropoff Address" },
     { field: "Pickup_Directions", headerName: "Pickup Directions" },
-     {
+    {
       field: "View",
       headerName: "View",
       sortable: false,
@@ -134,7 +90,6 @@ function DriverPastRides() {
         </IconButton>
       ),
     },
-
   ];
 
   const [open, openchange] = useState(false);
@@ -178,20 +133,19 @@ function DriverPastRides() {
   const handleChange = (event) => {
     setRide({ ...ride, [event.target.name]: event.target.value });
   };
-  const drivers = ['Nagaajay', 'Darwin', 'Zak'];
+  const drivers = ["Nagaajay", "Darwin", "Zak"];
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(ride);
     closepopup();
   };
 
-  const [isEditMode,setIsEditMode]=useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const handleEditRow = (id) => {
     // Implement your edit logic here
     setIsEditMode(true);
-    const editRide=ridesRows.filter((ride) => ride.RideID === id)[0];
-    if(editRide===null) 
-    {
+    const editRide = ridesRows.filter((ride) => ride.RideID === id)[0];
+    if (editRide === null) {
       alert("Id is not found");
     }
     console.log(editRide);
@@ -213,20 +167,18 @@ function DriverPastRides() {
     functionopenpopup();
     console.log(`Edit row with ID ${editRide[0]}`);
     // navigate('/RidesEditPage',editRide[0]);
-   
   };
   return (
     <>
-      <Box display={'flex'}>
+      <Box display={"flex"}>
         <DriverSidebar />
-        <Box display={'flex'} flexDirection={'column'} margin={'16px'}>
-          <Typography variant="h3" sx={{marginTop:'60px', color:'#004080'}}>
-                Drivers Past Rides
+        <Box display={"flex"} flexDirection={"column"} margin={"16px"}>
+          <Typography variant="h3" sx={{ marginTop: "60px", color: "#004080" }}>
+            Drivers Past Rides
           </Typography>
           <div>
-            
             <Dialog
-              // fullScreen
+             fullScreen={fullScreen}
               open={open}
               onClose={closepopup}
               fullWidth
@@ -409,20 +361,21 @@ function DriverPastRides() {
                     }}
                   />
                    */}
-      
-              
-                  <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
+
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={(event) => handleSubmit(event)}
+                  >
                     Close
                   </Button>
                 </Stack>
               </DialogContent>
-              <DialogActions>
-              
-              </DialogActions>
+              <DialogActions></DialogActions>
             </Dialog>
           </div>
 
-          <div style={{ height: "80%", width: "100%" }}>
+          <div style={{ overflowX: 'auto' }}>
             <Container>
               <Box
                 m={1}
@@ -431,11 +384,9 @@ function DriverPastRides() {
                 justifyContent="flex-end"
                 alignItems="flex-end"
                 // sx={boxDefault}
-              >
-              
-              </Box>
+              ></Box>
 
-              <Paper component={Box} width={1} height={700}>
+              <Paper component={Box} width={1} >
                 <DataGrid
                   rows={ridesRows}
                   columns={rideColumns}
@@ -453,11 +404,7 @@ function DriverPastRides() {
         </Box>
       </Box>
     </>
-  )
+  );
 }
 
-export default DriverPastRides
-
-
-
-
+export default DriverPastRides;
