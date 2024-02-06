@@ -3,26 +3,18 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
+
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/AppBar";
+
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "../layouts/Header";
 import { useNavigate } from "react-router-dom";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
 import axios from "axios";
 import AuthUser from "./AuthUser";
 import Snackbar from "@mui/material/Snackbar";
@@ -51,7 +43,7 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function ForgotPasswordDriver() {
-  const { http, setToken } = AuthUser();
+  const {  setToken } = AuthUser();
   const [errors, setErrors] = React.useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState({
@@ -60,6 +52,8 @@ export default function ForgotPasswordDriver() {
   });
 
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const [email, setEmail] = React.useState("");
 
   const handleAlertClose = (event, reason) => {
@@ -95,7 +89,7 @@ export default function ForgotPasswordDriver() {
 
     if (validateForm()) {
       axios({
-        baseURL: "http://localhost:8000/api/v1",
+        baseURL: BASE_URL,
         url: "/driver/forgotPassword",
         method: "post",
         data: {

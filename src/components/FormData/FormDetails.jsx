@@ -43,6 +43,8 @@ function FormDetails() {
   const { http, getToken } = AuthUser();
   const [formDetails, setFormDetails] = useState([]);
   const [viewDetail,setViewDetails]=useState({});
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -51,24 +53,11 @@ function FormDetails() {
     setAlertOpen(false);
   };
 
-//   {
-//     "message": "Form created Succefully",
-//     "details": {
-//         "contactID": "60be936b-893b-4405-b509-8af263a308b4",
-//         "name": "asdasd",
-//         "phoneNumber": "9821391324",
-//         "email": "asdadz@domain.com",
-//         "message": "asdasdsadsad",
-//         "status": "NOT CHECKED",
-//         "createdAt": "2024-02-03T05:38:35.836Z",
-//         "updatedAt": "2024-02-03T05:38:35.836Z"
-//     },
-//     "err": {}
-// }
+
 const handleContactStatusChange = (id) => {
   console.log("id: ",id);
   axios({
-    baseURL: "http://localhost:8000/api/v1",
+    baseURL: BASE_URL,
     url: `/admin/updateFormContact/${id}`,
     method: "post",
     headers: {
@@ -89,8 +78,7 @@ const handleContactStatusChange = (id) => {
 
       setAlertOpen(true);
       fetchData();
-      // closepopup();
-      // setApiCall(1);
+      
     })
     .catch((error) => {
       if (error.code === "ECONNABORTED") {
@@ -200,7 +188,7 @@ const handleContactStatusChange = (id) => {
     console.log("token", getToken());
     axios({
       //http://localhost:8000/api/v1/admin/getFormDetailsNotContacted
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/getFormDetailsNotContacted",
       method: "get",
       headers: {

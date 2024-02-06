@@ -1,4 +1,3 @@
-import CorouselItem from '../layouts/Corousel'
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -15,8 +14,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Container from '@mui/material/Container'
-import Hidden from '@mui/material/Hidden'
 import logoImage from '../assests/westCentralTransportationedited.png';
 import { useNavigate } from 'react-router-dom';
 

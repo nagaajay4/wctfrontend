@@ -1,23 +1,14 @@
 import CorouselItem from '../layouts/Corousel'
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
+
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
+
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
+
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container'
 import Hidden from '@mui/material/Hidden'
-import logoImage from '../assests/westCentralTransportationedited.png';
 import CardList from '../layouts/CardList';
 import Footer from '../layouts/Footer';
 import HomePageHeader from '../layouts/HomePageHeader';

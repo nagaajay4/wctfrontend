@@ -4,7 +4,6 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import axios from 'axios';
@@ -21,17 +20,19 @@ const MyForm = () => {
     message: "",
     agreeToTerms: false,
   });
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
   const [errors, setErrors] = useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setAlertOpen(false);
-  };
+  // const handleClose = (event, reason) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
+  //   setAlertOpen(false);
+  // };
   const handleAlertClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -99,7 +100,7 @@ const MyForm = () => {
     if (validateForm()) {
       if (validateForm()) {
         axios({
-          baseURL: "http://localhost:8000/api/v1",
+          baseURL: BASE_URL,
           url: "/form/createForm",
           method: "post",
          data:{
@@ -162,7 +163,7 @@ const MyForm = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+    <Box component="form"  noValidate sx={{ mt: 1 }}>
       <Stack spacing={2}>
         <TextField
           margin="normal"
@@ -265,7 +266,7 @@ const MyForm = () => {
           <div style={{ color: "red" }}>{errors.agreeToTerms}</div>
         )}
 
-        <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+        <Button type="submit" variant="contained"  onClick={handleSubmit}   sx={{ mt: 3, mb: 2 }}>
           Submit
         </Button>
       </Stack>

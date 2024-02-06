@@ -1,61 +1,44 @@
 import React, { useState, useEffect } from "react";
-import Header from '../../layouts/Header'
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { MenuItem, Select } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
+
 import { Container, Paper, Box, Typography } from "@mui/material";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriverSidebar from '../../layouts/DriverSidebar'
 import AuthUser from "../AuthUser";
 import axios from 'axios';
-
-
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
-import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from 'react-router-dom';
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+
 
 function DriverPastUsers() {
   const [ridesRows, setRidesRows] = useState([]);
-  const {http,getToken} =AuthUser();
+  const {getToken} =AuthUser();
   const navigate = useNavigate();
   
 
-  const [snackbaropen, setSnackbaropen] = React.useState(false);
+ // const [snackbaropen, setSnackbaropen] = React.useState(false);
 
-  const handleSnackbarClick = () => {
-    setSnackbaropen(true);
-  };
+//   const handleSnackbarClick = () => {
+//     setSnackbaropen(true);
+//   };
 
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+//   const handleSnackbarClose = (event, reason) => {
+//     if (reason === 'clickaway') {
+//       return;
+//     }
 
-    setSnackbaropen(false);
-  };
+//     setSnackbaropen(false);
+//   };
 
   useEffect(() => {
     if(getToken()===null) {
@@ -83,15 +66,7 @@ function DriverPastUsers() {
       });
     }, []);
 
-  const handleDeleteRow = (id) => {
-    console.log(id);
-    if (ridesRows.filter((ride) => ride.RideID === id)) {
-      const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-      setRidesRows(updatedRows);
-    } else {
-      alert("ID is already deleted...!");
-    }
-  };
+ 
 
 
   const handleEditCellChange = (params) => {
@@ -102,14 +77,7 @@ function DriverPastUsers() {
     };
     setRidesRows(updatedRows);
   };
-  const handleStatusChange = (id, newStatus) => {
-    const updatedRows = ridesRows.map((ridesRows) =>
-      ridesRows.RideID === id ? { ...ridesRows, Driver: newStatus } : ridesRows
-    );
-    console.log("Ride id: ", id);
-    console.log("Driver Selected: ", newStatus);
-    setRidesRows(updatedRows);
-  };
+ 
 
   const rideColumns = [
    
@@ -179,10 +147,8 @@ function DriverPastUsers() {
     Pickup_Directions: "",
     Driver: "",
   });
-  const handleChange = (event) => {
-    setRide({ ...ride, [event.target.name]: event.target.value });
-  };
-  const drivers = ['Nagaajay', 'Darwin', 'Zak'];
+ 
+ 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(ride);
@@ -200,21 +166,7 @@ function DriverPastUsers() {
     }
     console.log(editRide);
     setRide({
-         // {
-    //     "rideId": 2,
-    //     "rideStatus": "COMPLETED",
-    //     "firstName": "yyyyyyyy",
-    //     "lastName": "yyyyyyyyy",
-    //     "rideDate": "yyyyyyyyyyyyy",
-    //     "pickUpTime": "yyyyyyyyyyyyyyyy",
-    //     "pickUpAddress": "yyyyyyyyyyyyyyy",
-    //     "dropOffAddress": "yyyyyyyyyyyy",
-    //     "phoneNumber": "9876543210",
-    //     "instructions": "NULL",
-    //     "driverId": "19921",
-    //     "createdAt": "2024-02-05T13:51:15.178Z",
-    //     "updatedAt": "2024-02-05T16:19:39.245Z"
-    // }
+        
       RideID: editRide.rideId,
       Ride_Status: editRide.rideStatus,
       Ride_Date: editRide.rideDate,
@@ -238,7 +190,7 @@ function DriverPastUsers() {
         <DriverSidebar />
         <Box display={'flex'} flexDirection={'column'} margin={'16px'}>
           <Typography variant="h3" sx={{marginTop:'60px', color:'#004080'}}>
-                Drivers Past Rides
+                Drivers Past User Rides
           </Typography>
           <div>
             

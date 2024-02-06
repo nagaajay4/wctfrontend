@@ -1,28 +1,20 @@
 import React, { useState, useEffect } from "react";
-import Header from '../../layouts/Header'
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
+
 import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
 import { Container, Paper, Box } from "@mui/material";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
-  FormControl,
-  InputLabel,
+
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from 'react-router-dom';
@@ -40,12 +32,14 @@ function DriverProfiles() {
 
   const navigate = useNavigate();
   const [driverDetails,setDriverDetails]=useState([]);
-  const {http,getToken} =AuthUser();
+  const {getToken} =AuthUser();
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage,setAlertMessage]=useState({status:"",alert:""});
   const [errors, setErrors] = useState({});
   const [countnewdriver,setCountnewdriver]=useState();
   const [isEditMode,setIsEditMode]=useState(false);
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
   const [newdriver,setNewdriver]= useState({
     driverID:"",
@@ -78,7 +72,7 @@ function DriverProfiles() {
     }
     console.log("token",getToken());
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/drivers",
       method: "get",
       headers:  {
@@ -270,7 +264,7 @@ function DriverProfiles() {
       //http://localhost:PORT/api/v1/admin/updateDriverDetails
       if (validateForm()) {
         axios({
-          baseURL: "http://localhost:8000/api/v1",
+          baseURL: BASE_URL,
           url: `/admin/updateDriverDetails/${newdriver.driverID}`,
           method: "post",
           // params: {
@@ -333,7 +327,7 @@ function DriverProfiles() {
     else {
       if (validateForm()) {
       axios({
-        baseURL: "http://localhost:8000/api/v1",
+        baseURL:BASE_URL,
         url: "/admin/addDriver",
         method: "post",
        data:{

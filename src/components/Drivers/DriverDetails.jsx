@@ -7,7 +7,6 @@
 import { Container, Box} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import DriverSidebar from '../../layouts/DriverSidebar'
 import AuthUser from "../AuthUser";
@@ -100,7 +99,9 @@ const DriverDetail = ({ driver }) => {
 const DriverDetails = () => {
   const [mydriver,setMyDriver]=useState([]);
   const {http,getToken} =AuthUser();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
  
   useEffect(() => {
@@ -109,7 +110,7 @@ const DriverDetails = () => {
     }
   
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/driver/getDetails",
       method: "get",
       headers: {

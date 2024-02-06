@@ -1,27 +1,21 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../layouts/Header";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
+
 import { Container, Paper, Box } from "@mui/material";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
   FormControl,
   InputLabel,
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from "react-router-dom";
@@ -35,12 +29,14 @@ import Alert from "@mui/material/Alert";
 const ActiveRides = () => {
   const [ridesRows, setRidesRows] = useState([]);
   const [filteredData,setFilteredData] = useState([]);
-  const { http, getToken } = AuthUser();
+  const {  getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -81,7 +77,7 @@ const ActiveRides = () => {
   async function fetchData() {
     console.log("token", getToken());
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/unAssignedRides",
       method: "get",
       headers: {
@@ -109,7 +105,7 @@ const ActiveRides = () => {
     }
     fetchData();
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/drivers",
       method: "get",
       headers: {
@@ -130,15 +126,7 @@ const ActiveRides = () => {
       });
   }, []);
 
-  const handleDeleteRow = (id) => {
-    console.log(id);
-    if (ridesRows.filter((ride) => ride.RideID === id)) {
-      const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-      setRidesRows(updatedRows);
-    } else {
-      alert("ID is already deleted...!");
-    }
-  };
+
 
   const handleEditCellChange = (params) => {
     const updatedRows = [...ridesRows];
@@ -153,7 +141,7 @@ const ActiveRides = () => {
     console.log("newStatus", newStatus);
 
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/assignRide",
       method: "post",
       data: {
@@ -205,13 +193,9 @@ const ActiveRides = () => {
   const handleStatusChange = (id, newStatus) => {
     console.log("id", id);
     console.log("newStatus", newStatus);
-    const updatedRows = ridesRows.map((ridesRows) =>
-      ridesRows.RideID === id
-        ? { ...ridesRows, Driver: newStatus.driverFirstName }
-        : ridesRows
-    );
+    
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/assignRide",
       method: "post",
       data: {
@@ -359,7 +343,7 @@ const ActiveRides = () => {
   const handleChange = (event) => {
     if (event.target.value !== null) {
       axios({
-        baseURL: "http://localhost:8000/api/v1",
+        baseURL: BASE_URL,
         url: "/admin/assignRide",
         method: "post",
         headers: {
@@ -403,26 +387,7 @@ const ActiveRides = () => {
     console.log(ride);
     closepopup();
   };
-  const handleAddRide = () => {
-    setIsEditMode(false);
-    setRide({
-      RideID: "",
-      Ride_Status: "",
-      Ride_Date: "",
-      Customer_FirstName: "",
-      Customer_LastName: "",
-      Phone_Number: "",
-      Transportation_Type: "",
-      Pick_Up_Time: "",
-      Arrival_Time: "",
-      Estimated_Distance: "",
-      Pickup_Address: "",
-      Dropoff_Address: "",
-      Pickup_Directions: "",
-      Driver: "",
-    });
-    functionopenpopup();
-  };
+ 
   const [isEditMode, setIsEditMode] = useState(false);
   const handleEditRow = (id) => {
     // Implement your edit logic here
@@ -515,17 +480,7 @@ const ActiveRides = () => {
                 value={ride.Ride_Date}
                 onChange={handleChange}
               />
-              {/* <TextField
-                id="datetime-local"
-                label="Next appointment"
-                type="datetime-local"
-                value={ride.Ride_Date}
-                defaultValue="2017-05-24T10:30"
-                sx={{ width: 250 }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              /> */}
+              
               <TextField
                 label="Customer First Name"
                 name="Customer_FirstName"

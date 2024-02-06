@@ -3,7 +3,9 @@ import {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 
 export default function AuthUser() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
+
     
     const getToken=()=> {
         const tokenString = sessionStorage.getItem('token');
@@ -67,7 +69,7 @@ export default function AuthUser() {
 
     const http = axios.create({
         //http://localhost:8000/api/v1/admin/signIn
-        baseURL: "http://localhost:8000/api/v1"  
+        baseURL: BASE_URL 
     });
     return {
         setToken:saveToken,

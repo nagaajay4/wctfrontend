@@ -1,32 +1,22 @@
 import React, { useState, useEffect } from "react";
-import Header from '../../layouts/Header'
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { MenuItem, Select } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
+
 import { Container, Paper, Box } from "@mui/material";
-import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import AdminSidebar from '../../layouts/AdminSidebar';
 
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
-  FormControl,
-  InputLabel,
+
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from 'react-router-dom';
@@ -34,9 +24,7 @@ import { Typography } from '@mui/material';
 import AuthUser from "../AuthUser";
 import axios from 'axios';
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+
 
 
 
@@ -44,22 +32,14 @@ const CompletedRides = () => {
   const [ridesRows, setRidesRows] = useState([]);
   const navigate = useNavigate();
   const {http,getToken} =AuthUser();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
 
   const [snackbaropen, setSnackbaropen] = React.useState(false);
   
 
-  const handleSnackbarClick = () => {
-    setSnackbaropen(true);
-  };
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setSnackbaropen(false);
-  };
+  
 
 
   useEffect(() => {
@@ -69,7 +49,7 @@ const CompletedRides = () => {
 
     //http://localhost:8000/api/v1/admin/completedRides
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/completedRides",
       method: "get",
       headers: {

@@ -56,6 +56,7 @@ const RideDetails = ({ ride }) => {
           <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Dropoff Address</Typography> {ride.Dropoff_Address}</Grid>
           <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Pickup Directions</Typography> {ride.Pickup_Directions || 'N/A'}</Grid>
           <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Driver</Typography> {ride.Driver_ID || 'N/A'}</Grid>
+          <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Cost</Typography> {ride.Cost || 'N/A'}</Grid>
         </Grid>
       </Paper>
     </>
@@ -78,6 +79,7 @@ const UserRideDetails = ({ ride }) => {
           <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Dropoff Address</Typography> {ride.dropOffAddress}</Grid>
           <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Pickup Directions</Typography> {ride.instructions || 'N/A'}</Grid>
           <Grid item xs={12} md={6} lg={4}><Typography style={typoStyle.Typography}>Driver</Typography> {ride.driverId || 'N/A'}</Grid>
+          
         </Grid>
       </Paper>
     </>
@@ -88,8 +90,10 @@ const UserRideDetails = ({ ride }) => {
 const DriverActiveRides = () => {
   const [myrides,setMyRides]=useState([]);
   const [userrides,setUserRides]=useState([]);
-  const {http,getToken} =AuthUser();
-  const navigate = useNavigate()
+  const {getToken} =AuthUser();
+  const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
   if(getToken()===null) {
     navigate('/DriverLogin');
@@ -101,7 +105,7 @@ const DriverActiveRides = () => {
       navigate('/DriverLogin');
     }
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/driver/assignedRides",
       method: "get",
       headers: {
@@ -121,7 +125,7 @@ const DriverActiveRides = () => {
         }
       });
       axios({
-        baseURL: "http://localhost:8000/api/v1",
+        baseURL: BASE_URL,
         url: "/driver/getAssignedUserRides",
         method: "get",
         headers: {

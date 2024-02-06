@@ -1,55 +1,49 @@
 import React, { useState, useEffect } from "react";
-import Header from '../../layouts/Header'
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { MenuItem, Select } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
-import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 import { Container, Paper, Box } from "@mui/material";
 import {
-  Button,
-  Checkbox,
+  Button, 
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
   Typography,
-  FormControl,
-  InputLabel,
+
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
-import { useNavigate } from 'react-router-dom';
-import DriverSidebar from '../../layouts/DriverSidebar'
+import { useNavigate } from "react-router-dom";
+import DriverSidebar from "../../layouts/DriverSidebar";
 import AuthUser from "../AuthUser";
-import axios from 'axios';
-
+import axios from "axios";
+import { format } from "date-fns";
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 
 function DriverPayments() {
-  const [payments, setPayments]=useState([]);
- 
-  const {http,getToken} =AuthUser();
+  const [payments, setPayments] = useState([]);
+
+  const { getToken } = AuthUser();
   const navigate = useNavigate();
- 
-  const [newPayemnt,setNewpayment]=useState({
-    "paymentID": "",
-    "amount": 0,
-    "driverID": "",
-    "paymentDate": "",
-    "createdAt": "",
-    "updatedAt": ""
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+
+  const [newPayemnt, setNewpayment] = useState({
+    paymentID: "",
+    amount: 0,
+    driverID: "",
+    paymentDate: "",
+    createdAt: "",
+    updatedAt: "",
   });
 
   const paymentColumns = [
@@ -67,30 +61,32 @@ function DriverPayments() {
     },
     { field: "paymentID", headerName: "paymentID", width: 150 },
     { field: "amount", headerName: "amount", width: 150 },
-    { field: "driverID", headerName: "driverID",width: 150 },
-    { field: "paymentDate", headerName: "paymentDate",width: 150 },
+    { field: "driverID", headerName: "driverID", width: 150 },
+    {
+      field: "paymentDate",
+      headerName: "paymentDate",
+      width: 250,
+      valueFormatter: (params) =>
+        format(new Date(params.value), "MMMM d, yyyy hh:mm a"),
+    },
     // { field: "createdAt", headerName: "createdAt",width: 200 },
     // { field: "updatedAt", headerName: "updatedAt",width: 200 },
-    
-   
-    
   ];
   useEffect(() => {
-    if(getToken()===null) {
-      navigate('/DriverLogin');
+    if (getToken() === null) {
+      navigate("/DriverLogin");
     }
-  
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/driver/payments",
       method: "get",
       headers: {
-        Authorization: getToken()
+        Authorization: getToken(),
       },
       timeout: 2000,
     })
       .then((response) => {
-        console.log("response.data",response.data);
+        console.log("response.data", response.data);
         setPayments(response.data.data);
       })
       .catch((error) => {
@@ -100,19 +96,16 @@ function DriverPayments() {
           console.log(error.message);
         }
       });
-    }, []);
- 
+  }, []);
 
-  const [isEditMode,setIsEditMode]=useState(false);
- 
+  const [isEditMode, setIsEditMode] = useState(false);
+
   const functionopenpopup = () => {
     openchange(true);
   };
 
   const closepopup = () => {
     openchange(false);
-
-
   };
   const [open, openchange] = useState(false);
   const handleChange = (event) => {
@@ -128,35 +121,33 @@ function DriverPayments() {
   const handleEditRow = (id) => {
     // Implement your edit logic here
     setIsEditMode(true);
-    const pays=payments.filter((pay) => pay.paymentID === id)[0];
-    if(pays===null) 
-    {
+    const pays = payments.filter((pay) => pay.paymentID === id)[0];
+    if (pays === null) {
       alert("Id is not found");
     }
     console.log(pays);
     setNewpayment({
-      "paymentID": pays.paymentID,
-      "amount": pays.amount,
-      "driverID": pays.driverID,
-      "paymentDate": pays.paymentDate,
-      "createdAt": pays.createdAt,
-      "updatedAt": pays.updatedAt
+      paymentID: pays.paymentID,
+      amount: pays.amount,
+      driverID: pays.driverID,
+      paymentDate: pays.paymentDate,
+      createdAt: pays.createdAt,
+      updatedAt: pays.updatedAt,
     });
     functionopenpopup();
     console.log(`Edit row with ID ${pays}`);
-   
   };
-
 
   return (
     <>
-      <Box display={'flex'}>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+      <Box display={"flex"} sx={{ marginTop: "160px"}} >
         <DriverSidebar />
-        <Box display={'flex'} flexDirection={'column'}>
-          <Typography variant="h3" sx={{marginTop: '70px' ,color:'#004080'}}>
-              Drivers Payments
+        <Box display={"flex"} flexDirection={"column"}>
+          <Typography variant="h3" sx={{ marginTop: "70px", color: "#004080" }}>
+            Drivers Payments
           </Typography>
-        
+
           <div>
             <Dialog
               // fullScreen
@@ -173,14 +164,11 @@ function DriverPayments() {
               </DialogTitle>
               <DialogContent>
                 <Stack spacing={2} margin={2}>
-              
-            
-
                   <TextField
-                    label="paymentID"
+                    label="Payment ID"
                     name="paymentID"
                     value={newPayemnt.paymentID}
-                    onChange={(event)=>handleChange(event)}
+                    onChange={(event) => handleChange(event)}
                     disabled={isEditMode}
                     sx={{
                       "& .MuiInputBase-input.Mui-disabled": {
@@ -189,7 +177,7 @@ function DriverPayments() {
                     }}
                   />
                   <TextField
-                    label="amount"
+                    label="Amount"
                     name="amount"
                     value={newPayemnt.amount}
                     disabled={isEditMode}
@@ -201,7 +189,7 @@ function DriverPayments() {
                     }}
                   />
                   <TextField
-                    label="driverID"
+                    label="Driver ID"
                     name="driverID"
                     value={newPayemnt.driverID}
                     disabled={isEditMode}
@@ -212,51 +200,39 @@ function DriverPayments() {
                       },
                     }}
                   />
-                  {/* <TextField
-                    label="createdAt"
-                    name="createdAt"
-                    value={newPayemnt.createdAt}
-                    disabled={isEditMode}
-                    onChange={handleChange}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  /> */}
+                
                   <TextField
-                    label="updatedAt"
+                    label="Updated At"
                     name="updatedAt"
-                    value={newPayemnt.updatedAt}
+                    value={newPayemnt.updatedAt ? new Date(newPayemnt.updatedAt).toLocaleDateString() : ""}
                     disabled={isEditMode}
                     onChange={handleChange}
-                    
                     sx={{
                       "& .MuiInputBase-input.Mui-disabled": {
                         WebkitTextFillColor: "black",
                       },
                     }}
                   />
-                  
-                
-                  <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
+
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={(event) => handleSubmit(event)}
+                  >
                     close
                   </Button>
                 </Stack>
               </DialogContent>
               <DialogActions>
-                {/* <Button color="success" variant="contained">Yes</Button>
-                        <Button onClick={closepopup} color="error" variant="contained">Close</Button> */}
+               
               </DialogActions>
             </Dialog>
           </div>
 
+          <div style={{ height: "80%", width: "100%", marginBottom: "16px", display: "flex", justifyContent: "center", alignItems: "center" }}>
 
-          
-          <div style={{ height: "80%", width: "100%", marginBottom: '16px' }}>
             <Container>
               <Toolbar />
-            
 
               <Paper component={Box} width={1} height={700}>
                 <DataGrid
@@ -275,13 +251,9 @@ function DriverPayments() {
           </div>
         </Box>
       </Box>
+      </div>
     </>
-   
-  )
+  );
 }
 
-export default DriverPayments
-
-
-
-
+export default DriverPayments;

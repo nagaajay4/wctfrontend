@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../layouts/Header";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
 import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatReclineNormal";
 import { Container, Paper, Box } from "@mui/material";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
   FormControl,
   InputLabel,
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from "react-router-dom";
@@ -36,11 +30,12 @@ import Alert from "@mui/material/Alert";
 function AdminDetails() {
   const navigate = useNavigate();
   const [adminDetails, setAdminDetails] = useState([]);
-  const { http, getToken } = AuthUser();
+  const { getToken } = AuthUser();
   const [errors, setErrors] = useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
-  const [countnewadmin,setCountnewadmin]=useState();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -106,7 +101,7 @@ function AdminDetails() {
   async function fetchData() {
     console.log("token", getToken());
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/admins",
       method: "get",
       headers: {
@@ -140,7 +135,7 @@ function AdminDetails() {
   const handleDeleteRow = (id) => {
     console.log(id);
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/removeAdmin",
       method: "post",
       data: {
@@ -160,7 +155,6 @@ function AdminDetails() {
         });
         setAlertOpen(true);
         fetchData();
-        //setCountnewadmin((countnewadmin)=>countnewadmin+1);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -251,7 +245,7 @@ function AdminDetails() {
       if (validateForm()) {
         axios({
           //http://localhost:PORT/api/v1/admin/updateAdmin
-          baseURL: "http://localhost:8000/api/v1",
+          baseURL: BASE_URL,
           url: "/admin/updateAdmin",
           method: "post",
           data: {
@@ -278,7 +272,6 @@ function AdminDetails() {
             setAlertOpen(true);
             closepopup();
             fetchData();
-            //setCountnewadmin((countnewadmin)=>countnewadmin+1);
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
@@ -310,7 +303,7 @@ function AdminDetails() {
     } else {
       if (validateForm()) {
         axios({
-          baseURL: "http://localhost:8000/api/v1",
+          baseURL: BASE_URL,
           url: "/admin/addAdmin",
           method: "post",
           data: {
@@ -337,7 +330,6 @@ function AdminDetails() {
             setAlertOpen(true);
             closepopup();
             fetchData();
-            //setCountnewadmin((countnewadmin)=>countnewadmin+1);
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
@@ -407,7 +399,7 @@ function AdminDetails() {
           <DialogContent>
             <Stack spacing={2} margin={2}>
               
-              {isEditMode == true ? (
+              {isEditMode === true ? (
                 <>
                   <TextField
                     label="Admin ID"

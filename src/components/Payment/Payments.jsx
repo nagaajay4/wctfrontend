@@ -1,29 +1,22 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../layouts/Header";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
-import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatReclineNormal";
+
 
 import { Container, Paper, Box } from "@mui/material";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
   FormControl,
   InputLabel,
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
@@ -38,13 +31,14 @@ import { format } from "date-fns";
 
 const Payements = () => {
   const [payments, setPayments] = useState([]);
-  const { http, getToken } = AuthUser();
+  const { getToken } = AuthUser();
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
   const [drivers, setDrivers] = useState([]);
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-  const [Apicall, setApiCall] = useState();
+
 
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -94,7 +88,7 @@ const Payements = () => {
     console.log("token", getToken());
     axios({
       //http://localhost:8000/api/v1/admin/getAllPayments
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/getAllPayments",
       method: "get",
       headers: {
@@ -125,7 +119,7 @@ const Payements = () => {
    
     fetchData();
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/drivers",
       method: "get",
       headers: {
@@ -207,7 +201,7 @@ const Payements = () => {
       //http://localhost:8000/api/v1/admin/payments/:paymentId
       if (validateForm()) {
         axios({
-          baseURL: "http://localhost:8000/api/v1",
+          baseURL: BASE_URL,
           url: `/admin/payments/${newPayemnt.paymentID}`,
           method: "post",
           // params: {
@@ -215,7 +209,7 @@ const Payements = () => {
           // },
           data: {
             driverId: newPayemnt.driverID,
-            amount: newPayemnt.amount,
+            amount: String(newPayemnt.amount),
             remarks: newPayemnt.remarks,
           },
 
@@ -269,7 +263,7 @@ const Payements = () => {
         console.log("newPayemnt", newPayemnt);
         console.log("getToken", getToken());
         axios({
-          baseURL: "http://localhost:8000/api/v1",
+          baseURL: BASE_URL,
           url: "/admin/createPayment",
           method: "post",
           data: {
@@ -380,7 +374,7 @@ const Payements = () => {
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2} margin={2}>
-              {isEditMode == true ? (
+              {isEditMode === true ? (
                 <>
                   <TextField
                     label="Payment ID"
@@ -412,24 +406,7 @@ const Payements = () => {
                     error={Boolean(errors.driverID)}
                     helperText={errors.driverID}
                   />
-                  {/* <TextField
-                    label="Created At"
-                    name="createdAt"
-                    value={newPayemnt.createdAt}
-                    disabled={true}
-                    onChange={(event) => handleChange(event)}
-                    error={Boolean(errors.createdAt)}
-                    helperText={errors.createdAt}
-                  /> */}
-                  {/* <TextField
-                    label="Updated At"
-                    name="updatedAt"
-                    value={newPayemnt.updatedAt}
-                    disabled={true}
-                    onChange={(event) => handleChange(event)}
-                    error={Boolean(errors.updatedAt)}
-                    helperText={errors.updatedAt}
-                  /> */}
+                 
                   <TextField
                     label="Remarks"
                     name="remarks"
@@ -448,14 +425,7 @@ const Payements = () => {
                 </>
               ) : (
                 <>
-                  {/* <TextField
-                    label="Driver ID"
-                    name="driverID"
-                    value={newPayemnt.driverID}
-                    onChange={(event) => handleChange(event)}
-                    error={Boolean(errors.driverID)}
-                    helperText={errors.driverID}
-                  /> */}
+                  
                   <FormControl>
                     <InputLabel>Driver Name</InputLabel>
                     <Select
@@ -567,5 +537,4 @@ const Payements = () => {
 
 export default Payements;
 
-//Payment ID
-//
+

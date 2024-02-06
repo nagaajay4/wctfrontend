@@ -1,27 +1,18 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../layouts/Header";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { MenuItem, Select } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
+
 import { Container, Paper, Box } from "@mui/material";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
-  FormControl,
-  InputLabel,
+
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from "react-router-dom";
@@ -31,16 +22,17 @@ import AuthUser from "../AuthUser";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import NoCrashSharpIcon from "@mui/icons-material/NoCrashSharp";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 
 function CompletedUsers() {
   const [usersRows, setUsersRows] = useState([]);
-  const { http, getToken } = AuthUser();
+  const {  getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -121,7 +113,7 @@ function CompletedUsers() {
 
   async function fetchData() {
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/getCompletedUserRides",
       method: "get",
       headers: {
@@ -216,7 +208,7 @@ function CompletedUsers() {
     console.log("user", user.firstName);
     if (validateForm()) {
       axios({
-        baseURL: "http://localhost:8000/api/v1",
+        baseURL: BASE_URL,
         url: "/admin/addUserRide",
         method: "post",
 

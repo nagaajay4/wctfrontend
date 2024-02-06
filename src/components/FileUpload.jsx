@@ -22,6 +22,8 @@ const FileUpload = () => {
   };
 
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   
 
   const handleFileChange = (event) => {
@@ -53,7 +55,7 @@ const FileUpload = () => {
       formData.append("csvFile", selectedFiles[0]);
   
       try {
-        const response = await axios.post("http://localhost:8000/api/v1/admin/fileUpload", formData, {
+        const response = await axios.post(BASE_URL+"/admin/fileUpload", formData, {
           headers: {
             'Authorization': getToken(),
             'Content-Type': 'multipart/form-data'

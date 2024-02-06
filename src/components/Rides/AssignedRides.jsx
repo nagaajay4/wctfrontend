@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../layouts/Header";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
+
 import { Container, Paper, Box } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
   FormControl,
   InputLabel,
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from "react-router-dom";
@@ -39,11 +33,13 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const AssignedRides = () => {
-  const { http, getToken } = AuthUser();
+  const {  getToken } = AuthUser();
 
   const [ridesRows, setRidesRows] = useState([]);
   const [filteredData,setFilteredData] = useState([]);
   const rideStatus = ["UPCOMING", "PENDING_UPDATE", "COMPLETED", "CANCELED"];
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
   const navigate = useNavigate();
   //const drivers = ['Nagaajay', 'Darwin', 'Zak'];
@@ -106,7 +102,7 @@ const AssignedRides = () => {
     
     fetchData();
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/drivers",
       method: "get",
       headers: {
@@ -130,7 +126,7 @@ const AssignedRides = () => {
   }, []);
   async function fetchData() {
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/assignedRides",
       method: "get",
       headers: {
@@ -165,7 +161,7 @@ const AssignedRides = () => {
   const handleRideStatusChange = (id, newStatus) => {
     
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/updateRideAsCompleted",
       method: "post",
       data: {
@@ -234,7 +230,7 @@ const AssignedRides = () => {
         : ridesRows
     );
     axios({
-      baseURL: "http://localhost:8000/api/v1",
+      baseURL: BASE_URL,
       url: "/admin/assignRide",
       method: "post",
       data: {
