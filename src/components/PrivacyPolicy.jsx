@@ -6,8 +6,9 @@ import CardList from '../layouts/CardList'
 
 const appStyles = {
   container : {
-    background: 'linear-gradient(to bottom right, #EAEEE9 50%, #FFFFF0)',
-    fontFamily: 'sansSerif'
+    background: 'linear-gradient(to bottom right, #ffdbc3 50%, #FFF3FF)',
+    fontFamily: 'Georgia, serif',
+    color: '#36013F'
   }
 }
 function PrivacyPolicy() {
@@ -15,19 +16,19 @@ function PrivacyPolicy() {
     <Box style={appStyles.container}>
       <HomePageHeader />
       <Container style={appStyles.container}>
-        <Typography variant="h3" gutterBottom style={{color: "#808000", padding: "3rem 0 3rem 0",}}>
+        <Typography variant="h3" gutterBottom style={{color: "#B80000", padding: "3rem 0 3rem 0",}}>
           Privacy Policy
         </Typography>
         <Typography variant='h6' textAlign={'left'}>
           We respect and are committed to protecting your privacy. That is why we have adopted this privacy policy. This privacy policy lets you know how your personal information is processed and explains our data collection and use practices. The “westcentraltransportation.com” includes all web pages, newsletters, and opt-in announcement lists owned and operated by us. By accessing our website, you are consenting to the information collection and use practices described in this privacy policy. We promise that we will use your personal information only in ways that are compatible with this privacy policy as follows:
         </Typography>
-        <Typography variant="h4" gutterBottom style={{color: "#808000", padding: "3rem 0 3rem 0",}}>
+        <Typography variant="h4" gutterBottom style={{color: "#B80000", padding: "3rem 0 3rem 0",}}>
           What information we are collecting and how are we collecting it?
         </Typography>
         <Typography variant='h6' textAlign={'left'}>
         While using Our Service, We may ask You to provide Us with certain personally identifiable information that can be used to contact or identify You. Personally identifiable information may include, but is not limited to: Email address, First name, last name, Phone number, Address, State, Province, ZIP/Postal code, City, Usage Data. The Company may use Personal Data for the following purposes, to provide and maintain our Service, including to monitor the usage of our Service and contact you for offering our service.
         </Typography>
-        <Typography variant="h4" gutterBottom style={{color: "#808000", padding: "3rem 0 3rem 0",}}>
+        <Typography variant="h4" gutterBottom style={{color: "#B80000", padding: "3rem 0 3rem 0",}}>
           What personal information do you collect?
         </Typography>
         <Typography variant='h6' textAlign={'left'}>

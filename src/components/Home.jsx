@@ -18,18 +18,20 @@ const appStyles = {
     display: 'list-item',
     fontSize: '1.15rem',
     fontWeight: '300',
+    fontFamily: 'Georgia, serif',
   },
   container : {
-    background: 'linear-gradient(to bottom right, #EAEEE9 50%, #FFFFF0)',
-    fontFamily: 'sansSerif'
+    background: 'linear-gradient(to bottom right, #ffdbc3 50%, #FFF3FF)',
+    fontFamily: 'Georgia, serif',
+    color: '#36013F'
   },
   typography : {
     fontSize: "2.0rem",
     fontWeight: "600",
-    fontFamily: 'sansSerif',
-    color: "#ffffff",
+    fontFamily: 'Georgia, serif',
+    // color: "#ffffff",
     marginTop: '16px',
-    background: 'linear-gradient(to right, #FC6C85 50%, #FF007F)',
+    background: 'linear-gradient(to right, #FF6500 50%, #ffdbc3)',
   }
 }
 
@@ -48,7 +50,7 @@ function Home() {
           We provide safe, affordable and Non-emergency medical transportation services through West Central Minnesota and surrounding communities and out-of-town trips such as going to the doctor in Fargo or Twin Cities.
         </Typography>
         <Container>
-            <Typography variant="h3" gutterBottom style={{fontSize: "2.0rem", fontWeight: "600", color: "#808000", marginTop: '16px'}}>
+            <Typography variant="h3" gutterBottom style={{fontSize: "2.0rem", fontWeight: "600", color: "#B80000", marginTop: '16px'}}>
                 Welcome to West Central Transportation, Inc (WCTI)
             </Typography>
             <Typography variant='body 1' style={{fontSize: "1.5rem", fontWeight: "600"}}>Non-emergency medical transportation in West Central region of Minnesota. </Typography>
@@ -65,11 +67,11 @@ function Home() {
                   <ListItem style={appStyles.listItem}>Dialysis Appointments</ListItem>
                   <ListItem style={appStyles.listItem}>Pulmonary and Cardiac Rehabilitation</ListItem>
                   <ListItem style={appStyles.listItem}>Physical Therapists</ListItem>
-                  <ListItem style={appStyles.listItem}>Dentist Appointementa</ListItem>
+                  <ListItem style={appStyles.listItem}>Dentist Appointement</ListItem>
                   <ListItem style={appStyles.listItem}>Chiropractors</ListItem>
                   <ListItem style={appStyles.listItem}>Geriatric Day Care Center</ListItem>
                   <ListItem style={appStyles.listItem}>Massage Therapist</ListItem>
-                  <ListItem style={appStyles.listItem}>....and more!</ListItem>
+                  <ListItem style={appStyles.listItem}>...and more!</ListItem>
                 </List>
             </Box>
         </Container>

@@ -6,8 +6,9 @@ import CardList from "../layouts/CardList";
 
 const appStyles = {
   container: {
-    background: "linear-gradient(to bottom right, #EAEEE9 50%, #FFFFF0)",
-    fontFamily: "sansSerif",
+    background: 'linear-gradient(to bottom right, #ffdbc3 50%, #FFF3FF)',
+    fontFamily: 'Georgia, serif',
+    color: '#36013F'
   },
 };
 
@@ -19,7 +20,7 @@ function TermsOfUse() {
         <Typography
           variant="h3"
           gutterBottom
-          style={{ color: "#808000", padding: "1rem 0 1rem 0" }}
+          style={{ color: "#B80000", padding: "1rem 0 1rem 0" }}
         >
           Terms of Use
         </Typography>
@@ -29,7 +30,7 @@ function TermsOfUse() {
         <Typography
           variant="h4"
           gutterBottom
-          style={{ color: "#808000", padding: "1rem 0 1rem 0" }}
+          style={{ color: "#B80000", padding: "1rem 0 1rem 0" }}
         >
           PLEASE READ THESE TERMS OF USE CAREFULLY BEFORE USING THIS WEBSITE
         </Typography>
@@ -45,7 +46,7 @@ function TermsOfUse() {
         <Typography
           variant="h4"
           gutterBottom
-          style={{ color: "#808000", padding: "1rem 0 1rem 0" }}
+          style={{ color: "#B80000", padding: "1rem 0 1rem 0" }}
         >
           USE OF MATERIAL
         </Typography>
@@ -77,7 +78,7 @@ function TermsOfUse() {
         <Typography
           variant="h4"
           gutterBottom
-          style={{ color: "#808000", padding: "1rem 0 1rem 0" }}
+          style={{ color: "#B80000", padding: "1rem 0 1rem 0" }}
         >
           THIRD PARTIES
         </Typography>
@@ -96,7 +97,7 @@ function TermsOfUse() {
         <Typography
           variant="h4"
           gutterBottom
-          style={{ color: "#808000", padding: "1rem 0 1rem 0" }}
+          style={{ color: "#B80000", padding: "1rem 0 1rem 0" }}
         >
           CHANGES TO SITE
         </Typography>
@@ -110,7 +111,7 @@ function TermsOfUse() {
         <Typography
           variant="h4"
           gutterBottom
-          style={{ color: "#808000", padding: "1rem 0 1rem 0" }}
+          style={{ color: "#B80000", padding: "1rem 0 1rem 0" }}
         >
           PERMISSION FOR REPRINTS
         </Typography>
@@ -124,7 +125,7 @@ function TermsOfUse() {
         <Typography
           variant="h4"
           gutterBottom
-          style={{ color: "#808000", padding: "1rem 0 1rem 0" }}
+          style={{ color: "#B80000", padding: "1rem 0 1rem 0" }}
         >
           DISCLAIMER
         </Typography>
