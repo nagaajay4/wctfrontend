@@ -594,20 +594,7 @@ function AssignedUsers() {
       instructions: "",
     });
   };
-  const handleAddRide = () => {
-    setIsEditMode(false);
-    setUser({
-      firstName: "",
-      lastName: "",
-      rideDate: "",
-      pickUpTime: "",
-      pickUpAddress: "",
-      dropOffAddress: "",
-      phoneNumber: "",
-      instructions: "",
-    });
-    functionopenpopup();
-  };
+  
 
   const handleClose = (event) => {
     event.preventDefault();

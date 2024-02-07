@@ -259,7 +259,7 @@ function DriverProfiles() {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("newdriver",newdriver);
+    console.log("newdriver is from api call",newdriver);
     if(isEditMode) {
       //http://localhost:PORT/api/v1/admin/updateDriverDetails
       if (validateForm()) {
