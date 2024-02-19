@@ -308,7 +308,7 @@ export default function DriverLogin() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="http://localhost:3000/Contact" variant="body2">
+                <Link href="/Contact" variant="body2">
                   {"Please Contact Zak"}
                 </Link>
               </Grid>

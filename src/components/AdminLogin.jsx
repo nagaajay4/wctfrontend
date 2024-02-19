@@ -25,6 +25,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function Copyright(props) {
   return (
@@ -62,6 +63,7 @@ export default function AdminLogin() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState({});
+  const [loading, setLoading] = React.useState(false);
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
@@ -76,9 +78,6 @@ export default function AdminLogin() {
     setAlertOpen(false);
   };
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
@@ -114,7 +113,7 @@ export default function AdminLogin() {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    setLoading(true);
     //const data = new FormData(event.currentTarget);
 
     if (validateForm()) {
@@ -140,9 +139,11 @@ export default function AdminLogin() {
             alert: "Admin Login Successful..!",
           });
           setAlertOpen(true);
+          // navigate("/FileUpload");
         })
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
+            setLoading(false);
             console.log("Request timed out");
             setAlertMessage({
               status: "error",
@@ -151,6 +152,7 @@ export default function AdminLogin() {
 
             setAlertOpen(true);
           } else {
+            setLoading(false);
             console.log("login api error", error);
             setAlertMessage({
               status: "error",
@@ -160,6 +162,7 @@ export default function AdminLogin() {
           }
         });
     } else {
+      setLoading(false);
       setAlertMessage({
         status: "warning",
         alert: "please enter correct email and Password..!",
@@ -174,105 +177,111 @@ export default function AdminLogin() {
         <CssBaseline />
         <Header></Header>
 
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Box
-            sx={{
-              marginTop: 6,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Admin Sign in
-            </Typography>
-            <Box component="form" noValidate sx={{ mt: 1 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                value={email}
-                onChange={handleEmailChange}
-                error={Boolean(errors.email)}
-                helperText={errors.email}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={handlePasswordChange}
-                error={Boolean(errors.password)}
-                helperText={errors.password}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={togglePasswordVisibility}
-                        edge="end"
-                      >
-                        {showPassword ? (
-                          <VisibilityOffIcon />
-                        ) : (
-                          <VisibilityIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+        {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : (
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Box
+              sx={{
+                marginTop: 6,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Admin Sign in
+              </Typography>
+              <Box component="form" noValidate sx={{ mt: 1 }}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                  value={email}
+                  onChange={handleEmailChange}
+                  error={Boolean(errors.email)}
+                  helperText={errors.email}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  error={Boolean(errors.password)}
+                  helperText={errors.password}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={togglePasswordVisibility}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="rememberMe"
-                    color="primary"
-                    checked={rememberMe}
-                    onChange={handleRememberMeChange}
-                  />
-                }
-                label="Remember me"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                onClick={(event) => handleSubmit(event)}
-                sx={{ mt: 2, mb: 2 }}
-              >
-                Sign In
-              </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="/ForgotPasswordAdmin" variant="body2">
-                    Forgot password?
-                  </Link>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="rememberMe"
+                      color="primary"
+                      checked={rememberMe}
+                      onChange={handleRememberMeChange}
+                    />
+                  }
+                  label="Remember me"
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  onClick={(event) => handleSubmit(event)}
+                  sx={{ mt: 2, mb: 2 }}
+                >
+                  Sign In
+                </Button>
+                <Grid container>
+                  <Grid item xs>
+                    <Link href="/ForgotPasswordAdmin" variant="body2">
+                      Forgot password?
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link href="/Contact" variant="body2">
+                      {"Please Contact Zak"}
+                    </Link>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Link href="http://localhost:3000/Contact" variant="body2">
-                    {"Please Contact Zak"}
-                  </Link>
-                </Grid>
-              </Grid>
+              </Box>
             </Box>
-          </Box>
-          <Copyright sx={{ mt: 4, mb: 2 }} />
-        </Container>
+            <Copyright sx={{ mt: 4, mb: 2 }} />
+          </Container>
+        )}
       </ThemeProvider>
       <div>
         <Snackbar

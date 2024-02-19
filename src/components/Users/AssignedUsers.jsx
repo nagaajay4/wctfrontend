@@ -812,7 +812,7 @@ function AssignedUsers() {
                     }}
                   />
 
-                  <TextField
+                  {/* <TextField
                     label="Created At"
                     name="createdAt"
                     value={viewUser.createdAt}
@@ -824,9 +824,9 @@ function AssignedUsers() {
                         WebkitTextFillColor: "black",
                       },
                     }}
-                  />
+                  /> */}
 
-                  <TextField
+                  {/* <TextField
                     label="Updated At"
                     name="updatedAt"
                     value={viewUser.updatedAt}
@@ -838,7 +838,7 @@ function AssignedUsers() {
                         WebkitTextFillColor: "black",
                       },
                     }}
-                  />
+                  /> */}
 
                   <Button
                     color="primary"
@@ -897,7 +897,6 @@ function AssignedUsers() {
                       error={Boolean(errors.rideDate)}
                       helperText={errors.rideDate}
                     />
-
                     <TextField
                       label="Pick-Up Time"
                       name="pickUpTime"
@@ -909,7 +908,6 @@ function AssignedUsers() {
                       error={Boolean(errors.pickUpTime)}
                       helperText={errors.pickUpTime}
                     />
-
                     <TextField
                       label="Pick-Up Address"
                       name="pickUpAddress"
