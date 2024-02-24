@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-
+import CircularProgress from "@mui/material/CircularProgress";
 import { Container, Paper, Box } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -33,18 +33,14 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const AssignedRides = () => {
-  const {  getToken } = AuthUser();
-
+  const { getToken } = AuthUser();
+  const [loading, setLoading] = React.useState(false);
   const [ridesRows, setRidesRows] = useState([]);
-  const [filteredData,setFilteredData] = useState([]);
-  const rideStatus = ["UPCOMING", "PENDING_UPDATE", "COMPLETED", "CANCELED"];
+  const [filteredData, setFilteredData] = useState([]);
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-
   const navigate = useNavigate();
-  //const drivers = ['Nagaajay', 'Darwin', 'Zak'];
   const [drivers, setDrivers] = useState([]);
- 
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -59,22 +55,10 @@ const AssignedRides = () => {
   };
   const [snackbaropen, setSnackbaropen] = React.useState(false);
 
-  const handleSnackbarClick = () => {
-    setSnackbaropen(true);
-  };
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setSnackbaropen(false);
-  };
   const filterData = () => {
     // Filter data based on the date range
-    console.log("startDate: ", startDate);
-    console.log("endDate: ", endDate);
-    if(startDate!=="" && endDate!=="") {
+    setLoading(true);
+    if (startDate !== "" && endDate !== "") {
       const filteredRows = filteredData.filter((ride) => {
         const rideDate = new Date(ride.Ride_Date);
         const start = new Date(startDate);
@@ -82,11 +66,11 @@ const AssignedRides = () => {
         return rideDate >= start && rideDate <= end;
       });
       setRidesRows(filteredRows);
-    }
-    else {
+      setLoading(false);
+    } else {
       fetchData();
+      setLoading(false);
     }
-   
   };
   const clearFilter = () => {
     // Reset the date filters to their default state
@@ -99,7 +83,7 @@ const AssignedRides = () => {
     if (getToken() === null) {
       navigate("/AdminLogin");
     }
-    
+
     fetchData();
     axios({
       baseURL: BASE_URL,
@@ -121,10 +105,9 @@ const AssignedRides = () => {
           console.log(error.message);
         }
       });
-
-    
   }, []);
   async function fetchData() {
+    setLoading(true);
     axios({
       baseURL: BASE_URL,
       url: "/admin/assignedRides",
@@ -138,15 +121,17 @@ const AssignedRides = () => {
         console.log("response.data", response.data);
         setRidesRows(response.data.data);
         setFilteredData(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setLoading(false);
         } else {
           console.log(error.message);
+          setLoading(false);
         }
       });
-
   }
 
   const handleDeleteRow = (id) => {
@@ -159,7 +144,6 @@ const AssignedRides = () => {
     }
   };
   const handleRideStatusChange = (id, newStatus) => {
-    
     axios({
       baseURL: BASE_URL,
       url: "/admin/updateRideAsCompleted",
@@ -221,7 +205,6 @@ const AssignedRides = () => {
     setRidesRows(updatedRows);
   };
   const handleStatusChange = (id, newStatus) => {
-    
     console.log("id", id);
     console.log("newStatus", newStatus);
     const updatedRows = ridesRows.map((ridesRows) =>
@@ -278,7 +261,6 @@ const AssignedRides = () => {
           fetchData();
         }
       });
-    //closepopup();
   };
 
   const rideColumns = [
@@ -305,13 +287,12 @@ const AssignedRides = () => {
         >
           <NoCrashSharpIcon />
         </IconButton>
-       
       ),
       width: 80,
     },
 
     { field: "RideID", headerName: "Ride ID", width: 100 },
-    { field: "Driver_ID", headerName: "Driver_ID" },
+    { field: "Driver_ID", headerName: "Assigned Driver" },
     {
       field: "Driver",
       headerName: "Assign Driver",
@@ -338,8 +319,6 @@ const AssignedRides = () => {
     { field: "Pick_Up_Time", headerName: "Pickup Time" },
     { field: "Arrival_Time", headerName: "Arrival Time" },
     { field: "Estimated_Distance", headerName: "Estimated Distance" },
-
-    
   ];
 
   const [open, openchange] = useState(false);
@@ -392,7 +371,7 @@ const AssignedRides = () => {
     console.log(ride);
     closepopup();
   };
- 
+
   const [isEditMode, setIsEditMode] = useState(false);
   const handleEditRow = (id) => {
     // Implement your edit logic here
@@ -426,12 +405,10 @@ const AssignedRides = () => {
     });
     functionopenpopup();
     console.log(`Edit row with ID ${editRide[0]}`);
-    // navigate('/RidesEditPage',editRide[0]);
   };
 
   return (
     <>
-      
       <AdminSidebar />
       <Typography variant="h3" sx={{ marginBottom: "12px", color: "#004080" }}>
         Assigned Rides
@@ -489,20 +466,21 @@ const AssignedRides = () => {
                 }}
               />
               <FormControl>
-        <InputLabel>Assign Driver</InputLabel>
-              <Select
-                              label="Assign Driver"
-
-                //value={params.value}
-                onChange={(e) => handleStatusChange(ride.RideID, e.target.value)}
-              >
-                {drivers &&
-                  drivers.map((driver) => (
-                    <MenuItem key={driver.driverID} value={driver}>
-                      {driver.driverFirstName + " " + driver.driverLastName}
-                    </MenuItem>
-                  ))}
-              </Select>
+                <InputLabel>Assign Driver</InputLabel>
+                <Select
+                  label="Assign Driver"
+                  //value={params.value}
+                  onChange={(e) =>
+                    handleStatusChange(ride.RideID, e.target.value)
+                  }
+                >
+                  {drivers &&
+                    drivers.map((driver) => (
+                      <MenuItem key={driver.driverID} value={driver}>
+                        {driver.driverFirstName + " " + driver.driverLastName}
+                      </MenuItem>
+                    ))}
+                </Select>
               </FormControl>
 
               <TextField
@@ -559,7 +537,7 @@ const AssignedRides = () => {
                 value={ride.Estimated_Distance}
                 onChange={handleChange}
               />
-              
+
               <TextField
                 label="Pickup Directions"
                 name="Pickup_Directions"
@@ -567,7 +545,6 @@ const AssignedRides = () => {
                 onChange={handleChange}
               />
 
-              
               <Button
                 color="primary"
                 variant="contained"
@@ -577,14 +554,16 @@ const AssignedRides = () => {
               </Button>
             </Stack>
           </DialogContent>
-          <DialogActions>
-           
-          </DialogActions>
+          <DialogActions></DialogActions>
         </Dialog>
       </div>
 
       <div style={{ height: "80%", width: "100%" }}>
-        <Container>
+      {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : (<Container>
           <Toolbar />
           <Box
             m={1}
@@ -595,39 +574,37 @@ const AssignedRides = () => {
             // sx={boxDefault}
           >
             <Stack direction="row" spacing={2} marginTop={2}>
-            <TextField
-              label="Start Date"
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
-              InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
-            />
-            <TextField
-              label="End Date"
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
-              InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
-            />
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => filterData()}
-            >
-              Apply Filter
-            </Button>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => clearFilter()}
-            >
-              Clear Filter
-            </Button>
-          </Stack>
-
-           
+              <TextField
+                label="Start Date"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
+                InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
+              />
+              <TextField
+                label="End Date"
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
+                InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
+              />
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => filterData()}
+              >
+                Apply Filter
+              </Button>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => clearFilter()}
+              >
+                Clear Filter
+              </Button>
+            </Stack>
           </Box>
 
           <Paper component={Box} width={1} height={700}>
@@ -643,10 +620,11 @@ const AssignedRides = () => {
               }}
             />
           </Paper>
-        </Container>
+        </Container>)}
+        
       </div>
       <div>
-      <Snackbar
+        <Snackbar
           open={alertOpen}
           autoHideDuration={6000}
           onClose={handleAlertClose}

@@ -25,6 +25,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function Copyright(props) {
   return (
@@ -56,6 +57,7 @@ export default function DriverLogin() {
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState({});
   const [rememberMe, setRememberMe] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [agreeToCommunications, setAgreeToCommunications] =
     React.useState(false);
 

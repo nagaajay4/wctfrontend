@@ -3,7 +3,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
-
+import CircularProgress from "@mui/material/CircularProgress";
 import { Container, Paper, Box } from "@mui/material";
 import {
   Button,
@@ -37,6 +37,7 @@ const Payements = () => {
   const [errors, setErrors] = useState({});
   const [drivers, setDrivers] = useState([]);
   const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const [loading, setLoading] = React.useState(false);
 
 
 
@@ -85,9 +86,9 @@ const Payements = () => {
     { field: "remarks", headerName: "Remarks", width: 200 },
   ];
   async function fetchData() {
+    setLoading(true);
     console.log("token", getToken());
     axios({
-      //http://localhost:8000/api/v1/admin/getAllPayments
       baseURL: BASE_URL,
       url: "/admin/getAllPayments",
       method: "get",
@@ -99,14 +100,26 @@ const Payements = () => {
     })
       .then((response) => {
         console.log("response.data", response.data);
-        //setRidesRows(response.data.data);
         setPayments(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setAlertMessage({
+            status: "error",
+            alert: "Server timeout..!",
+          });
+          setAlertOpen(true);
+          setLoading(false);
         } else {
           console.log(error.message);
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to fetch payments..!",
+          }); 
+          setAlertOpen(true);
+          setLoading(false);
         }
       });
   }
@@ -194,11 +207,10 @@ const Payements = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    setLoading(true);
     if (isEditMode) {
       console.log("newPayemnt", newPayemnt);
       console.log("getToken", getToken());
-      //http://localhost:8000/api/v1/admin/payments/:paymentId
       if (validateForm()) {
         axios({
           baseURL: BASE_URL,
@@ -232,6 +244,7 @@ const Payements = () => {
             setAlertOpen(true);
             closepopup();
             fetchData();
+            setLoading(false);
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
@@ -241,13 +254,15 @@ const Payements = () => {
                 alert: "Payment Editted unsuccesfully, Server timeout.!",
               });
               setAlertOpen(true);
+              setLoading(false);
             } else {
               setAlertMessage({
                 status: "error",
                 alert: "Payment Editted Unsuccesfully, Please try again.!",
               });
               setAlertOpen(true);
-              console.log("error", error);
+              setLoading(false);
+              
             }
           });
       } else {
@@ -257,6 +272,7 @@ const Payements = () => {
           alert: "Please fill correct details, and  try Again..!",
         });
         setAlertOpen(true);
+        setLoading(false);
       }
     } else {
       if (validateForm()) {
@@ -288,9 +304,9 @@ const Payements = () => {
               alert: "Payment submitted succesfully..!",
             });
             setAlertOpen(true);
-
             closepopup();
             fetchData();
+            setLoading(false);
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
@@ -300,6 +316,7 @@ const Payements = () => {
                 alert: "Unable to edit Payment, Server timeout.!",
               });
               setAlertOpen(true);
+              setLoading(false);
             } else {
               console.log("error", error);
               console.log("error.data", error.response);
@@ -308,6 +325,7 @@ const Payements = () => {
                 alert: error.response.data.error,
               });
               setAlertOpen(true);
+              setLoading(false);
             }
           });
       } else {
@@ -317,10 +335,9 @@ const Payements = () => {
           alert: "Please fill correct details, and  try Again..!",
         });
         setAlertOpen(true);
+        setLoading(false);
       }
     }
-
-    //window.location.reload();
   };
 
   const handleEditRow = (id) => {
@@ -402,15 +419,14 @@ const Payements = () => {
                     label="Driver ID"
                     name="driverID"
                     value={newPayemnt.driverID}
-                    onChange={(event) => handleChange(event)}
-                    error={Boolean(errors.driverID)}
-                    helperText={errors.driverID}
                     disabled={true}
                     sx={{
                       "& .MuiInputBase-input.Mui-disabled": {
                         WebkitTextFillColor: "black",
                       },
                     }}
+                    error={Boolean(errors.driverID)}
+                    helperText={errors.driverID}
                   />
                  
                   <TextField
@@ -482,7 +498,11 @@ const Payements = () => {
       </div>
 
       <div style={{ height: "80%", width: "100%" }}>
-        <Container>
+      {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : (<Container>
           <Toolbar />
           <Box
             m={1}
@@ -517,7 +537,8 @@ const Payements = () => {
               }}
             />
           </Paper>
-        </Container>
+        </Container>)}
+        
       </div>
       <div>
         <Snackbar

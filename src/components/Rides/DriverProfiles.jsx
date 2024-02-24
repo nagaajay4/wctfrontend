@@ -24,22 +24,19 @@ import AuthUser from "../AuthUser";
 import { Typography } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-
-
+import CircularProgress from "@mui/material/CircularProgress";
 
 function DriverProfiles() {
-
-
   const navigate = useNavigate();
   const [driverDetails,setDriverDetails]=useState([]);
   const {getToken} =AuthUser();
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage,setAlertMessage]=useState({status:"",alert:""});
   const [errors, setErrors] = useState({});
-  const [countnewdriver,setCountnewdriver]=useState();
+  const [countnewdriver,setCountnewdriver]=useState(0);
   const [isEditMode,setIsEditMode]=useState(false);
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-
+  const [loading, setLoading] = React.useState(false);
 
   const [newdriver,setNewdriver]= useState({
     driverID:"",
@@ -96,9 +93,6 @@ function DriverProfiles() {
   
   }, [countnewdriver]);
 
- 
-
- 
   const driverColumns = [
     { field: "driverID", headerName: "driverID", width: 100 },
     { field: "driverFirstName", headerName: "driverFirstName", width: 150 },
@@ -128,19 +122,6 @@ function DriverProfiles() {
     },
    
   ];
-
-  
-
-  
-  const handleDeleteRow = (id) => {
-    console.log(id);
-    if (driverDetails.filter((driver) => driver.driverID === id)) {
-      const updatedRows = driverDetails.filter((driver) => driver.driverID !== id);
-      setDriverDetails(updatedRows);
-    } else {
-      alert("ID is already deleted...!");
-    }
-  };
 
   const handleAddDriver=()=> {
     setIsEditMode(false);
@@ -197,9 +178,6 @@ function DriverProfiles() {
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
-     
-
-      
       if (!newdriver.driverFirstName) {
         valid = false;
         newErrors.driverFirstName = "First Name is required";
@@ -259,9 +237,9 @@ function DriverProfiles() {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
+    setLoading(true);
     console.log("newdriver is from api call",newdriver);
     if(isEditMode) {
-      //http://localhost:PORT/api/v1/admin/updateDriverDetails
       if (validateForm()) {
         axios({
           baseURL: BASE_URL,
@@ -298,10 +276,11 @@ function DriverProfiles() {
             console.log(response);
             console.log("response.data",response.data.data);
             console.log("message",response.data.message);
-            setCountnewdriver(1);
+            setCountnewdriver(prevCount => prevCount + 1);
             closepopup();
             setAlertMessage({status:"success",alert:"Driver updated successfully!"}) 
         setAlertOpen(true);
+        setLoading(false);
             
           })
           .catch((error) => {
@@ -309,10 +288,12 @@ function DriverProfiles() {
               console.log("Request timed out");
               setAlertMessage({status:"error",alert:"server timeout request"}) 
               setAlertOpen(true);
+              setLoading(false);
             } else {
               console.log("error",error);
               setAlertMessage({status:"error",alert:error}) 
             setAlertOpen(true);
+            setLoading(false);
             
             }
           });
@@ -321,6 +302,7 @@ function DriverProfiles() {
           console.log("validation failed");
           setAlertMessage({status:"error",alert:"Please Check all the details, and  try Again..!"}) 
           setAlertOpen(true);
+          setLoading(false);
         }
 
     }
@@ -361,20 +343,20 @@ function DriverProfiles() {
           closepopup();
           setAlertMessage({status:"success",alert:"Driver added successfully!"}) 
         setAlertOpen(true);
-        setCountnewdriver(1);
-          //window.location.reload();
-          //setDriverDetails(response.data.data);
-          //setRidesRows(response.data.data);
+        setCountnewdriver(prevCount => prevCount + 1);
+        setLoading(false);
         })
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
             console.log("Request timed out");
             setAlertMessage({status:"error",alert:"server timeout request"}) 
             setAlertOpen(true);
+            setLoading(false);
           } else {
             console.log("error",error.message);
             setAlertMessage({status:"error",alert:error.message}) 
             setAlertOpen(true);
+            setLoading(false);
           }
         });
       }
@@ -382,12 +364,10 @@ function DriverProfiles() {
         console.log("validation failed");
         setAlertMessage({status:"error",alert:"Please fill all the details, and  try Again..!"}) 
         setAlertOpen(true);
+        setLoading(false);
       }
       
-    }
-
-   
-    
+    }   
   };
   const handleEditRow = (id) => {
     // Implement your edit logic here
@@ -588,7 +568,11 @@ function DriverProfiles() {
 
        
         <div style={{ height: "80%", width: "100%" }}>
-        <Container>
+        {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : ( <Container>
           <Toolbar />
           <Box
             m={1}
@@ -624,7 +608,8 @@ function DriverProfiles() {
               }}
             />
           </Paper>
-        </Container>
+        </Container>)}
+       
       </div>
       <div>
       <Snackbar

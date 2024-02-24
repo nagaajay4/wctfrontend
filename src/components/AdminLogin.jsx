@@ -114,8 +114,7 @@ export default function AdminLogin() {
 
   const handleSubmit = async (event) => {
     setLoading(true);
-    //const data = new FormData(event.currentTarget);
-
+    event.preventDefault();
     if (validateForm()) {
       axios({
         baseURL: BASE_URL,

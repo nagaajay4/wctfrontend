@@ -16,6 +16,7 @@ const FileUpload = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
+
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
       return;

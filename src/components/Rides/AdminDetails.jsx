@@ -26,6 +26,8 @@ import AuthUser from "../AuthUser";
 import { Typography } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
+
 
 function AdminDetails() {
   const navigate = useNavigate();
@@ -34,6 +36,8 @@ function AdminDetails() {
   const [errors, setErrors] = useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
+  const [loading, setLoading] = React.useState(false);
+
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const handleAlertClose = (event, reason) => {
@@ -55,7 +59,6 @@ function AdminDetails() {
     updatedAt: "",
   });
 
-  const [editAdmin, setEditAdmin] = useState({});
 
   const adminColumns = [
     { field: "adminId", headerName: "Admin Id", width: 120 },
@@ -99,6 +102,7 @@ function AdminDetails() {
   ];
 
   async function fetchData() {
+    setLoading(true);
     console.log("token", getToken());
     axios({
       baseURL: BASE_URL,
@@ -113,13 +117,16 @@ function AdminDetails() {
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
         setAdminDetails(response.data.data);
+        setLoading(false);
         
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setLoading(false);
         } else {
           console.log(error.message);
+          setLoading(false);
         }
       });
     
@@ -133,7 +140,7 @@ function AdminDetails() {
   }, [])
   const [isEditMode, setIsEditMode] = useState(false);
   const handleDeleteRow = (id) => {
-    console.log(id);
+    setLoading(true);
     axios({
       baseURL: BASE_URL,
       url: "/admin/removeAdmin",
@@ -155,6 +162,7 @@ function AdminDetails() {
         });
         setAlertOpen(true);
         fetchData();
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -164,6 +172,7 @@ function AdminDetails() {
             alert: "Unable to Delete, server time out..!",
           });
           setAlertOpen(true);
+          setLoading(false);
         } else {
           console.log(error.message);
           setAlertMessage({
@@ -171,6 +180,7 @@ function AdminDetails() {
             alert: "Unable to Delete, no data found..!",
           });
           setAlertOpen(true);
+          setLoading(false);
         }
       });
     window.location.reload();
@@ -231,16 +241,14 @@ function AdminDetails() {
     if (!addAdmin.role) { 
       valid = false;
       newErrors.role = "role is required";
-    }
-
-   
+    }  
     setErrors(newErrors);
     return valid;
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("new admin", addAdmin);
+    setLoading(true);
     if (isEditMode) {
       if (validateForm()) {
         axios({
@@ -272,6 +280,7 @@ function AdminDetails() {
             setAlertOpen(true);
             closepopup();
             fetchData();
+            setLoading(false);
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
@@ -281,6 +290,7 @@ function AdminDetails() {
                 alert: "Error with server, timeout..!",
               });
               setAlertOpen(true);
+              setLoading(false);
               
             } else {
               console.log("error", error);
@@ -289,7 +299,7 @@ function AdminDetails() {
                 alert: error,
               });
               setAlertOpen(true);
-              
+              setLoading(false);
             }
           });
       } else {
@@ -299,6 +309,7 @@ function AdminDetails() {
           alert: "Please fill correct details, and  try Again..!",
         });
         setAlertOpen(true);
+        setLoading(false);
       }
     } else {
       if (validateForm()) {
@@ -330,6 +341,7 @@ function AdminDetails() {
             setAlertOpen(true);
             closepopup();
             fetchData();
+            setLoading(false);
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
@@ -339,6 +351,7 @@ function AdminDetails() {
                 alert: "Error with server, timeout..!",
               });
               setAlertOpen(true);
+              setLoading(false);
             } else {
               console.log("error", error);
               setAlertMessage({
@@ -346,7 +359,7 @@ function AdminDetails() {
                 alert: error,
               });
               setAlertOpen(true);
-              
+              setLoading(false);
             }
           });
       } else {
@@ -356,10 +369,9 @@ function AdminDetails() {
           alert: "Please fill correct details, and  try Again..!",
         });
         setAlertOpen(true);
+        setLoading(false);
       }
     }
-
-    //window.location.reload();
   };
   const handleEditRow = (id) => {
     // Implement your edit logic here
@@ -382,7 +394,6 @@ function AdminDetails() {
         Admin Details
       </Typography>
       <div>
-        {/* <div>DriversDetail</div> */}
         <Dialog
           // fullScreen
           open={open}
@@ -391,7 +402,7 @@ function AdminDetails() {
           maxWidth="sm"
         >
           <DialogTitle>
-            Driver Details{" "}
+            Admin Details{" "}
             <IconButton onClick={closepopup} style={{ float: "right" }}>
               <CloseIcon color="primary"></CloseIcon>
             </IconButton>{" "}
@@ -425,34 +436,19 @@ function AdminDetails() {
                     value={addAdmin.email}
                     onChange={(event) => handleChange(event)}
                   />
-
-                  {/* <TextField
-                    label="Admin password"
-                    name="password"
-                    value={addAdmin.password}
-                    onChange={(event) => handleChange(event)}
-                  /> */}
                   <TextField
                     label="Admin role"
                     name="role"
                     value={addAdmin.role}
-                    onChange={(event) => handleChange(event)}
-                    helperText={"Please use ADMIN or SUPER ADMIN"}
-                  />
-                  {/* <TextField
-                    label="createdAt"
-                    name="createdAt"
-                    value={addAdmin.createdAt}
                     disabled={true}
                     onChange={(event) => handleChange(event)}
+                    sx={{
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "black",
+                      },
+                    }}
+                    helperText={"You cannnot change role, please create new user"}
                   />
-                  <TextField
-                    label="updatedAt"
-                    name="updatedAt"
-                    value={addAdmin.updatedAt}
-                    disabled={true}
-                    onChange={(event) => handleChange(event)}
-                  /> */}
                   <Button
                     color="primary"
                     variant="contained"
@@ -522,7 +518,11 @@ function AdminDetails() {
       </div>
 
       <div style={{ height: "80%", width: "100%" }}>
-        <Container>
+      {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : (<Container>
           <Toolbar />
           <Box
             m={1}
@@ -557,7 +557,8 @@ function AdminDetails() {
               }}
             />
           </Paper>
-        </Container>
+        </Container>)}
+        
       </div>
       <div>
       <Snackbar

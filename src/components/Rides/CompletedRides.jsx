@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-
 import { Container, Paper, Box } from "@mui/material";
-import MuiAlert from '@mui/material/Alert';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import AdminSidebar from '../../layouts/AdminSidebar';
-
 import {
   Button,
   Dialog,
@@ -23,31 +20,21 @@ import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import AuthUser from "../AuthUser";
 import axios from 'axios';
-
-
-
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 const CompletedRides = () => {
   const [ridesRows, setRidesRows] = useState([]);
   const navigate = useNavigate();
-  const {http,getToken} =AuthUser();
+  const {getToken} =AuthUser();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-
-
-
-  const [snackbaropen, setSnackbaropen] = React.useState(false);
-  
-
-  
+  const [loading, setLoading] = React.useState(false);
 
 
   useEffect(() => {
     if(getToken()===null) {
       navigate('/AdminLogin');
     }
-
-    //http://localhost:8000/api/v1/admin/completedRides
     axios({
       baseURL: BASE_URL,
       url: "/admin/completedRides",
@@ -71,16 +58,6 @@ const CompletedRides = () => {
     
   }, []);
 
-  const handleDeleteRow = (id) => {
-    console.log(id);
-    if (ridesRows.filter((ride) => ride.RideID === id)) {
-      const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-      setRidesRows(updatedRows);
-    } else {
-      alert("ID is already deleted...!");
-    }
-  };
-
 
   const handleEditCellChange = (params) => {
     const updatedRows = [...ridesRows];
@@ -90,17 +67,9 @@ const CompletedRides = () => {
     };
     setRidesRows(updatedRows);
   };
-  const handleStatusChange = (id, newStatus) => {
-    const updatedRows = ridesRows.map((ridesRows) =>
-      ridesRows.RideID === id ? { ...ridesRows, Driver: newStatus } : ridesRows
-    );
-    console.log("Ride id: ", id);
-    console.log("Driver Selected: ", newStatus);
-    setRidesRows(updatedRows);
-  };
+
 
   const rideColumns = [
-   
     {
       field: "edit",
       headerName: "View",
@@ -126,9 +95,7 @@ const CompletedRides = () => {
     { field: "Estimated_Distance", headerName: "Estimated Distance" },
     { field: "Pickup_Address", headerName: "Pickup Address" },
     { field: "Dropoff_Address", headerName: "Dropoff Address" },
-    { field: "Pickup_Directions", headerName: "Pickup Directions" },
-     
-    
+    { field: "Pickup_Directions", headerName: "Pickup Directions" },   
   ];
 
   const [open, openchange] = useState(false);
@@ -171,20 +138,14 @@ const CompletedRides = () => {
     Pickup_Directions: "",
     Driver_ID: "",
   });
-  const handleChange = (event) => {
-    setRide({ ...ride, [event.target.name]: event.target.value });
-  };
-  const drivers = ['Nagaajay', 'Darwin', 'Zak'];
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    //console.log(ride);
     closepopup();
   };
   
-  const [isEditMode,setIsEditMode]=useState(false);
   const handleEditRow = (id) => {
     // Implement your edit logic here
-    setIsEditMode(true);
     const editRide=ridesRows.filter((ride) => ride.RideID === id)[0];
     if(editRide===null) 
     {
@@ -208,9 +169,7 @@ const CompletedRides = () => {
       Driver_ID: editRide.Driver_ID,
     });
     functionopenpopup();
-    console.log(`Edit row with ID ${editRide[0]}`);
-    // navigate('/RidesEditPage',editRide[0]);
-   
+    console.log(`Edit row with ID ${editRide[0]}`);   
   };
 
   return (
@@ -404,9 +363,7 @@ const CompletedRides = () => {
                     WebkitTextFillColor: "black",
                   },
                 }}
-              />
-              
-        
+              />      
               <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
                 Close
               </Button>
@@ -419,7 +376,11 @@ const CompletedRides = () => {
       </div>
 
       <div style={{ height: "80%", width: "100%" }}>
-        <Container>
+      {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : (<Container>
           <Toolbar />
           <Box
             m={1}
@@ -445,7 +406,8 @@ const CompletedRides = () => {
               }}
             />
           </Paper>
-        </Container>
+        </Container>)}
+        
       </div>
     </>
   );

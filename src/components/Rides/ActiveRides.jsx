@@ -25,18 +25,20 @@ import AuthUser from "../AuthUser";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const ActiveRides = () => {
   const [ridesRows, setRidesRows] = useState([]);
-  const [filteredData,setFilteredData] = useState([]);
-  const {  getToken } = AuthUser();
+  const [filteredData, setFilteredData] = useState([]);
+  const { getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const [loading, setLoading] = React.useState(false);
 
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -45,15 +47,13 @@ const ActiveRides = () => {
     setAlertOpen(false);
   };
 
-  //const drivers = ['Nagaajay', 'Darwin', 'Zak'];
-
   const navigate = useNavigate();
-  
+
   const filterData = () => {
     // Filter data based on the date range
     console.log("startDate: ", startDate);
     console.log("endDate: ", endDate);
-    if(startDate!=="" && endDate!=="") {
+    if (startDate !== "" && endDate !== "") {
       const filteredRows = filteredData.filter((ride) => {
         const rideDate = new Date(ride.Ride_Date);
         const start = new Date(startDate);
@@ -61,21 +61,20 @@ const ActiveRides = () => {
         return rideDate >= start && rideDate <= end;
       });
       setRidesRows(filteredRows);
-    }
-    else {
+    } else {
       fetchData();
-
     }
-   
   };
   const clearFilter = () => {
     // Reset the date filters to their default state
+    setLoading(true);
     setStartDate("");
     setEndDate("");
     fetchData();
+    setLoading(false);
   };
   async function fetchData() {
-    console.log("token", getToken());
+    setLoading(true);
     axios({
       baseURL: BASE_URL,
       url: "/admin/unAssignedRides",
@@ -89,19 +88,22 @@ const ActiveRides = () => {
         console.log("response.data", response.data);
         setRidesRows(response.data.data);
         setFilteredData(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setLoading(false);
         } else {
           console.log(error.message);
+          setLoading(false);
         }
       });
   }
 
   useEffect(() => {
-    if(getToken()===null) {
-      navigate('/AdminLogin');
+    if (getToken() === null) {
+      navigate("/AdminLogin");
     }
     fetchData();
     axios({
@@ -126,8 +128,6 @@ const ActiveRides = () => {
       });
   }, []);
 
-
-
   const handleEditCellChange = (params) => {
     const updatedRows = [...ridesRows];
     updatedRows[params.RideID - 1] = {
@@ -137,9 +137,6 @@ const ActiveRides = () => {
     setRidesRows(updatedRows);
   };
   const handleDriverChange = (id, newStatus) => {
-    console.log("id", id);
-    console.log("newStatus", newStatus);
-
     axios({
       baseURL: BASE_URL,
       url: "/admin/assignRide",
@@ -160,10 +157,8 @@ const ActiveRides = () => {
         console.log(response);
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
-        //const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
         fetchData();
-       
-        
+
         setAlertMessage({
           status: "success",
           alert: "Ride Assigned succesfully..!",
@@ -172,7 +167,6 @@ const ActiveRides = () => {
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
-          console.log("Request timed out");
           setAlertMessage({
             status: "error",
             alert: "Unable to Assign RIDE, Please try Again..!",
@@ -184,16 +178,12 @@ const ActiveRides = () => {
             alert: error.response.data.error,
           });
           setAlertOpen(true);
-          console.log("error", error);
         }
       });
     closepopup();
   };
 
   const handleStatusChange = (id, newStatus) => {
-    console.log("id", id);
-    console.log("newStatus", newStatus);
-    
     axios({
       baseURL: BASE_URL,
       url: "/admin/assignRide",
@@ -215,9 +205,6 @@ const ActiveRides = () => {
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
         fetchData();
-        // const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
-        // //setRidesRows(updatedRows);
-        // setRidesRows(updatedRows);
         setAlertMessage({
           status: "success",
           alert: "RIde assigned successfully..!",
@@ -245,7 +232,6 @@ const ActiveRides = () => {
           setAlertOpen(true);
         }
       });
-    //closepopup();
   };
   const rideColumns = [
     {
@@ -283,9 +269,7 @@ const ActiveRides = () => {
       headerName: "Ride Status",
       minWidth: 120,
     },
-
     { field: "RideID", headerName: "Ride ID", width: 100 },
-    // { field: "Ride_Status", headerName: "Ride Status", width: 150 },
     { field: "Ride_Date", headerName: "Ride Date" },
     { field: "Customer_FirstName", headerName: "First Name" },
     { field: "Customer_LastName", headerName: "Last Name" },
@@ -357,7 +341,6 @@ const ActiveRides = () => {
           const updatedRows = ridesRows.filter(
             (rides) => rides.RideID !== ride.RideID
           );
-          //setRidesRows(updatedRows);
           setRidesRows(updatedRows);
           setAlertMessage({
             status: "success",
@@ -365,7 +348,6 @@ const ActiveRides = () => {
           });
 
           setAlertOpen(true);
-          //setRidesRows(response.data.data);
         })
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
@@ -381,13 +363,12 @@ const ActiveRides = () => {
         });
     }
   };
-  const rideStatus = ["UPCOMING", "PENDING_UPDATE", "COMPLETED"];
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(ride);
     closepopup();
   };
- 
+
   const [isEditMode, setIsEditMode] = useState(false);
   const handleEditRow = (id) => {
     // Implement your edit logic here
@@ -480,7 +461,7 @@ const ActiveRides = () => {
                 value={ride.Ride_Date}
                 onChange={handleChange}
               />
-              
+
               <TextField
                 label="Customer First Name"
                 name="Customer_FirstName"
@@ -567,55 +548,59 @@ const ActiveRides = () => {
             // sx={boxDefault}
           >
             <Stack direction="row" spacing={2} marginTop={2}>
-            <TextField
-              label="Start Date"
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
-              InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
-            />
-            <TextField
-              label="End Date"
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
-              InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
-            />
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => filterData()}
-            >
-              Apply Filter
-            </Button>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => clearFilter()}
-            >
-              Clear Filter
-            </Button>
-          </Stack>
-          </Box>
-          
-
-          <Paper component={Box} width={1} height={700}>
-            {ridesRows && (
-              <DataGrid
-                rows={ridesRows}
-                columns={rideColumns}
-                pageSize={5}
-                getRowId={(ridesRows) => ridesRows.RideID}
-                // checkboxSelection
-                onEditCellChangeCommitted={handleEditCellChange}
-                components={{
-                  Toolbar: GridToolbar,
-                }}
+              <TextField
+                label="Start Date"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
+                InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
               />
-            )}
-          </Paper>
+              <TextField
+                label="End Date"
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
+                InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
+              />
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => filterData()}
+              >
+                Apply Filter
+              </Button>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => clearFilter()}
+              >
+                Clear Filter
+              </Button>
+            </Stack>
+          </Box>
+
+          {loading ? (
+            <Container sx={{ marginTop: "15rem" }}>
+              <CircularProgress />
+            </Container>
+          ) : (
+            <Paper component={Box} width={1} height={700}>
+              {ridesRows && (
+                <DataGrid
+                  rows={ridesRows}
+                  columns={rideColumns}
+                  pageSize={5}
+                  getRowId={(ridesRows) => ridesRows.RideID}
+                  onEditCellChangeCommitted={handleEditCellChange}
+                  components={{
+                    Toolbar: GridToolbar,
+                  }}
+                />
+              )}
+            </Paper>
+          )}
         </Container>
       </div>
       <div>

@@ -13,12 +13,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "../layouts/Header";
-import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import AuthUser from "./AuthUser";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function Copyright(props) {
   return (
@@ -43,17 +42,15 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function ForgotPasswordAdmin() {
-  const { http, setToken } = AuthUser();
   const [errors, setErrors] = React.useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState({
     status: "",
     alert: "",
   });
 
-  const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-
   const [email, setEmail] = React.useState("");
 
   const handleAlertClose = (event, reason) => {
@@ -85,11 +82,10 @@ export default function ForgotPasswordAdmin() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     console.log({
-      email: email
+      email: email,
     });
-    //http://localhost:8000/api/v1/admin/forgotPassword
 
     if (validateForm()) {
       axios({
@@ -162,11 +158,7 @@ export default function ForgotPasswordAdmin() {
             <Typography component="h1" variant="h5">
               Reset Password for Admin
             </Typography>
-            <Box
-              component="form"
-              noValidate
-              sx={{ mt: 1 }}
-            >
+            <Box component="form" noValidate sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -181,18 +173,25 @@ export default function ForgotPasswordAdmin() {
                 error={Boolean(errors.email)}
                 helperText={errors.email}
               />
+              {loading ? (
+                <Container sx={{ marginTop: "15rem" }}>
+                  {" "}
+                  <CircularProgress />{" "}
+                </Container>
+              ) : (
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  onClick={(event) => {
+                    handleSubmit(event);
+                  }}
+                  sx={{ mt: 2, mb: 2 }}
+                >
+                  Send link
+                </Button>
+              )}
 
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                onClick={(event) => {
-                  handleSubmit(event);
-                }}
-                sx={{ mt: 2, mb: 2 }}
-              >
-                Send link
-              </Button>
               <Grid container justifyContent={"space-around"}>
                 <Grid item>
                   <Link href="/Contact" variant="body2">

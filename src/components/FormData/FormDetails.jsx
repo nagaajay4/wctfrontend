@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-
-
 import { Container, Paper, Box } from "@mui/material";
 import {
   Button,
@@ -12,7 +10,6 @@ import {
   IconButton,
   Stack,
   TextField,
-  
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
@@ -22,19 +19,19 @@ import AuthUser from "../AuthUser";
 import { Typography } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-
+import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function FormDetails() {
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
-  const { http, getToken } = AuthUser();
+  const [loading, setLoading] = useState(false);
+  const { getToken } = AuthUser();
   const [formDetails, setFormDetails] = useState([]);
-  const [viewDetail,setViewDetails]=useState({});
+  const [viewDetail, setViewDetails] = useState({});
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-
 
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -43,52 +40,52 @@ function FormDetails() {
     setAlertOpen(false);
   };
 
+  const handleContactStatusChange = (id) => {
+    console.log("id: ", id);
+    setLoading(true);
+    axios({
+      baseURL: BASE_URL,
+      url: `/admin/updateFormContact/${id}`,
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getToken(),
+      },
 
-const handleContactStatusChange = (id) => {
-  console.log("id: ",id);
-  axios({
-    baseURL: BASE_URL,
-    url: `/admin/updateFormContact/${id}`,
-    method: "post",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: getToken(),
-    },
-
-    timeout: 5000,
-  })
-    .then((response) => {
-      console.log(response);
-      console.log("response.data", response.data.data);
-      console.log("message", response.data.message);
-      setAlertMessage({
-        status: "success",
-        alert: "Marked user as contacted succesfully..!",
-      });
-
-      setAlertOpen(true);
-      fetchData();
-      
+      timeout: 5000,
     })
-    .catch((error) => {
-      if (error.code === "ECONNABORTED") {
-        console.log("Request timed out");
+      .then((response) => {
+        console.log(response);
+        console.log("response.data", response.data.data);
+        console.log("message", response.data.message);
         setAlertMessage({
-          status: "error",
-          alert: "Unable to update the status, Server timeout.!",
+          status: "success",
+          alert: "Marked user as contacted succesfully..!",
         });
-        setAlertOpen(true);
-      } else {
-        setAlertMessage({
-          status: "error",
-          alert: "Unable to update the status, Please try again.!",
-        });
-        setAlertOpen(true);
-        console.log("error", error);
-      }
-    });
 
-}
+        setAlertOpen(true);
+        fetchData();
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to update the status, Server timeout.!",
+          });
+          setAlertOpen(true);
+          setLoading(false);
+        } else {
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to update the status, Please try again.!",
+          });
+          setAlertOpen(true);
+          setLoading(false);
+        }
+      });
+  };
 
   const formColumns = [
     { field: "contactID", headerName: "Contact ID", width: 200 },
@@ -110,11 +107,10 @@ const handleContactStatusChange = (id) => {
         >
           <ContactPhoneIcon />
         </IconButton>
-       
       ),
       width: 80,
     },
-    
+
     {
       field: "edit",
       headerName: "View",
@@ -123,37 +119,36 @@ const handleContactStatusChange = (id) => {
       disableClickEventBubbling: true,
       renderCell: (params) => (
         //
-        <IconButton color="primary" onClick={() => handleEditRow(params.id)} >
+        <IconButton color="primary" onClick={() => handleEditRow(params.id)}>
           <RemoveRedEyeIcon />
         </IconButton>
       ),
     },
-   
   ];
   const handleEditRow = (id) => {
     // Implement your edit logic here
     // setIsEditMode(true);
-    const tempDetail=formDetails.filter((detail) => detail.contactID === id)[0];
-    if(tempDetail===null) 
-    {
+    const tempDetail = formDetails.filter(
+      (detail) => detail.contactID === id
+    )[0];
+    if (tempDetail === null) {
       alert("Id is not found");
     }
     // console.log("editRide",editRide);
     setViewDetails({
       contactID: tempDetail.contactID,
-        name: tempDetail.name,
-        phoneNumber: tempDetail.phoneNumber,
-        email: tempDetail.email,
-        message: tempDetail.message,
-        status: tempDetail.status,
-        createdAt: tempDetail.createdAt,
-        updatedAt: tempDetail.updatedAt
+      name: tempDetail.name,
+      phoneNumber: tempDetail.phoneNumber,
+      email: tempDetail.email,
+      message: tempDetail.message,
+      status: tempDetail.status,
+      createdAt: tempDetail.createdAt,
+      updatedAt: tempDetail.updatedAt,
     });
 
     functionopenpopup();
     // console.log(`Edit row with ID ${editRide[0]}`);
     // // navigate('/RidesEditPage',editRide[0]);
-   
   };
   const [open, openchange] = useState(false);
   const functionopenpopup = () => {
@@ -163,21 +158,19 @@ const handleContactStatusChange = (id) => {
     openchange(false);
     setViewDetails({
       contactID: "",
-        name: "",
-        phoneNumber: "",
-        email: "",
-        message: "",
-        status: "",
-        createdAt: "",
-        updatedAt: ""
+      name: "",
+      phoneNumber: "",
+      email: "",
+      message: "",
+      status: "",
+      createdAt: "",
+      updatedAt: "",
     });
   };
 
   async function fetchData() {
-
-    console.log("token", getToken());
+    setLoading(true);
     axios({
-      //http://localhost:8000/api/v1/admin/getFormDetailsNotContacted
       baseURL: BASE_URL,
       url: "/admin/getFormDetailsNotContacted",
       method: "get",
@@ -190,14 +183,19 @@ const handleContactStatusChange = (id) => {
         setFormDetails(response.data.details);
         console.log("response.data", response.data.details);
         console.log("message", response.data.message);
-        //setDriverDetails(response.data.data);
-        //setRidesRows(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setAlertMessage({ status: "error", alert: "server timeout request" });
+          setAlertOpen(true);
+          setLoading(false);
         } else {
           console.log(error.message);
+          setAlertMessage({ status: "error", alert: error.message });
+          setAlertOpen(true);
+          setLoading(false);
         }
       });
   }
@@ -207,7 +205,6 @@ const handleContactStatusChange = (id) => {
   }, []);
   const handleSubmit = (event) => {
     event.preventDefault();
-    //console.log(ride);
     closepopup();
   };
 
@@ -219,31 +216,21 @@ const handleContactStatusChange = (id) => {
       </Typography>
 
       <div>
-        
         <Dialog
           // fullScreen
           open={open}
-          onClose={()=>closepopup()}
+          onClose={() => closepopup()}
           fullWidth
           maxWidth="sm"
         >
           <DialogTitle>
             From User Details{" "}
-            <IconButton onClick={()=>closepopup()} style={{ float: "right" }}>
+            <IconButton onClick={() => closepopup()} style={{ float: "right" }}>
               <CloseIcon color="primary"></CloseIcon>
             </IconButton>{" "}
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2} margin={2}>
-
-            {/* contactID: "",
-        name: "",
-        phoneNumber: "",
-        email: "",
-        message: "",
-        status: "",
-        createdAt: "",
-        updatedAt: "" */}
               <TextField
                 label="contact ID"
                 name="contactID"
@@ -338,40 +325,42 @@ const handleContactStatusChange = (id) => {
                   },
                 }}
               />
-             
-    
-        
-              <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={(event) => handleSubmit(event)}
+              >
                 Close
               </Button>
             </Stack>
           </DialogContent>
-          <DialogActions>
-            
-          </DialogActions>
+          <DialogActions></DialogActions>
         </Dialog>
       </div>
-      
-
 
       <div style={{ height: "80%", width: "100%" }}>
-        <Container>
-          <Toolbar />
+        {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            {" "}
+            <CircularProgress />{" "}
+          </Container>
+        ) : (
+          <Container>
+            <Toolbar />
 
-          <Paper component={Box} width={1} height={700}>
-            <DataGrid
-              rows={formDetails}
-              columns={formColumns}
-              pageSize={5}
-              getRowId={(formDetails) => formDetails.contactID}
-              // checkboxSelection
-              // onEditCellChangeCommitted={handleEditCellChange}
-              components={{
-                Toolbar: GridToolbar,
-              }}
-            />
-          </Paper>
-        </Container>
+            <Paper component={Box} width={1} height={700}>
+              <DataGrid
+                rows={formDetails}
+                columns={formColumns}
+                pageSize={5}
+                getRowId={(formDetails) => formDetails.contactID}
+                components={{
+                  Toolbar: GridToolbar,
+                }}
+              />
+            </Paper>
+          </Container>
+        )}
       </div>
 
       <div>

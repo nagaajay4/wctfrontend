@@ -6,10 +6,10 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import axios from 'axios';
-import Alert from '@mui/material/Alert';
-
-
+import axios from "axios";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
 
 const MyForm = () => {
   const [customer, setCustomer] = useState({
@@ -21,20 +21,12 @@ const MyForm = () => {
     agreeToTerms: false,
   });
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-
-
   const [errors, setErrors] = useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
-
-  // const handleClose = (event, reason) => {
-  //   if (reason === "clickaway") {
-  //     return;
-  //   }
-  //   setAlertOpen(false);
-  // };
+  const [loading, setLoading] = useState(false);
   const handleAlertClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setAlertOpen(false);
@@ -44,7 +36,6 @@ const MyForm = () => {
     let valid = true;
     const newErrors = {};
 
-    // Email validation
     if (!customer.email) {
       valid = false;
       newErrors.email = "Email is required";
@@ -52,21 +43,14 @@ const MyForm = () => {
       valid = false;
       newErrors.email = "Invalid email address";
     }
-
-    // ... (other validation code)
-    // validation
     if (!customer.name) {
       valid = false;
       newErrors.name = "Name is required";
     }
-    // if (!customer.address) {
-    //   valid = false;
-    //   newErrors.address = "Address is required";
-    // }
     if (!customer.phoneNumber) {
       valid = false;
       newErrors.phoneNumber = "Phone number is required";
-    }else if((customer.phoneNumber).length!==10) {
+    } else if (customer.phoneNumber.length !== 10) {
       valid = false;
       newErrors.phoneNumber = "phoneNumber must be 10 digits";
     }
@@ -74,8 +58,6 @@ const MyForm = () => {
       valid = false;
       newErrors.message = "Message is required";
     }
-
-    // Checkbox validation
     if (!customer.agreeToTerms) {
       valid = false;
       newErrors.agreeToTerms = "Please agree to the terms";
@@ -96,24 +78,24 @@ const MyForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     if (validateForm()) {
       if (validateForm()) {
         axios({
           baseURL: BASE_URL,
           url: "/form/createForm",
           method: "post",
-         data:{
-            email:customer.email,
-            name:customer.name,
-            phoneNumber:customer.phoneNumber,
-            message:customer.message  
-        },
-          
-          headers:  {
-            'Content-Type': 'application/json',
+          data: {
+            email: customer.email,
+            name: customer.name,
+            phoneNumber: customer.phoneNumber,
+            message: customer.message,
           },
-          
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
           timeout: 5000,
         })
           .then((response) => {
@@ -123,6 +105,7 @@ const MyForm = () => {
               alert: "Form Submitted Successfully, We will contact you soon..!",
             });
             setAlertOpen(true);
+            setLoading(false);
             setCustomer({
               name: "",
               phoneNumber: "",
@@ -131,39 +114,37 @@ const MyForm = () => {
               message: "",
               agreeToTerms: false,
             });
-            //window.location.reload();
-            //setDriverDetails(response.data.data);
-            //setRidesRows(response.data.data);
           })
           .catch((error) => {
             if (error.code === "ECONNABORTED") {
               console.log("Request timed out");
-              setAlertMessage({status:"error",alert:"server timeout request"}) 
+              setAlertMessage({
+                status: "error",
+                alert: "server timeout request",
+              });
               setAlertOpen(true);
+              setLoading(false);
             } else {
-              console.log("error",error.message);
-              setAlertMessage({status:"error",alert:error.message}) 
+              console.log("error", error.message);
+              setAlertMessage({ status: "error", alert: error.message });
               setAlertOpen(true);
+              setLoading(false);
             }
           });
-        }
-        else {
-          console.log("Form validation failed");
-          setAlertMessage({
-            status: "error",
-            alert: "Unable to Submit Form, Please try Again..!",
-          });
-          setAlertOpen(true);
-        }
-
-
-
-     
-    } 
+      } else {
+        console.log("Form validation failed");
+        setAlertMessage({
+          status: "error",
+          alert: "Unable to Submit Form, Please try Again..!",
+        });
+        setAlertOpen(true);
+        setLoading(false);
+      }
+    }
   };
 
   return (
-    <Box component="form"  noValidate sx={{ mt: 1 }}>
+    <Box component="form" noValidate sx={{ mt: 1 }}>
       <Stack spacing={2}>
         <TextField
           margin="normal"
@@ -250,8 +231,6 @@ const MyForm = () => {
             }
             label="By selecting this checkbox, you affirm your agreement to receive communications from us in accordance with our"
           />
-
-          {/* Anchor tags */}
           <a href="/PrivacyPolicy" target="_blank" rel="noopener noreferrer">
             Privacy policy
           </a>
@@ -265,14 +244,24 @@ const MyForm = () => {
         {errors.agreeToTerms && (
           <div style={{ color: "red" }}>{errors.agreeToTerms}</div>
         )}
-
-        <Button type="submit" variant="contained"  onClick={handleSubmit}   sx={{ mt: 3, mb: 2 }}>
-          Submit
-        </Button>
+        {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : (
+          <Button
+            type="submit"
+            variant="contained"
+            onClick={handleSubmit}
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Submit
+          </Button>
+        )}
       </Stack>
 
       <div>
-      <Snackbar
+        <Snackbar
           open={alertOpen}
           autoHideDuration={6000}
           onClose={handleAlertClose}

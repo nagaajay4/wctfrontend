@@ -1,46 +1,33 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../layouts/Header";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { MenuItem, Select } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
-import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatReclineNormal";
 import { Container, Paper, Box } from "@mui/material";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
   Stack,
   TextField,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
-import FormControlContext from "@mui/material/FormControl/FormControlContext";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
-import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../layouts/AdminSidebar";
 import axios from "axios";
 import AuthUser from "../AuthUser";
 import { Typography } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-
+import CircularProgress from "@mui/material/CircularProgress";
 
 function ContactedForms() {
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
-  const { http, getToken } = AuthUser();
+  const [loading, setLoading] = useState(false);  
+  const {  getToken } = AuthUser();
   const [formDetails, setFormDetails] = useState([]);
   const [viewDetail,setViewDetails]=useState({});
   const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -101,8 +88,6 @@ function ContactedForms() {
     });
 
     functionopenpopup();
-    // console.log(`Edit row with ID ${editRide[0]}`);
-    // // navigate('/RidesEditPage',editRide[0]);
    
   };
   const [open, openchange] = useState(false);
@@ -124,10 +109,8 @@ function ContactedForms() {
   };
 
   async function fetchData() {
-
-    console.log("token", getToken());
+    setLoading(true);
     axios({
-      //http://localhost:8000/api/v1/admin/getFormDetailsNotContacted
       baseURL: BASE_URL,
       url: "/admin/getFormDetailsContacted",
       method: "get",
@@ -138,16 +121,19 @@ function ContactedForms() {
     })
       .then((response) => {
         setFormDetails(response.data.details);
-        console.log("response.data", response.data.details);
-        console.log("message", response.data.message);
-        //setDriverDetails(response.data.data);
-        //setRidesRows(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setAlertMessage({ status: "error", alert: "server timeout request" });
+          setAlertOpen(true);
+          setLoading(false);
         } else {
           console.log(error.message);
+          setAlertMessage({ status: "error", alert: error.message });
+          setAlertOpen(true);
+          setLoading(false);
         }
       });
   }
@@ -157,7 +143,6 @@ function ContactedForms() {
   }, []);
   const handleSubmit = (event) => {
     event.preventDefault();
-    //console.log(ride);
     closepopup();
   };
 
@@ -185,15 +170,6 @@ function ContactedForms() {
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2} margin={2}>
-
-            {/* contactID: "",
-        name: "",
-        phoneNumber: "",
-        email: "",
-        message: "",
-        status: "",
-        createdAt: "",
-        updatedAt: "" */}
               <TextField
                 label="contact ID"
                 name="contactID"
@@ -287,10 +263,7 @@ function ContactedForms() {
                     WebkitTextFillColor: "black",
                   },
                 }}
-              />
-             
-    
-        
+              />    
               <Button color="primary" variant="contained" onClick={(event) => handleSubmit(event)}>
                 Close
               </Button>
@@ -305,23 +278,22 @@ function ContactedForms() {
 
 
       <div style={{ height: "80%", width: "100%" }}>
-        <Container>
+        {loading?(<Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>):( <Container>
           <Toolbar />
-
           <Paper component={Box} width={1} height={700}>
             <DataGrid
               rows={formDetails}
               columns={formColumns}
               pageSize={5}
               getRowId={(formDetails) => formDetails.contactID}
-              // checkboxSelection
-              // onEditCellChangeCommitted={handleEditCellChange}
               components={{
                 Toolbar: GridToolbar,
               }}
             />
           </Paper>
-        </Container>
+        </Container>)}
       </div>
 
       <div>

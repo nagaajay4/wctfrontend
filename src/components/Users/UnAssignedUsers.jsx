@@ -25,16 +25,17 @@ import AuthUser from "../AuthUser";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 function UnAssignedUsers() {
   const [usersRows, setUsersRows] = useState([]);
-  const { http, getToken } = AuthUser();
+  const { getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-
+  const [loading, setLoading] = React.useState(false);
 
 
   const [alertOpen, setAlertOpen] = React.useState(false);
@@ -151,6 +152,7 @@ function UnAssignedUsers() {
   }, []);
 
   async function fetchData() {
+    setLoading(true);
     axios({
       baseURL: BASE_URL,
       url: "/admin/getUnassignedUserRides",
@@ -163,12 +165,15 @@ function UnAssignedUsers() {
       .then((response) => {
         console.log("response.data", response.data);
         setUsersRows(response.data.details);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setLoading(false);
         } else {
           console.log(error.message);
+          setLoading(false);
         }
       });
   }
@@ -176,11 +181,7 @@ function UnAssignedUsers() {
   const handleStatusChange = (id, newStatus) => {
     console.log("id", id);
     console.log("newStatus", newStatus);
-    // const updatedRows = usersRows.map((usersRows) =>
-    // usersRows.rideId === id
-    //     ? { ...usersRows, Driver: newStatus.driverFirstName }
-    //     : usersRows
-    // );
+    
     axios({
       baseURL: BASE_URL,
       url: "/admin/assignUserRideToDriver",
@@ -353,6 +354,7 @@ function UnAssignedUsers() {
 
   const handleSubmitNewUser = (event) => {
     event.preventDefault();
+    setLoading(true);
     console.log("user", user.firstName);
     if (validateForm()) {
       axios({
@@ -389,6 +391,7 @@ function UnAssignedUsers() {
             alert: "User Added successfully!",
           });
           setAlertOpen(true);
+          setLoading(false);
         })
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
@@ -398,10 +401,12 @@ function UnAssignedUsers() {
               alert: "server timeout request",
             });
             setAlertOpen(true);
+            setLoading(false);
           } else {
             console.log("error", error);
             setAlertMessage({ status: "error", alert: error });
             setAlertOpen(true);
+            setLoading(false);
           }
         });
     } else {
@@ -411,8 +416,8 @@ function UnAssignedUsers() {
         alert: "Please Check all the details, and  try Again..!",
       });
       setAlertOpen(true);
+      setLoading(false);
     }
-    // /closepopup();
   };
 
   const handleChange = (event) => {
@@ -422,19 +427,7 @@ function UnAssignedUsers() {
     });
   };
 
-  const handleDateChange = (newDate) => {
-    setUser({
-      ...user,
-      rideDate: newDate,
-    });
-  };
-
-  const handleTimeChange = (newTime) => {
-    setUser({
-      ...user,
-      pickUpTime: newTime,
-    });
-  };
+  
   const [open, openchange] = useState(false);
   const functionopenpopup = () => {
     openchange(true);
@@ -830,7 +823,11 @@ function UnAssignedUsers() {
         </Dialog>
       </div>
       <div style={{ height: "80%", width: "100%" }}>
-        <Container>
+      {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : (<Container>
           <Toolbar />
           <Box
             m={1}
@@ -867,7 +864,9 @@ function UnAssignedUsers() {
               />
             )}
           </Paper>
-        </Container>
+        </Container>)}
+
+        
       </div>
       <div>
         <Snackbar

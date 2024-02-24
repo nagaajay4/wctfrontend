@@ -23,13 +23,12 @@ import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-
+import CircularProgress from "@mui/material/CircularProgress";
 
 function CancelledUsers() {
   const [usersRows, setUsersRows] = useState([]);
   const {  getToken } = AuthUser();
-  const [drivers, setDrivers] = useState([]);
-  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -113,6 +112,7 @@ function CancelledUsers() {
   }, []);
 
   async function fetchData() {
+    setLoading(true);
     axios({
       baseURL: BASE_URL,
       url: "/admin/getCancelledUserRides",
@@ -125,12 +125,15 @@ function CancelledUsers() {
       .then((response) => {
         console.log("response.data", response.data);
         setUsersRows(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setLoading(false);
         } else {
           console.log(error.message);
+          setLoading(false);
         }
       });
   }
@@ -140,7 +143,6 @@ function CancelledUsers() {
 
   const handleEditRow = (id) => {
     // Implement your edit logic here
-    setIsEditMode(true);
     const tempView = usersRows.filter((user) => user.rideId === id)[0];
     if (tempView === null) {
       alert("Id is not found");
@@ -163,136 +165,11 @@ function CancelledUsers() {
     });
     functionopenpopup();
   };
-  const validateForm = () => {
-    let valid = true;
-    const newErrors = {};
 
-    if (!user.firstName) {
-      valid = false;
-      newErrors.firstName = "First Name is required";
-    }
-    if (!user.lastName) {
-      valid = false;
-      newErrors.lastName = "Last Name is required";
-    }
-    if (!user.rideDate) {
-      valid = false;
-      newErrors.rideDate = "Ride Date is required";
-    }
-    if (!user.pickUpTime) {
-      valid = false;
-      newErrors.pickUpTime = "Pick Up Time is required";
-    }
-
-    if (!user.pickUpAddress) {
-      valid = false;
-      newErrors.pickUpAddress = "PickUp Address is required";
-    }
-    if (!user.dropOffAddress) {
-      valid = false;
-      newErrors.dropOffAddress = "Drop Off Address is required";
-    }
-
-    if (!user.phoneNumber) {
-      valid = false;
-      newErrors.phoneNumber = "Phone number is required";
-    } else if (user.phoneNumber.length !== 10) {
-      valid = false;
-      newErrors.phoneNumber = "phoneNumber must be 10 digits";
-    }
-    setErrors(newErrors);
-    return valid;
-  };
-
-  const handleSubmitNewUser = (event) => {
-    event.preventDefault();
-    console.log("user", user.firstName);
-    if (validateForm()) {
-      axios({
-        baseURL: BASE_URL,
-        url: "/admin/addUserRide",
-        method: "post",
-
-        data: {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          rideDate: user.rideDate,
-          pickUpTime: user.pickUpTime,
-          pickUpAddress: user.pickUpAddress,
-          dropOffAddress: user.dropOffAddress,
-          phoneNumber: user.phoneNumber,
-          instructions: user.instructions,
-        },
-
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getToken(),
-        },
-
-        timeout: 5000,
-      })
-        .then((response) => {
-          console.log(response);
-          console.log("response.data", response.data.details);
-          console.log("message", response.data.message);
-          fetchData();
-          closepopup();
-          setAlertMessage({
-            status: "success",
-            alert: "User Added successfully!",
-          });
-          setAlertOpen(true);
-        })
-        .catch((error) => {
-          if (error.code === "ECONNABORTED") {
-            console.log("Request timed out");
-            setAlertMessage({
-              status: "error",
-              alert: "server timeout request",
-            });
-            setAlertOpen(true);
-          } else {
-            console.log("error", error);
-            setAlertMessage({ status: "error", alert: error });
-            setAlertOpen(true);
-          }
-        });
-    } else {
-      console.log("validation failed");
-      setAlertMessage({
-        status: "error",
-        alert: "Please Check all the details, and  try Again..!",
-      });
-      setAlertOpen(true);
-    }
-    // /closepopup();
-  };
-
-  const handleChange = (event) => {
-    setUser({
-      ...user,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleDateChange = (newDate) => {
-    setUser({
-      ...user,
-      rideDate: newDate,
-    });
-  };
-
-  const handleTimeChange = (newTime) => {
-    setUser({
-      ...user,
-      pickUpTime: newTime,
-    });
-  };
   const [open, openchange] = useState(false);
   const functionopenpopup = () => {
     openchange(true);
   };
-  const [isEditMode, setIsEditMode] = useState(false);
 
   const closepopup = () => {
     openchange(false);
@@ -307,20 +184,7 @@ function CancelledUsers() {
       instructions: "",
     });
   };
-  const handleAddRide = () => {
-    setIsEditMode(false);
-    setUser({
-      firstName: "",
-      lastName: "",
-      rideDate: "",
-      pickUpTime: "",
-      pickUpAddress: "",
-      dropOffAddress: "",
-      phoneNumber: "",
-      instructions: "",
-    });
-    functionopenpopup();
-  };
+ 
 
   const handleClose = (event) => {
     event.preventDefault();
@@ -560,22 +424,28 @@ function CancelledUsers() {
       <div style={{ height: "80%", width: "100%" }}>
         <Container>
           <Toolbar />
+          {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : ( <Paper component={Box} width={1} height={700}>
+          {usersRows && (
+            <DataGrid
+              rows={usersRows}
+              columns={userColumns}
+              pageSize={5}
+              getRowId={(usersRows) => usersRows.rideId}
+              // checkboxSelection
+              //onEditCellChangeCommitted={handleEditCellChange}
+              components={{
+                Toolbar: GridToolbar,
+              }}
+            />
+          )}
+        </Paper>)}
 
-          <Paper component={Box} width={1} height={700}>
-            {usersRows && (
-              <DataGrid
-                rows={usersRows}
-                columns={userColumns}
-                pageSize={5}
-                getRowId={(usersRows) => usersRows.rideId}
-                // checkboxSelection
-                //onEditCellChangeCommitted={handleEditCellChange}
-                components={{
-                  Toolbar: GridToolbar,
-                }}
-              />
-            )}
-          </Paper>
+
+         
         </Container>
       </div>
       <div>

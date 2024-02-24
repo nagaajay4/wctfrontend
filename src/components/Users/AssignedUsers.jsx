@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-
+import CircularProgress from "@mui/material/CircularProgress";
 import { Container, Paper, Box } from "@mui/material";
 import {
   Button,
@@ -28,16 +28,14 @@ import Alert from "@mui/material/Alert";
 import NoCrashSharpIcon from "@mui/icons-material/NoCrashSharp";
 import CancelIcon from '@mui/icons-material/Cancel';
 
-
-
 function AssignedUsers() {
   const [usersRows, setUsersRows] = useState([]);
-  const { http, getToken } = AuthUser();
+  const { getToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(false);
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -114,7 +112,6 @@ function AssignedUsers() {
     {
       field: "Ride_Status",
       headerName: "Complete Ride",
-      width: 80,
       renderCell: (params) => (
         <IconButton
           color="primary"
@@ -129,7 +126,6 @@ function AssignedUsers() {
     {
       field: "Ride_Statuss",
       headerName: "Cancel Ride",
-      width: 80,
       renderCell: (params) => (
         <IconButton
           color="primary"
@@ -291,6 +287,7 @@ function AssignedUsers() {
   }, []);
 
   async function fetchData() {
+    setLoading(true);
     axios({
       baseURL: BASE_URL,
       url: "/admin/getUserAssignedRides",
@@ -303,24 +300,21 @@ function AssignedUsers() {
       .then((response) => {
         console.log("response.data", response.data);
         setUsersRows(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setLoading(false);
         } else {
           console.log(error.message);
+          setLoading(false);
         }
       });
   }
 
   const handleStatusChange = (id, newStatus) => {
-    console.log("id", id);
-    console.log("newStatus", newStatus);
-    // const updatedRows = usersRows.map((usersRows) =>
-    // usersRows.rideId === id
-    //     ? { ...usersRows, Driver: newStatus.driverFirstName }
-    //     : usersRows
-    // );
+    setLoading(true);
     axios({
       baseURL: BASE_URL,
       url: "/admin/updateUserRides",
@@ -348,6 +342,7 @@ function AssignedUsers() {
           alert: "Ride Assigned succesfully..!",
         });
         setAlertOpen(true);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -357,6 +352,7 @@ function AssignedUsers() {
             alert: "Unable to Assign RIDE time out, Please try Again..!",
           });
           setAlertOpen(true);
+          setLoading(false);
         } else {
           setAlertMessage({
             status: "error",
@@ -365,17 +361,11 @@ function AssignedUsers() {
           setAlertOpen(true);
           fetchData();
           console.log("error", error);
+          setLoading(false);
         }
       });
-    //closepopup();
   };
   const handleDriverChange = (id, newStatus) => {
-    //console.log("id", id);
-    console.log("newStatus", newStatus);
-    //const rideID=""+id;
-    console.log("id", id);
-    console.log("type of id", typeof id);
-
     axios({
       baseURL: BASE_URL,
       url: "/admin/assignUserRideToDriver",
@@ -493,6 +483,7 @@ function AssignedUsers() {
 
   const handleSubmitNewUser = (event) => {
     event.preventDefault();
+    setLoading(true);
     console.log("user", user.firstName);
     if (validateForm()) {
       axios({
@@ -529,6 +520,7 @@ function AssignedUsers() {
             alert: "User Added successfully!",
           });
           setAlertOpen(true);
+          setLoading(false);
         })
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
@@ -538,10 +530,12 @@ function AssignedUsers() {
               alert: "server timeout request",
             });
             setAlertOpen(true);
+            setLoading(false);
           } else {
             console.log("error", error);
             setAlertMessage({ status: "error", alert: error });
             setAlertOpen(true);
+            setLoading(false);
           }
         });
     } else {
@@ -551,6 +545,7 @@ function AssignedUsers() {
         alert: "Please Check all the details, and  try Again..!",
       });
       setAlertOpen(true);
+      setLoading(false);
     }
     // /closepopup();
   };
@@ -562,19 +557,7 @@ function AssignedUsers() {
     });
   };
 
-  const handleDateChange = (newDate) => {
-    setUser({
-      ...user,
-      rideDate: newDate,
-    });
-  };
 
-  const handleTimeChange = (newTime) => {
-    setUser({
-      ...user,
-      pickUpTime: newTime,
-    });
-  };
   const [open, openchange] = useState(false);
   const functionopenpopup = () => {
     openchange(true);
@@ -889,6 +872,7 @@ function AssignedUsers() {
                     <TextField
                       label="Ride Date"
                       name="rideDate"
+                      type="date"
                       value={user.rideDate}
                       onChange={handleChange}
                       fullWidth
@@ -896,10 +880,12 @@ function AssignedUsers() {
                       autoFocus
                       error={Boolean(errors.rideDate)}
                       helperText={errors.rideDate}
+                      InputLabelProps={{ shrink: true }}
                     />
                     <TextField
                       label="Pick-Up Time"
                       name="pickUpTime"
+                      type="time"
                       value={user.pickUpTime}
                       onChange={handleChange}
                       fullWidth
@@ -907,6 +893,7 @@ function AssignedUsers() {
                       autoFocus
                       error={Boolean(errors.pickUpTime)}
                       helperText={errors.pickUpTime}
+                      InputLabelProps={{ shrink: true }}
                     />
                     <TextField
                       label="Pick-Up Address"
@@ -968,7 +955,11 @@ function AssignedUsers() {
         </Dialog>
       </div>
       <div style={{ height: "80%", width: "100%" }}>
-        <Container>
+      {loading ? (
+          <Container sx={{ marginTop: "15rem" }}>
+            <CircularProgress />
+          </Container>
+        ) : ( <Container>
           <Toolbar />
           <Box
             m={1}
@@ -978,16 +969,6 @@ function AssignedUsers() {
             alignItems="flex-end"
             // sx={boxDefault}
           >
-            {/* <Button
-              // onClick={functionopenpopup}
-              onClick={(event) => handleAddRide(event)}
-              color="primary"
-              variant="contained"
-              sx={{ height: 40 }}
-              startIcon={<AirportShuttleIcon />}
-            >
-              Add User Ride
-            </Button> */}
           </Box>
 
           <Paper component={Box} width={1} height={700}>
@@ -1005,7 +986,8 @@ function AssignedUsers() {
               />
             )}
           </Paper>
-        </Container>
+        </Container>)}
+       
       </div>
       <div>
         <Snackbar

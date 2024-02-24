@@ -30,14 +30,6 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import WrongLocationIcon from '@mui/icons-material/WrongLocation';
 
 
-
-
-
-
-
-
-
-
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -184,7 +176,7 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="File Upload"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
@@ -210,7 +202,7 @@ export default function MiniDrawer() {
                   <CarCrashIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Un-assigned Rides" sx={{ opacity: open ? 1 : 0 }}
+                  primary="Un-assigned Rides" sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
@@ -237,7 +229,7 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Assigned Rides"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
@@ -264,7 +256,7 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Completed Rides"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
@@ -290,12 +282,12 @@ export default function MiniDrawer() {
                   <AirlineSeatReclineNormalIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Drivers Detail Admin"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  primary="Drivers"
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
-            <ListItem
+            {(getRole()==="SUPER ADMIN") && <ListItem
               disablePadding
               sx={{ display: "block" }}
               onClick={() => navigate("/Payments")}
@@ -318,10 +310,10 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Payments"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
-            </ListItem>
+            </ListItem>}
 
             {(getRole()==="SUPER ADMIN") && <ListItem
               disablePadding
@@ -346,7 +338,7 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Admin Details"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>}
@@ -355,13 +347,12 @@ export default function MiniDrawer() {
             {/* User */}
             <ListItem
               disablePadding
-              sx={{ display: "block" }}
-              
+              sx={{ display: "block" }}   
             >
               <span>
                 <ListItemText
                   primary="User Requests"
-                  sx={{ paddingBlockStart:2, opacity: open ? 1 : 0 }}
+                  sx={{ paddingBlockStart:2, paddingLeft: 4,opacity: open ? 1 : 0,fontWeight: 'bold', color: 'red', fontSize: '1.5em' }}
                 />
                 </span>
               
@@ -389,7 +380,7 @@ export default function MiniDrawer() {
                   <CarCrashIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Un-assigned Users" sx={{ opacity: open ? 1 : 0 }}
+                  primary="Un-assigned Users" sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
@@ -417,7 +408,7 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Assigned Users"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
@@ -445,7 +436,7 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Completed Users"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
@@ -472,7 +463,7 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Cancelled Users"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
@@ -486,7 +477,7 @@ export default function MiniDrawer() {
               <span>
                 <ListItemText
                   primary="User Form Data"
-                  sx={{ paddingBlockStart:2, opacity: open ? 1 : 0 }}
+                  sx={{ paddingBlockStart:2,paddingLeft: 4, opacity: open ? 1 : 0,fontWeight: 'bold', color: 'red', fontSize: '1.5em' }}
                 />
                 </span>
               
@@ -514,7 +505,7 @@ export default function MiniDrawer() {
                   <CarCrashIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Form Details" sx={{ opacity: open ? 1 : 0 }}
+                  primary="Form Details" sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>
@@ -542,7 +533,7 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText
                   primary="Contacted Forms"
-                  sx={{ opacity: open ? 1 : 0 }}
+                  sx={{ opacity: open ? 1 : 0,fontWeight: 'bold' }}
                 />
               </ListItemButton>
             </ListItem>

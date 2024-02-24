@@ -13,12 +13,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "../layouts/Header";
-import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import AuthUser from "./AuthUser";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function Copyright(props) {
   return (
@@ -43,15 +42,13 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function ForgotPasswordDriver() {
-  const {  setToken } = AuthUser();
   const [errors, setErrors] = React.useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState({
     status: "",
     alert: "",
   });
-
-  const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(false);
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const [email, setEmail] = React.useState("");
@@ -85,8 +82,7 @@ export default function ForgotPasswordDriver() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    //http://localhost:8000/api/v1/driver/forgotPassword
-
+    setLoading(true);
     if (validateForm()) {
       axios({
         baseURL: BASE_URL,
@@ -108,6 +104,7 @@ export default function ForgotPasswordDriver() {
             alert: "Password reset link is Successful sent to email..!",
           });
           setAlertOpen(true);
+          setLoading(false);
         })
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
@@ -118,6 +115,7 @@ export default function ForgotPasswordDriver() {
             });
 
             setAlertOpen(true);
+            setLoading(false);
           } else {
             console.log("login api error", error);
             setAlertMessage({
@@ -125,6 +123,7 @@ export default function ForgotPasswordDriver() {
               alert: "Unable to send Password reset link..!",
             });
             setAlertOpen(true);
+            setLoading(false);
           }
         });
     } else {
@@ -133,6 +132,7 @@ export default function ForgotPasswordDriver() {
         alert: "please enter correct email to send Password reset link..!",
       });
       setAlertOpen(true);
+      setLoading(false);
     }
   };
 
@@ -173,8 +173,13 @@ export default function ForgotPasswordDriver() {
                 error={Boolean(errors.email)}
                 helperText={errors.email}
               />
-
-              <Button
+             {loading ? (
+                <Container sx={{ marginTop: "15rem" }}>
+                  {" "}
+                  <CircularProgress />{" "}
+                </Container>
+              ) : (
+                <Button
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -185,6 +190,8 @@ export default function ForgotPasswordDriver() {
               >
                 Send link
               </Button>
+              )}
+             
               <Grid container justifyContent={"space-around"}>
                 <Grid item>
                   <Link href="/Contact" variant="body2">

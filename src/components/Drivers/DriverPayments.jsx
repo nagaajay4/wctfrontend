@@ -114,12 +114,9 @@ function DriverPayments() {
     console.log(newPayemnt);
   };
   const handleSubmit = (event) => {
-    // event.preventDefault();
-    // console.log(newPayemnt);
     closepopup();
   };
   const handleEditRow = (id) => {
-    // Implement your edit logic here
     setIsEditMode(true);
     const pays = payments.filter((pay) => pay.paymentID === id)[0];
     if (pays === null) {
