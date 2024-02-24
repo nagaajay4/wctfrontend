@@ -1,10 +1,7 @@
 import React from "react";
-
 import Header from "../layouts/Header";
 import AdminSidebar from "../layouts/AdminSidebar";
-
 import FileUpload from "../components/FileUpload";
-
 import { Route, Routes } from "react-router-dom";
 import AdminLogin from "../components/AdminLogin";
 import ActiveRides from '../components/Rides/ActiveRides'
@@ -38,8 +35,12 @@ import CancelledUsers from "../components/Users/CancelledUsers"
 
 import ContactedForms from "../components/FormData/ContactedForms";
 import FormDetails from "../components/FormData/FormDetails";
+import { Navigate } from "react-router-dom";
 
-
+function ProtectedRoute({ element, ...rest }) {
+  const isAuthenticated = localStorage.getItem('token');
+  return isAuthenticated ? <Route {...rest} element={element} /> : <Navigate to="/login" />;
+}
 
 function Routings() {
   return (

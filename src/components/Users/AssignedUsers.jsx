@@ -198,7 +198,6 @@ function AssignedUsers() {
             status: "error",
             alert: "Unable to mark ride as completed..!",
           });
-
           setAlertOpen(true);
         }
       });

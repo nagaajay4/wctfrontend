@@ -6,36 +6,35 @@ export default function AuthUser() {
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-  const jwt = require("jsonwebtoken");
 
-  const getToken = () => {
-    const tokenString = sessionStorage.getItem("token");
-    const userToken = JSON.parse(tokenString);
-    if (userToken !== null) {
-      const decodedToken = jwt.decode(userToken);
-      const dateNow = new Date();
+  // const getToken = () => {
+  //   const tokenString = sessionStorage.getItem("token");
+  //   const userToken = JSON.parse(tokenString);
+  //   if (userToken !== null) {
+  //     const decodedToken = jwt.decode(userToken);
+  //     const dateNow = new Date();
 
-      if (decodedToken.exp < dateNow.getTime() / 1000) {
-        console.log("Token expired.");
-        return null;
-      } else {
-        return userToken;
+  //     if (decodedToken.exp < dateNow.getTime() / 1000) {
+  //       console.log("Token expired.");
+  //       return null;
+  //     } else {
+  //       return userToken;
+  //     }
+  //   } else {
+  //     return null;
+  //   }
+  // };
+  const getToken=()=> {
+      const tokenString = sessionStorage.getItem('token');
+      const userToken = JSON.parse(tokenString);
+      if(userToken!==null) {
+          return userToken;
       }
-    } else {
-      return null;
-    }
-  };
-  // const getToken=()=> {
-  //     const tokenString = sessionStorage.getItem('token');
-  //     const userToken = JSON.parse(tokenString);
-  //     if(userToken!==null) {
-  //         return userToken;
-  //     }
-  //     else {
-  //         return null;
-  //     }
+      else {
+          return null;
+      }
 
-  // }
+  }
   const getUser = () => {
     const userString = sessionStorage.getItem("user");
     const userData = JSON.parse(userString);

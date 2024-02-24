@@ -407,15 +407,7 @@ const Payements = () => {
                     error={Boolean(errors.paymentID)}
                     helperText={errors.paymentID}
                   />
-                  <TextField
-                    label="Amount"
-                    name="amount"
-                    value={newPayemnt.amount}
-                    onChange={(event) => handleChange(event)}
-                    error={Boolean(errors.amount)}
-                    helperText={errors.amount}
-                  />
-                  <TextField
+                    <TextField
                     label="Driver ID"
                     name="driverID"
                     value={newPayemnt.driverID}
@@ -428,6 +420,15 @@ const Payements = () => {
                     error={Boolean(errors.driverID)}
                     helperText={errors.driverID}
                   />
+                  <TextField
+                    label="Amount"
+                    name="amount"
+                    value={newPayemnt.amount}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.amount)}
+                    helperText={errors.amount}
+                  />
+                
                  
                   <TextField
                     label="Remarks"

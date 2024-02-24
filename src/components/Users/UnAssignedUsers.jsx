@@ -27,7 +27,6 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 
-
 function UnAssignedUsers() {
   const [usersRows, setUsersRows] = useState([]);
   const { getToken } = AuthUser();
@@ -36,7 +35,8 @@ function UnAssignedUsers() {
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [loading, setLoading] = React.useState(false);
-
+  const [ridebookingDate, setRideBookingDate] = useState("");
+  const [ridebookingTime, setRideBookingTime] = useState("");
 
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -125,8 +125,8 @@ function UnAssignedUsers() {
     { field: "updatedAt", headerName: "Updated At" },
   ];
   useEffect(() => {
-    if(getToken()===null) {
-      navigate('/AdminLogin');
+    if (getToken() === null) {
+      navigate("/AdminLogin");
     }
     fetchData();
     axios({
@@ -181,7 +181,6 @@ function UnAssignedUsers() {
   const handleStatusChange = (id, newStatus) => {
     console.log("id", id);
     console.log("newStatus", newStatus);
-    
     axios({
       baseURL: BASE_URL,
       url: "/admin/assignUserRideToDriver",
@@ -190,19 +189,16 @@ function UnAssignedUsers() {
         rideId: id,
         driverId: newStatus.driverID,
       },
-
       headers: {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
       timeout: 5000,
     })
       .then((response) => {
         console.log(response);
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
-
         fetchData();
         setAlertMessage({
           status: "success",
@@ -323,13 +319,28 @@ function UnAssignedUsers() {
       valid = false;
       newErrors.lastName = "Last Name is required";
     }
-    if (!user.rideDate) {
-      valid = false;
-      newErrors.rideDate = "Ride Date is required";
+    if (isEditMode) {
+      if (!user.rideDate) {
+        valid = false;
+        newErrors.rideDate = "Ride Date is required";
+      }
+    } else {
+      if (!ridebookingDate) {
+        valid = false;
+        newErrors.rideDate = "Ride Date is required";
+      }
     }
-    if (!user.pickUpTime) {
-      valid = false;
-      newErrors.pickUpTime = "Pick Up Time is required";
+
+    if (isEditMode) {
+      if (!user.pickUpTime) {
+        valid = false;
+        newErrors.pickUpTime = "Pick Up Time is required";
+      }
+    } else {
+      if (!ridebookingTime) {
+        valid = false;
+        newErrors.pickUpTime = "Pick Up Time is required";
+      }
     }
 
     if (!user.pickUpAddress) {
@@ -355,7 +366,10 @@ function UnAssignedUsers() {
   const handleSubmitNewUser = (event) => {
     event.preventDefault();
     setLoading(true);
-    console.log("user", user.firstName);
+    if (!isEditMode) {
+      user.rideDate = ridebookingDate;
+      user.pickUpTime = ridebookingTime;
+    } 
     if (validateForm()) {
       axios({
         baseURL: BASE_URL,
@@ -427,7 +441,6 @@ function UnAssignedUsers() {
     });
   };
 
-  
   const [open, openchange] = useState(false);
   const functionopenpopup = () => {
     openchange(true);
@@ -525,7 +538,10 @@ function UnAssignedUsers() {
                       label="Assign Driver"
                       //value={params.value}
                       onChange={(e) =>
-                        handleStatusChange(String(viewUser.rideId), e.target.value)
+                        handleStatusChange(
+                          String(viewUser.rideId),
+                          e.target.value
+                        )
                       }
                     >
                       {drivers &&
@@ -665,7 +681,7 @@ function UnAssignedUsers() {
                     }}
                   />
 
-                  <TextField
+                  {/* <TextField
                     label="Created At"
                     name="createdAt"
                     value={viewUser.createdAt}
@@ -677,9 +693,9 @@ function UnAssignedUsers() {
                         WebkitTextFillColor: "black",
                       },
                     }}
-                  />
+                  /> */}
 
-                  <TextField
+                  {/* <TextField
                     label="Updated At"
                     name="updatedAt"
                     value={viewUser.updatedAt}
@@ -691,7 +707,7 @@ function UnAssignedUsers() {
                         WebkitTextFillColor: "black",
                       },
                     }}
-                  />
+                  /> */}
 
                   <Button
                     color="primary"
@@ -738,8 +754,33 @@ function UnAssignedUsers() {
                       error={Boolean(errors.lastName)}
                       helperText={errors.lastName}
                     />
+                    <TextField
+                      label="Ride Date"
+                      name="ridedate"
+                      type="date"
+                      onChange={(e) => setRideBookingDate(e.target.value)}
+                      margin="normal"
+                      fullWidth
+                      autoFocus
+                      InputLabelProps={{ shrink: true }}
+                      error={Boolean(errors.rideDate)}
+                      helperText={errors.rideDate}
+                    />
 
                     <TextField
+                      label="Ride Date"
+                      name="ridedate"
+                      type="time"
+                      onChange={(e) => setRideBookingTime(e.target.value)}
+                      margin="normal"
+                      fullWidth
+                      autoFocus
+                      InputLabelProps={{ shrink: true }}
+                      error={Boolean(errors.pickUpTime)}
+                      helperText={errors.pickUpTime}
+                    />
+
+                    {/* <TextField
                       label="Ride Date"
                       name="rideDate"
                       value={user.rideDate}
@@ -749,9 +790,9 @@ function UnAssignedUsers() {
                       autoFocus
                       error={Boolean(errors.rideDate)}
                       helperText={errors.rideDate}
-                    />
+                    /> */}
 
-                    <TextField
+                    {/* <TextField
                       label="Pick-Up Time"
                       name="pickUpTime"
                       value={user.pickUpTime}
@@ -761,7 +802,7 @@ function UnAssignedUsers() {
                       autoFocus
                       error={Boolean(errors.pickUpTime)}
                       helperText={errors.pickUpTime}
-                    />
+                    /> */}
 
                     <TextField
                       label="Pick-Up Address"
@@ -823,50 +864,50 @@ function UnAssignedUsers() {
         </Dialog>
       </div>
       <div style={{ height: "80%", width: "100%" }}>
-      {loading ? (
+        {loading ? (
           <Container sx={{ marginTop: "15rem" }}>
             <CircularProgress />
           </Container>
-        ) : (<Container>
-          <Toolbar />
-          <Box
-            m={1}
-            //margin
-            display="flex"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-            // sx={boxDefault}
-          >
-            <Button
-              // onClick={functionopenpopup}
-              onClick={(event) => handleAddRide(event)}
-              color="primary"
-              variant="contained"
-              sx={{ height: 40 }}
-              startIcon={<AirportShuttleIcon />}
+        ) : (
+          <Container>
+            <Toolbar />
+            <Box
+              m={1}
+              //margin
+              display="flex"
+              justifyContent="flex-end"
+              alignItems="flex-end"
+              // sx={boxDefault}
             >
-              Add User Ride
-            </Button>
-          </Box>
+              <Button
+                // onClick={functionopenpopup}
+                onClick={(event) => handleAddRide(event)}
+                color="primary"
+                variant="contained"
+                sx={{ height: 40 }}
+                startIcon={<AirportShuttleIcon />}
+              >
+                Add User Ride
+              </Button>
+            </Box>
 
-          <Paper component={Box} width={1} height={700}>
-            {usersRows && (
-              <DataGrid
-                rows={usersRows}
-                columns={userColumns}
-                pageSize={5}
-                getRowId={(usersRows) => usersRows.rideId}
-                // checkboxSelection
-                //onEditCellChangeCommitted={handleEditCellChange}
-                components={{
-                  Toolbar: GridToolbar,
-                }}
-              />
-            )}
-          </Paper>
-        </Container>)}
-
-        
+            <Paper component={Box} width={1} height={700}>
+              {usersRows && (
+                <DataGrid
+                  rows={usersRows}
+                  columns={userColumns}
+                  pageSize={5}
+                  getRowId={(usersRows) => usersRows.rideId}
+                  // checkboxSelection
+                  //onEditCellChangeCommitted={handleEditCellChange}
+                  components={{
+                    Toolbar: GridToolbar,
+                  }}
+                />
+              )}
+            </Paper>
+          </Container>
+        )}
       </div>
       <div>
         <Snackbar
