@@ -381,7 +381,7 @@ function CancelledUsers() {
                 }}
               />
 
-              <TextField
+              {/* <TextField
                 label="Created At"
                 name="createdAt"
                 value={viewUser.createdAt}
@@ -393,9 +393,9 @@ function CancelledUsers() {
                     WebkitTextFillColor: "black",
                   },
                 }}
-              />
+              /> */}
 
-              <TextField
+              {/* <TextField
                 label="Updated At"
                 name="updatedAt"
                 value={viewUser.updatedAt}
@@ -407,7 +407,7 @@ function CancelledUsers() {
                     WebkitTextFillColor: "black",
                   },
                 }}
-              />
+              /> */}
 
               <Button
                 color="primary"

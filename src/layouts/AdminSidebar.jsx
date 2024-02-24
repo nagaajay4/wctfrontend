@@ -351,7 +351,7 @@ export default function MiniDrawer() {
             >
               <span>
                 <ListItemText
-                  primary="User Requests"
+                  primary="USER REQUESTS"
                   sx={{ paddingBlockStart:2, paddingLeft: 4,opacity: open ? 1 : 0,fontWeight: 'bold', color: 'red', fontSize: '1.5em' }}
                 />
                 </span>
@@ -476,7 +476,7 @@ export default function MiniDrawer() {
             >
               <span>
                 <ListItemText
-                  primary="User Form Data"
+                  primary="USER FORMS"
                   sx={{ paddingBlockStart:2,paddingLeft: 4, opacity: open ? 1 : 0,fontWeight: 'bold', color: 'red', fontSize: '1.5em' }}
                 />
                 </span>

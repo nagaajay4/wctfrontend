@@ -21,6 +21,7 @@ import { Typography } from '@mui/material';
 import AuthUser from "../AuthUser";
 import axios from 'axios';
 import CircularProgress from "@mui/material/CircularProgress";
+import { set } from "date-fns";
 
 
 const CompletedRides = () => {
@@ -29,12 +30,37 @@ const CompletedRides = () => {
   const {getToken} =AuthUser();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [loading, setLoading] = React.useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
 
-  useEffect(() => {
-    if(getToken()===null) {
-      navigate('/AdminLogin');
+  const filterData = () => {
+    // Filter data based on the date range
+    setLoading(true);
+    if (startDate !== "" && endDate !== "") {
+      const filteredRows = filteredData.filter((ride) => {
+        const rideDate = new Date(ride.Ride_Date);
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        return rideDate >= start && rideDate <= end;
+      });
+      setRidesRows(filteredRows);
+      setLoading(false);
+    } else {
+      fetchCompletedRides();
+      setLoading(false);
     }
+  };
+  const clearFilter = () => {
+    // Reset the date filters to their default state
+    setStartDate("");
+    setEndDate("");
+    fetchCompletedRides();
+  };
+
+  async function fetchCompletedRides() {
+    setLoading(true);
     axios({
       baseURL: BASE_URL,
       url: "/admin/completedRides",
@@ -47,17 +73,26 @@ const CompletedRides = () => {
       .then((response) => {
         console.log("response.data",response.data.data);
         setRidesRows(response.data.data);
+        setFilteredData(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+          setLoading(false);
         } else {
           console.log(error.message);
+          setLoading(false);
         }
       });
-    
-  }, []);
+  }
 
+  useEffect(() => {
+    if(getToken()===null) {
+      navigate('/AdminLogin');
+    }
+    fetchCompletedRides();    
+  }, []);
 
   const handleEditCellChange = (params) => {
     const updatedRows = [...ridesRows];
@@ -145,7 +180,6 @@ const CompletedRides = () => {
   };
   
   const handleEditRow = (id) => {
-    // Implement your edit logic here
     const editRide=ridesRows.filter((ride) => ride.RideID === id)[0];
     if(editRide===null) 
     {
@@ -390,9 +424,39 @@ const CompletedRides = () => {
             alignItems="flex-end"
             // sx={boxDefault}
           >
-           
+            <Stack direction="row" spacing={2} marginTop={2}>
+              <TextField
+                label="Start Date"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
+                InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
+              />
+              <TextField
+                label="End Date"
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                sx={{ marginRight: 2, width: 200 }} // Adjust width as needed
+                InputLabelProps={{ shrink: true }} // Ensure label doesn't overlap
+              />
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => filterData()}
+              >
+                Apply Filter
+              </Button>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => clearFilter()}
+              >
+                Clear Filter
+              </Button>
+            </Stack>
           </Box>
-
           <Paper component={Box} width={1} height={700}>
             <DataGrid
               rows={ridesRows}

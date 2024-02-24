@@ -378,7 +378,7 @@ function CompletedUsers() {
                 }}
               />
 
-              <TextField
+              {/* <TextField
                 label="Created At"
                 name="createdAt"
                 value={viewUser.createdAt}
@@ -390,9 +390,9 @@ function CompletedUsers() {
                     WebkitTextFillColor: "black",
                   },
                 }}
-              />
+              /> */}
 
-              <TextField
+              {/* <TextField
                 label="Updated At"
                 name="updatedAt"
                 value={viewUser.updatedAt}
@@ -404,7 +404,7 @@ function CompletedUsers() {
                     WebkitTextFillColor: "black",
                   },
                 }}
-              />
+              /> */}
 
               <Button
                 color="primary"

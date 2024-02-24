@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MenuItem, Select } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-
 import CircularProgress from "@mui/material/CircularProgress";
 import { Container, Paper, Box } from "@mui/material";
 import {
@@ -39,6 +38,9 @@ const Payements = () => {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [loading, setLoading] = React.useState(false);
 
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
 
   const handleAlertClose = (event, reason) => {
@@ -82,7 +84,6 @@ const Payements = () => {
       valueFormatter: (params) =>
         format(new Date(params.value), "MMMM d, yyyy hh:mm a"),
     },
-    
     { field: "remarks", headerName: "Remarks", width: 200 },
   ];
   async function fetchData() {
@@ -128,8 +129,6 @@ const Payements = () => {
     if (getToken() === null) {
       navigate("/AdminLogin");
     }
-  
-   
     fetchData();
     axios({
       baseURL: BASE_URL,
@@ -188,7 +187,6 @@ const Payements = () => {
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
-
     if (!newPayemnt.driverID) {
       valid = false;
       newErrors.driverID = "driverID is required";
@@ -200,7 +198,6 @@ const Payements = () => {
       valid = false;
       newErrors.amount = "Amount should be valid and greater than zero";
     }
-
     setErrors(newErrors);
     return valid;
   };
@@ -229,7 +226,6 @@ const Payements = () => {
             "Content-Type": "application/json",
             Authorization: getToken(),
           },
-
           timeout: 5000,
         })
           .then((response) => {
@@ -240,7 +236,6 @@ const Payements = () => {
               status: "success",
               alert: "Payment Editted succesfully..!",
             });
-
             setAlertOpen(true);
             closepopup();
             fetchData();
@@ -262,7 +257,6 @@ const Payements = () => {
               });
               setAlertOpen(true);
               setLoading(false);
-              
             }
           });
       } else {
@@ -287,12 +281,10 @@ const Payements = () => {
             amount: newPayemnt.amount,
             remarks: newPayemnt.remarks,
           },
-
           headers: {
             "Content-Type": "application/json",
             Authorization: getToken(),
           },
-
           timeout: 5000,
         })
           .then((response) => {

@@ -106,6 +106,7 @@ const AssignedRides = () => {
         }
       });
   }, []);
+
   async function fetchData() {
     setLoading(true);
     axios({
@@ -220,12 +221,10 @@ const AssignedRides = () => {
         rideId: id,
         driverId: newStatus.driverID,
       },
-
       headers: {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
       // timeout: 5000,
     })
       .then((response) => {
