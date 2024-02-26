@@ -120,7 +120,7 @@ export default function ForgotPasswordDriver() {
             console.log("login api error", error);
             setAlertMessage({
               status: "error",
-              alert: "Unable to send Password reset link..!",
+              alert: error.response.data.message,
             });
             setAlertOpen(true);
             setLoading(false);
@@ -142,7 +142,28 @@ export default function ForgotPasswordDriver() {
         <CssBaseline />
         <Header></Header>
 
-        <Container component="main" maxWidth="xs">
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+            backgroundColor: "#f0f0f0", // Background color
+          }}
+        >
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{
+              color: "#666666", // Text color
+              textAlign: "center", // Center align text
+            }}
+          >
+            Page is Coming Soon......!
+          </Typography>
+        </Box>
+
+        {/* <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
             sx={{
@@ -202,7 +223,7 @@ export default function ForgotPasswordDriver() {
             </Box>
           </Box>
           <Copyright sx={{ mt: 4, mb: 2 }} />
-        </Container>
+        </Container> */}
       </ThemeProvider>
       <div>
         <Snackbar

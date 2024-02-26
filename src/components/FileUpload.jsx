@@ -67,7 +67,6 @@ const FileUpload = () => {
           }
         );
 
-        console.log(response.data);
         setAlertMessage({
           status: "success",
           alert: "File submitted successfully..!",
@@ -78,7 +77,7 @@ const FileUpload = () => {
         console.error(error);
         setAlertMessage({
           status: "error",
-          alert: "Unable to Submit File, Please try Again..!",
+          alert: error.response.data.message,
         });
         setLoading(false);
         setAlertOpen(true);

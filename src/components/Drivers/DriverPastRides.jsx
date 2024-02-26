@@ -40,7 +40,6 @@ function DriverPastRides() {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data", response.data);
@@ -50,7 +49,7 @@ function DriverPastRides() {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
         } else {
-          console.log(error.message);
+          console.log(error.response.data.message);
         }
       });
   }, []);

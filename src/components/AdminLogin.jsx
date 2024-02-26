@@ -155,7 +155,7 @@ export default function AdminLogin() {
             console.log("login api error", error);
             setAlertMessage({
               status: "error",
-              alert: "Unable to Login Successfully..!",
+              alert: error.response.data.message,
             });
             setAlertOpen(true);
           }

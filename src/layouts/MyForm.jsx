@@ -125,8 +125,7 @@ const MyForm = () => {
               setAlertOpen(true);
               setLoading(false);
             } else {
-              console.log("error", error.message);
-              setAlertMessage({ status: "error", alert: error.message });
+              setAlertMessage({ status: "error", alert: error.response.data.message });
               setAlertOpen(true);
               setLoading(false);
             }

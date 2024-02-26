@@ -32,7 +32,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 function AdminDetails() {
   const navigate = useNavigate();
   const [adminDetails, setAdminDetails] = useState([]);
-  const { getToken } = AuthUser();
+  const { getUser,getToken } = AuthUser();
   const [errors, setErrors] = useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -47,7 +47,7 @@ function AdminDetails() {
     setAlertOpen(false);
   };
 
-  const roles = ["ADMIN", "SUPER ADMIN"];
+  const roles = ["ADMIN", "SUPER_ADMIN"];
  
   const [addAdmin, setAddAdmin] = useState({
     adminId: "",
@@ -61,11 +61,11 @@ function AdminDetails() {
 
 
   const adminColumns = [
-    { field: "adminId", headerName: "Admin Id", width: 120 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "email", headerName: "Email" },
+    { field: "adminId", headerName: "Admin Id", width: 150 },
+    { field: "name", headerName: "Name", width: 200 },
+    { field: "email", headerName: "Email", width: 200 },
     // { field: "password", headerName: "password" },
-    { field: "role", headerName: "Role" },
+    { field: "role", headerName: "Role",width:200 },
     // { field: "createdAt", headerName: "createdAt" },
     // { field: "updatedAt", headerName: "updatedAt" },
 
@@ -81,6 +81,32 @@ function AdminDetails() {
         </IconButton>
       ),
     },
+    // {
+    //   field: "delete",
+    //   headerName: "Delete",
+    //   sortable: false,
+    //   width: 80,
+    //   disableClickEventBubbling: true,
+    //   renderCell: (params) => {
+    //     const currentUser = getUser();
+    //     const isCurrentUser = toString(sessionStorage.getItem("user")) === toString(params.row.email);
+    //     console.log("params.id", params.row.email);  
+    //     return (
+    //       <IconButton
+    //         color="secondary"
+    //         disabled={isCurrentUser}
+    //         onClick={() => {
+    //           if (!isCurrentUser) {
+    //             console.log(params);
+    //             handleDeleteRow(params.id);
+    //           }
+    //         }}
+    //       >
+    //         <DeleteIcon />
+    //       </IconButton>
+    //     );
+    //   },
+    // },
     {
       field: "delete",
       headerName: "Delete",
@@ -111,14 +137,12 @@ function AdminDetails() {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
         setAdminDetails(response.data.data);
-        setLoading(false);
-        
+        setLoading(false);       
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
@@ -135,7 +159,6 @@ function AdminDetails() {
     if (getToken() === null) {
       navigate("/AdminLogin");
     }
-  
     fetchData()
   }, [])
   const [isEditMode, setIsEditMode] = useState(false);
@@ -151,7 +174,6 @@ function AdminDetails() {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data", response.data.data);
@@ -177,13 +199,13 @@ function AdminDetails() {
           console.log(error.message);
           setAlertMessage({
             status: "error",
-            alert: "Unable to Delete, no data found..!",
+            alert: error.response.data.message,
           });
           setAlertOpen(true);
           setLoading(false);
         }
       });
-    window.location.reload();
+    //window.location.reload();
   };
   const handleAddAdmin = () => {
     setIsEditMode(false);
@@ -252,7 +274,6 @@ function AdminDetails() {
     if (isEditMode) {
       if (validateForm()) {
         axios({
-          //http://localhost:PORT/api/v1/admin/updateAdmin
           baseURL: BASE_URL,
           url: "/admin/updateAdmin",
           method: "post",
@@ -296,7 +317,7 @@ function AdminDetails() {
               console.log("error", error);
               setAlertMessage({
                 status: "error",
-                alert: error,
+                alert: error.response.data.message,
               });
               setAlertOpen(true);
               setLoading(false);
@@ -356,7 +377,7 @@ function AdminDetails() {
               console.log("error", error);
               setAlertMessage({
                 status: "error",
-                alert: error,
+                alert: error.response.data.message,
               });
               setAlertOpen(true);
               setLoading(false);

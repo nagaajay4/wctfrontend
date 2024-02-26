@@ -117,7 +117,6 @@ function ContactedForms() {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         setFormDetails(response.data.details);
@@ -130,8 +129,7 @@ function ContactedForms() {
           setAlertOpen(true);
           setLoading(false);
         } else {
-          console.log(error.message);
-          setAlertMessage({ status: "error", alert: error.message });
+          setAlertMessage({ status: "error", alert: error.response.data.message});
           setAlertOpen(true);
           setLoading(false);
         }

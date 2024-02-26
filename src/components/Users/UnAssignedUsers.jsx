@@ -121,8 +121,8 @@ function UnAssignedUsers() {
     { field: "pickUpAddress", headerName: "Pickup Address" },
     { field: "dropOffAddress", headerName: "Dropoff Address" },
     { field: "instructions", headerName: "Pickup Instructions" },
-    { field: "createdAt", headerName: "Created At" },
-    { field: "updatedAt", headerName: "Updated At" },
+    // { field: "createdAt", headerName: "Created At" },
+    // { field: "updatedAt", headerName: "Updated At" },
   ];
   useEffect(() => {
     if (getToken() === null) {
@@ -136,7 +136,6 @@ function UnAssignedUsers() {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data drivers", response.data);
@@ -160,7 +159,6 @@ function UnAssignedUsers() {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data", response.data);
@@ -193,7 +191,6 @@ function UnAssignedUsers() {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-      timeout: 5000,
     })
       .then((response) => {
         console.log(response);
@@ -217,7 +214,7 @@ function UnAssignedUsers() {
         } else {
           setAlertMessage({
             status: "error",
-            alert: "Unable to Assign RIDE, Please try Again..!",
+            alert: error.response.data.message,
           });
           setAlertOpen(true);
           fetchData();
@@ -272,7 +269,7 @@ function UnAssignedUsers() {
         } else {
           setAlertMessage({
             status: "error",
-            alert: "Unable to Assign RIDE, Please try Again..!",
+            alert: error.response.data.message,
           });
           setAlertOpen(true);
           fetchData();
@@ -418,7 +415,7 @@ function UnAssignedUsers() {
             setLoading(false);
           } else {
             console.log("error", error);
-            setAlertMessage({ status: "error", alert: error });
+            setAlertMessage({ status: "error", alert: error.response.data.message });
             setAlertOpen(true);
             setLoading(false);
           }

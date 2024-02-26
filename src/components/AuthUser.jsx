@@ -78,7 +78,6 @@ export default function AuthUser() {
   };
 
   const http = axios.create({
-    //http://localhost:8000/api/v1/admin/signIn
     baseURL: BASE_URL,
   });
   return {
@@ -89,5 +88,6 @@ export default function AuthUser() {
     getToken,
     http,
     logout,
+    getUser,
   };
 }

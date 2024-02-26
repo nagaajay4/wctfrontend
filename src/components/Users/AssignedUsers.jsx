@@ -150,8 +150,8 @@ function AssignedUsers() {
     { field: "pickUpAddress", headerName: "Pickup Address" },
     { field: "dropOffAddress", headerName: "Dropoff Address" },
     { field: "instructions", headerName: "Pickup Instructions" },
-    { field: "createdAt", headerName: "Created At" },
-    { field: "updatedAt", headerName: "Updated At" },
+    // { field: "createdAt", headerName: "Created At" },
+    // { field: "updatedAt", headerName: "Updated At" },
   ];
   const handleRideStatusChange = (id, newStatus) => {
     
@@ -196,7 +196,7 @@ function AssignedUsers() {
           console.log("error", error);
           setAlertMessage({
             status: "error",
-            alert: "Unable to mark ride as completed..!",
+            alert: error.response.data.message,
           });
           setAlertOpen(true);
         }
@@ -219,8 +219,6 @@ function AssignedUsers() {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
-      timeout: 5000,
     })
       .then((response) => {
         console.log(response);
@@ -231,7 +229,6 @@ function AssignedUsers() {
           status: "success",
           alert: "Ride marked Cancelled successfully..!",
         });
-
         setAlertOpen(true);
         fetchData();
       })
@@ -248,14 +245,13 @@ function AssignedUsers() {
           console.log("error", error);
           setAlertMessage({
             status: "error",
-            alert: "Unable to mark ride as Cancelled..!",
+            alert: error.response.data.message,
           });
 
           setAlertOpen(true);
         }
       });
-    console.log("Ride id: ", id);
-    console.log("Status Selected: ", newStatus);
+    
   };
 
   useEffect(() => {
@@ -306,7 +302,7 @@ function AssignedUsers() {
           console.log("Request timed out");
           setLoading(false);
         } else {
-          console.log(error.message);
+          console.log(error.response.data.message);
           setLoading(false);
         }
       });
@@ -355,7 +351,7 @@ function AssignedUsers() {
         } else {
           setAlertMessage({
             status: "error",
-            alert: "Unable to Assign RIDE, Please try Again..!",
+            alert: error.response.data.message,
           });
           setAlertOpen(true);
           fetchData();
@@ -404,7 +400,7 @@ function AssignedUsers() {
         } else {
           setAlertMessage({
             status: "error",
-            alert: "Unable to Assign RIDE, Please try Again..!",
+            alert: error.response.data.message,
           });
           setAlertOpen(true);
           fetchData();
@@ -505,8 +501,6 @@ function AssignedUsers() {
           "Content-Type": "application/json",
           Authorization: getToken(),
         },
-
-        timeout: 5000,
       })
         .then((response) => {
           console.log(response);
@@ -532,7 +526,7 @@ function AssignedUsers() {
             setLoading(false);
           } else {
             console.log("error", error);
-            setAlertMessage({ status: "error", alert: error });
+            setAlertMessage({ status: "error", alert: error.response.data.message });
             setAlertOpen(true);
             setLoading(false);
           }

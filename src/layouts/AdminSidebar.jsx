@@ -153,6 +153,19 @@ export default function MiniDrawer() {
           </DrawerHeader>
           <Divider />
           <List>
+          <ListItem
+              disablePadding
+              sx={{ display: "block" }}
+              
+            >
+              <span>
+                <ListItemText
+                  primary="KAIZEN DATA"
+                  sx={{ paddingBlockStart:2,paddingLeft: 4, opacity: open ? 1 : 0,fontWeight: 'bold', color: 'red', fontSize: '1.5em' }}
+                />
+                </span>
+              
+            </ListItem>
             <ListItem
               disablePadding
               sx={{ display: "block" }}

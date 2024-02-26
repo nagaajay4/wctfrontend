@@ -114,10 +114,9 @@ const Payements = () => {
           setAlertOpen(true);
           setLoading(false);
         } else {
-          console.log(error.message);
           setAlertMessage({
             status: "error",
-            alert: "Unable to fetch payments..!",
+            alert: error.response.data.message,
           }); 
           setAlertOpen(true);
           setLoading(false);
@@ -147,7 +146,7 @@ const Payements = () => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
         } else {
-          console.log(error.message);
+          console.log(error.response.data.message);
         }
       });
   }, []);
@@ -213,9 +212,6 @@ const Payements = () => {
           baseURL: BASE_URL,
           url: `/admin/payments/${newPayemnt.paymentID}`,
           method: "post",
-          // params: {
-          //   paymentId: newPayemnt.paymentID,
-          // },
           data: {
             driverId: newPayemnt.driverID,
             amount: String(newPayemnt.amount),
@@ -226,7 +222,6 @@ const Payements = () => {
             "Content-Type": "application/json",
             Authorization: getToken(),
           },
-          timeout: 5000,
         })
           .then((response) => {
             console.log(response);
@@ -253,7 +248,7 @@ const Payements = () => {
             } else {
               setAlertMessage({
                 status: "error",
-                alert: "Payment Editted Unsuccesfully, Please try again.!",
+                alert: error.response.data.message,
               });
               setAlertOpen(true);
               setLoading(false);
@@ -288,9 +283,7 @@ const Payements = () => {
           timeout: 5000,
         })
           .then((response) => {
-            console.log(response);
-            console.log("response.data", response.data.data);
-            console.log("message", response.data.message);
+           
             setAlertMessage({
               status: "success",
               alert: "Payment submitted succesfully..!",
@@ -314,7 +307,7 @@ const Payements = () => {
               console.log("error.data", error.response);
               setAlertMessage({
                 status: "error",
-                alert: error.response.data.error,
+                alert: error.response.data.message,
               });
               setAlertOpen(true);
               setLoading(false);

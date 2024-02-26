@@ -97,8 +97,8 @@ function CompletedUsers() {
     { field: "pickUpAddress", headerName: "Pickup Address" },
     { field: "dropOffAddress", headerName: "Dropoff Address" },
     { field: "instructions", headerName: "Pickup Instructions" },
-    { field: "createdAt", headerName: "Created At" },
-    { field: "updatedAt", headerName: "Updated At" },
+    // { field: "createdAt", headerName: "Created At" },
+    // { field: "updatedAt", headerName: "Updated At" },
   ];
 
   useEffect(() => {
@@ -118,7 +118,6 @@ function CompletedUsers() {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data", response.data);

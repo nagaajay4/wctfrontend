@@ -62,6 +62,7 @@ const AssignedRides = () => {
       const filteredRows = filteredData.filter((ride) => {
         const rideDate = new Date(ride.Ride_Date);
         const start = new Date(startDate);
+        start.setDate(start.getDate() - 1);
         const end = new Date(endDate);
         return rideDate >= start && rideDate <= end;
       });
@@ -152,13 +153,10 @@ const AssignedRides = () => {
       data: {
         rideId: id,
       },
-
       headers: {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
-      timeout: 5000,
     })
       .then((response) => {
         console.log(response);
@@ -187,14 +185,11 @@ const AssignedRides = () => {
           console.log("error", error);
           setAlertMessage({
             status: "error",
-            alert: "Unable to mark ride as completed..!",
+            alert: error.response.data.message,
           });
-
           setAlertOpen(true);
         }
       });
-    console.log("Ride id: ", id);
-    console.log("Status Selected: ", newStatus);
   };
 
   const handleEditCellChange = (params) => {
@@ -225,7 +220,6 @@ const AssignedRides = () => {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-      // timeout: 5000,
     })
       .then((response) => {
         console.log(response);
@@ -236,7 +230,6 @@ const AssignedRides = () => {
           status: "success",
           alert: "RIde assigned successfully..!",
         });
-
         setAlertOpen(true);
         fetchData();
       })
@@ -253,9 +246,8 @@ const AssignedRides = () => {
           console.log("error", error);
           setAlertMessage({
             status: "error",
-            alert: "Unable to assign ride to driver",
+            alert: error.response.data.message,
           });
-
           setAlertOpen(true);
           fetchData();
         }

@@ -131,7 +131,6 @@ const DriverActiveRides = () => {
         headers: {
           Authorization: getToken()
         },
-        timeout: 2000,
       })
         .then((response) => {
           console.log("response.data user",response.data);
@@ -141,16 +140,9 @@ const DriverActiveRides = () => {
           if (error.code === "ECONNABORTED") {
             console.log("Request timed out");
           } else {
-            console.log(error.message);
+            console.log(error.response.data.message);
           }
-        });
-
-      
-
-
-
-
-    
+        });   
   }, []);
  
   return (

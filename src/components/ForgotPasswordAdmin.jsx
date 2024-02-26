@@ -122,7 +122,7 @@ export default function ForgotPasswordAdmin() {
             console.log("login api error", error);
             setAlertMessage({
               status: "error",
-              alert: "Unable to send Password reset link..!",
+              alert: error.response.data.message,
             });
             setAlertOpen(true);
           }
@@ -141,8 +141,28 @@ export default function ForgotPasswordAdmin() {
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
         <Header></Header>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+            backgroundColor: "#f0f0f0", // Background color
+          }}
+        >
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{
+              color: "#333", // Text color
+              textAlign: "center", // Center align text
+            }}
+          >
+            Page is Coming Soon......!
+          </Typography>
+        </Box>
 
-        <Container component="main" maxWidth="xs">
+        {/* <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Box
             sx={{
@@ -202,7 +222,7 @@ export default function ForgotPasswordAdmin() {
             </Box>
           </Box>
           <Copyright sx={{ mt: 4, mb: 2 }} />
-        </Container>
+        </Container> */}
       </ThemeProvider>
       <div>
         <Snackbar

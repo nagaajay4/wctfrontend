@@ -43,6 +43,7 @@ const CompletedRides = () => {
         const rideDate = new Date(ride.Ride_Date);
         const start = new Date(startDate);
         const end = new Date(endDate);
+        start.setDate(start.getDate() - 1);
         return rideDate >= start && rideDate <= end;
       });
       setRidesRows(filteredRows);

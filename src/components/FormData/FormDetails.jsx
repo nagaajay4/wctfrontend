@@ -79,7 +79,7 @@ function FormDetails() {
         } else {
           setAlertMessage({
             status: "error",
-            alert: "Unable to update the status, Please try again.!",
+            alert: error.response.data.message,
           });
           setAlertOpen(true);
           setLoading(false);

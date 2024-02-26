@@ -57,6 +57,7 @@ const ActiveRides = () => {
       const filteredRows = filteredData.filter((ride) => {
         const rideDate = new Date(ride.Ride_Date);
         const start = new Date(startDate);
+        start.setDate(start.getDate() - 1);
         const end = new Date(endDate);
         return rideDate >= start && rideDate <= end;
       });
@@ -95,7 +96,7 @@ const ActiveRides = () => {
           console.log("Request timed out");
           setLoading(false);
         } else {
-          console.log(error.message);
+          console.log(error.response.data.message);
           setLoading(false);
         }
       });
@@ -113,7 +114,6 @@ const ActiveRides = () => {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data", response.data);
@@ -123,7 +123,7 @@ const ActiveRides = () => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
         } else {
-          console.log(error.message);
+          console.log(error.response.data.message);
         }
       });
   }, []);
@@ -150,8 +150,6 @@ const ActiveRides = () => {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
-      timeout: 5000,
     })
       .then((response) => {
         console.log(response);
@@ -175,7 +173,7 @@ const ActiveRides = () => {
         } else {
           setAlertMessage({
             status: "error",
-            alert: error.response.data.error,
+            alert: error.response.data.message,
           });
           setAlertOpen(true);
         }
@@ -192,13 +190,10 @@ const ActiveRides = () => {
         rideId: id,
         driverId: newStatus.driverID,
       },
-
       headers: {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
-      // timeout: 5000,
     })
       .then((response) => {
         console.log(response);
@@ -209,7 +204,6 @@ const ActiveRides = () => {
           status: "success",
           alert: "RIde assigned successfully..!",
         });
-
         setAlertOpen(true);
         closepopup();
       })
@@ -226,9 +220,8 @@ const ActiveRides = () => {
           console.log("error", error);
           setAlertMessage({
             status: "error",
-            alert: "Unable to assign ride to driver",
+            alert: error.response.data.message,
           });
-
           setAlertOpen(true);
         }
       });
@@ -333,7 +326,6 @@ const ActiveRides = () => {
         headers: {
           Authorization: getToken(),
         },
-        timeout: 2000,
       })
         .then((response) => {
           console.log("response.data", response);
@@ -355,7 +347,7 @@ const ActiveRides = () => {
           } else {
             setAlertMessage({
               status: "error",
-              alert: error.response.data.error,
+              alert: error.response.data.message,
             });
             setAlertOpen(true);
             console.log("error", error);
