@@ -30,7 +30,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 const ActiveRides = () => {
   const [ridesRows, setRidesRows] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const { getToken } = AuthUser();
+  const { getToken,clearToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -83,10 +83,8 @@ const ActiveRides = () => {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
-        console.log("response.data", response.data);
         setRidesRows(response.data.data);
         setFilteredData(response.data.data);
         setLoading(false);
@@ -95,8 +93,10 @@ const ActiveRides = () => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setLoading(false);
-        } else {
-          console.log(error.response.data.message);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
+        } 
+        else {
           setLoading(false);
         }
       });
@@ -122,7 +122,9 @@ const ActiveRides = () => {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
-        } else {
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
+        }else {
           console.log(error.response.data.message);
         }
       });
@@ -145,7 +147,6 @@ const ActiveRides = () => {
         rideId: id,
         driverId: newStatus.driverID,
       },
-
       headers: {
         "Content-Type": "application/json",
         Authorization: getToken(),
@@ -156,7 +157,6 @@ const ActiveRides = () => {
         console.log("response.data", response.data.data);
         console.log("message", response.data.message);
         fetchData();
-
         setAlertMessage({
           status: "success",
           alert: "Ride Assigned succesfully..!",
@@ -170,6 +170,8 @@ const ActiveRides = () => {
             alert: "Unable to Assign RIDE, Please try Again..!",
           });
           setAlertOpen(true);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           setAlertMessage({
             status: "error",
@@ -214,8 +216,9 @@ const ActiveRides = () => {
             status: "error",
             alert: "Unable to assign ride to driver",
           });
-
           setAlertOpen(true);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log("error", error);
           setAlertMessage({
@@ -338,13 +341,14 @@ const ActiveRides = () => {
             status: "success",
             alert: "RIde assigned successfully..!",
           });
-
           setAlertOpen(true);
         })
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
             console.log("Request timed out");
-          } else {
+          } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+            clearToken();
+          }else {
             setAlertMessage({
               status: "error",
               alert: error.response.data.message,

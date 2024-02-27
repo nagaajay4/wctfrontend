@@ -23,7 +23,7 @@ import { useTheme } from '@mui/material/styles';
 
 function DriverPastRides() {
   const [ridesRows, setRidesRows] = useState([]);
-  const {  getToken } = AuthUser();
+  const {getToken,clearToken } =AuthUser();
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const theme = useTheme();
@@ -48,7 +48,9 @@ function DriverPastRides() {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
-        } else {
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
+        }else {
           console.log(error.response.data.message);
         }
       });
@@ -129,10 +131,7 @@ function DriverPastRides() {
     Dropoff_Address: "",
     Pickup_Directions: "",
   });
-  const handleChange = (event) => {
-    setRide({ ...ride, [event.target.name]: event.target.value });
-  };
-  const drivers = ["Nagaajay", "Darwin", "Zak"];
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(ride);

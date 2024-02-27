@@ -12,7 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 const FileUpload = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [open, setOpen] = useState(false);
-  const { http, getToken } = AuthUser();
+  const { clearToken, getToken } = AuthUser();
   const [alertOpen, setAlertOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -75,6 +75,9 @@ const FileUpload = () => {
         navigate("/ActiveRides");
       } catch (error) {
         console.error(error);
+       if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
+        }
         setAlertMessage({
           status: "error",
           alert: error.response.data.message,

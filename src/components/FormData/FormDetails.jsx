@@ -28,7 +28,7 @@ function FormDetails() {
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const { getToken } = AuthUser();
+  const { getToken,clearToken  } = AuthUser();
   const [formDetails, setFormDetails] = useState([]);
   const [viewDetail, setViewDetails] = useState({});
   const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -51,8 +51,6 @@ function FormDetails() {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
-      timeout: 5000,
     })
       .then((response) => {
         console.log(response);
@@ -62,7 +60,6 @@ function FormDetails() {
           status: "success",
           alert: "Marked user as contacted succesfully..!",
         });
-
         setAlertOpen(true);
         fetchData();
         setLoading(false);
@@ -76,6 +73,8 @@ function FormDetails() {
           });
           setAlertOpen(true);
           setLoading(false);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           setAlertMessage({
             status: "error",
@@ -191,6 +190,8 @@ function FormDetails() {
           setAlertMessage({ status: "error", alert: "server timeout request" });
           setAlertOpen(true);
           setLoading(false);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.message);
           setAlertMessage({ status: "error", alert: error.message });

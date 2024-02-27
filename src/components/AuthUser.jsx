@@ -45,6 +45,19 @@ export default function AuthUser() {
     const userData = JSON.parse(userString);
     return userData;
   };
+  const clearToken = () => {
+    sessionStorage.setItem("token", JSON.stringify(null));
+    const userRole=getRole();
+    if (userRole === "ADMIN") {
+      navigate("/AdminLogin");
+    } else if (userRole === "SUPER ADMIN") {
+      navigate("/AdminLogin");
+    } else if (userRole === "driver") {
+      navigate("/DriverLogin");
+    } else {
+      navigate("/AdminLogin");
+    }
+  }
 
   const [token, setToken] = useState(getToken());
   const [user, setUser] = useState(getUser());
@@ -89,5 +102,6 @@ export default function AuthUser() {
     http,
     logout,
     getUser,
+    clearToken,
   };
 }

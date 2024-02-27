@@ -33,7 +33,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const AssignedRides = () => {
-  const { getToken } = AuthUser();
+  const { getToken,clearToken } = AuthUser();
   const [loading, setLoading] = React.useState(false);
   const [ridesRows, setRidesRows] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -93,7 +93,6 @@ const AssignedRides = () => {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data drivers", response.data);
@@ -102,7 +101,9 @@ const AssignedRides = () => {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
-        } else {
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
+        }else {
           console.log(error.message);
         }
       });
@@ -129,6 +130,8 @@ const AssignedRides = () => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setLoading(false);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.message);
           setLoading(false);
@@ -181,6 +184,8 @@ const AssignedRides = () => {
           });
 
           setAlertOpen(true);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log("error", error);
           setAlertMessage({
@@ -242,6 +247,8 @@ const AssignedRides = () => {
           });
 
           setAlertOpen(true);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log("error", error);
           setAlertMessage({

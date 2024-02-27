@@ -27,7 +27,7 @@ function ContactedForms() {
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);  
-  const {  getToken } = AuthUser();
+  const {  getToken,clearToken  } = AuthUser();
   const [formDetails, setFormDetails] = useState([]);
   const [viewDetail,setViewDetails]=useState({});
   const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -128,6 +128,8 @@ function ContactedForms() {
           setAlertMessage({ status: "error", alert: "server timeout request" });
           setAlertOpen(true);
           setLoading(false);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           setAlertMessage({ status: "error", alert: error.response.data.message});
           setAlertOpen(true);

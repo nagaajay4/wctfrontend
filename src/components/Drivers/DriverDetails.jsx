@@ -98,7 +98,7 @@ const DriverDetail = ({ driver }) => {
 
 const DriverDetails = () => {
   const [mydriver,setMyDriver]=useState([]);
-  const {http,getToken} =AuthUser();
+  const {clearToken,getToken} =AuthUser();
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -124,7 +124,9 @@ const DriverDetails = () => {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
-        } else {
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
+        }  else {
           console.log(error.response.data.message);
         }
       });

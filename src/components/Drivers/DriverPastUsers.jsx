@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 
 function DriverPastUsers() {
   const [ridesRows, setRidesRows] = useState([]);
-  const {getToken} =AuthUser();
+  const {getToken,clearToken } =AuthUser();
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -61,6 +61,8 @@ function DriverPastUsers() {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.response.data.message);
         }

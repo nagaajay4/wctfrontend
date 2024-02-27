@@ -27,7 +27,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 function CancelledUsers() {
   const [usersRows, setUsersRows] = useState([]);
-  const {  getToken } = AuthUser();
+  const {  getToken,clearToken } = AuthUser();
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -130,6 +130,8 @@ function CancelledUsers() {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setLoading(false);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.message);
           setLoading(false);

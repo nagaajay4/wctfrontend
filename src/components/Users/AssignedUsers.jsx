@@ -30,7 +30,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 function AssignedUsers() {
   const [usersRows, setUsersRows] = useState([]);
-  const { getToken } = AuthUser();
+  const { getToken,clearToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -167,8 +167,6 @@ function AssignedUsers() {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
-      timeout: 5000,
     })
       .then((response) => {
         console.log(response);
@@ -179,7 +177,6 @@ function AssignedUsers() {
           status: "success",
           alert: "Ride marked completed successfully..!",
         });
-
         setAlertOpen(true);
         fetchData();
       })
@@ -190,8 +187,9 @@ function AssignedUsers() {
             status: "error",
             alert: "Unable to mark ride as completed..!",
           });
-
           setAlertOpen(true);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log("error", error);
           setAlertMessage({
@@ -201,12 +199,10 @@ function AssignedUsers() {
           setAlertOpen(true);
         }
       });
-    console.log("Ride id: ", id);
-    console.log("Status Selected: ", newStatus);
+    
   };
 
-  const handleRideStatusCancel = (id, newStatus) => {
-    
+  const handleRideStatusCancel = (id, newStatus) => {  
     axios({
       baseURL: BASE_URL,
       url: "/admin/updateUserRideAsCancelled",
@@ -221,9 +217,7 @@ function AssignedUsers() {
       },
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
+        
         fetchData();
         setAlertMessage({
           status: "success",
@@ -239,8 +233,9 @@ function AssignedUsers() {
             status: "error",
             alert: "Unable to mark ride as Cancelled..!",
           });
-
           setAlertOpen(true);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log("error", error);
           setAlertMessage({
@@ -266,7 +261,6 @@ function AssignedUsers() {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data drivers", response.data);
@@ -275,6 +269,8 @@ function AssignedUsers() {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.message);
         }
@@ -293,7 +289,6 @@ function AssignedUsers() {
       timeout: 2000,
     })
       .then((response) => {
-        console.log("response.data", response.data);
         setUsersRows(response.data.data);
         setLoading(false);
       })
@@ -301,6 +296,8 @@ function AssignedUsers() {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setLoading(false);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.response.data.message);
           setLoading(false);
@@ -323,14 +320,8 @@ function AssignedUsers() {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
-      timeout: 5000,
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
-
         fetchData();
         setAlertMessage({
           status: "success",
@@ -348,6 +339,8 @@ function AssignedUsers() {
           });
           setAlertOpen(true);
           setLoading(false);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           setAlertMessage({
             status: "error",
@@ -374,14 +367,8 @@ function AssignedUsers() {
         "Content-Type": "application/json",
         Authorization: getToken(),
       },
-
-      timeout: 5000,
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
-
         fetchData();
         setAlertMessage({
           status: "success",
@@ -397,6 +384,8 @@ function AssignedUsers() {
             alert: "Unable to Assign RIDE time out, Please try Again..!",
           });
           setAlertOpen(true);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           setAlertMessage({
             status: "error",
@@ -503,9 +492,7 @@ function AssignedUsers() {
         },
       })
         .then((response) => {
-          console.log(response);
-          console.log("response.data", response.data.details);
-          console.log("message", response.data.message);
+          
           fetchData();
           closepopup();
           setAlertMessage({
@@ -524,6 +511,8 @@ function AssignedUsers() {
             });
             setAlertOpen(true);
             setLoading(false);
+          }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+            clearToken();
           } else {
             console.log("error", error);
             setAlertMessage({ status: "error", alert: error.response.data.message });

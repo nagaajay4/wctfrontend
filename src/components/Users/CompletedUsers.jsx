@@ -11,7 +11,6 @@ import {
   IconButton,
   Stack,
   TextField,
-
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Toolbar from "@mui/material/Toolbar";
@@ -27,7 +26,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 function CompletedUsers() {
   const [usersRows, setUsersRows] = useState([]);
-  const {  getToken } = AuthUser();
+  const {  getToken,clearToken } = AuthUser();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
@@ -128,16 +127,14 @@ function CompletedUsers() {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setLoading(false);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.message);
           setLoading(false);
         }
       });
   }
-
-
- 
-
   const handleEditRow = (id) => {
     // Implement your edit logic here
     const tempView = usersRows.filter((user) => user.rideId === id)[0];
@@ -180,14 +177,11 @@ function CompletedUsers() {
       instructions: "",
     });
   };
-  
-
   const handleClose = (event) => {
     event.preventDefault();
     console.log();
     closepopup();
   };
-
   return (
     <>
       <AdminSidebar />
@@ -439,8 +433,6 @@ function CompletedUsers() {
             />
           )}
         </Paper>)}
-
-          
         </Container>
       </div>
       <div>

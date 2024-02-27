@@ -28,7 +28,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 function DriverProfiles() {
   const navigate = useNavigate();
   const [driverDetails, setDriverDetails] = useState([]);
-  const { getToken } = AuthUser();
+  const { getToken,clearToken } = AuthUser();
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
@@ -73,7 +73,6 @@ function DriverProfiles() {
       headers: {
         Authorization: getToken(),
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data", response.data.data);
@@ -84,6 +83,8 @@ function DriverProfiles() {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.message);
         }
@@ -238,9 +239,7 @@ function DriverProfiles() {
           baseURL: BASE_URL,
           url: `/admin/updateDriverDetails/${newdriver.driverID}`,
           method: "post",
-          // params: {
-          //   driverId: newdriver.driverID,
-          // },
+         
           data: {
             //driverId:newdriver.driverID,
             driverFirstName: newdriver.driverFirstName,
@@ -262,13 +261,9 @@ function DriverProfiles() {
             "Content-Type": "application/json",
             Authorization: getToken(),
           },
-
-          timeout: 5000,
         })
           .then((response) => {
-            console.log(response);
-            console.log("response.data", response.data.data);
-            console.log("message", response.data.message);
+            
             setCountnewdriver((prevCount) => prevCount + 1);
             closepopup();
             setAlertMessage({
@@ -287,6 +282,8 @@ function DriverProfiles() {
               });
               setAlertOpen(true);
               setLoading(false);
+            } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+              clearToken();
             } else {
               console.log("error", error);
               setAlertMessage({ status: "error", alert: error.response.data.message });
@@ -353,6 +350,8 @@ function DriverProfiles() {
               });
               setAlertOpen(true);
               setLoading(false);
+            } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+              clearToken();
             } else {
               console.log("error", error.response.data.message);
               setAlertMessage({

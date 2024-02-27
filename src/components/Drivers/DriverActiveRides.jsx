@@ -90,7 +90,7 @@ const UserRideDetails = ({ ride }) => {
 const DriverActiveRides = () => {
   const [myrides,setMyRides]=useState([]);
   const [userrides,setUserRides]=useState([]);
-  const {getToken} =AuthUser();
+  const {getToken,clearToken} =AuthUser();
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -139,7 +139,9 @@ const DriverActiveRides = () => {
         .catch((error) => {
           if (error.code === "ECONNABORTED") {
             console.log("Request timed out");
-          } else {
+          }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+            clearToken();
+          }  else {
             console.log(error.response.data.message);
           }
         });   

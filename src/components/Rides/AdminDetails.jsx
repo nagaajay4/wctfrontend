@@ -32,7 +32,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 function AdminDetails() {
   const navigate = useNavigate();
   const [adminDetails, setAdminDetails] = useState([]);
-  const { getUser,getToken } = AuthUser();
+  const { clearToken,getToken } = AuthUser();
   const [errors, setErrors] = useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -148,6 +148,8 @@ function AdminDetails() {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setLoading(false);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.message);
           setLoading(false);
@@ -195,8 +197,10 @@ function AdminDetails() {
           });
           setAlertOpen(true);
           setLoading(false);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
-          console.log(error.message);
+          console.log(error.response.data);
           setAlertMessage({
             status: "error",
             alert: error.response.data.message,
@@ -205,7 +209,6 @@ function AdminDetails() {
           setLoading(false);
         }
       });
-    //window.location.reload();
   };
   const handleAddAdmin = () => {
     setIsEditMode(false);
@@ -247,7 +250,6 @@ function AdminDetails() {
       valid = false;
       newErrors.email = "Invalid email address";
     }
-
     // validation
     if (!addAdmin.name) {
       valid = false;
@@ -287,8 +289,6 @@ function AdminDetails() {
             "Content-Type": "application/json",
             Authorization: getToken(),
           },
-
-          timeout: 5000,
         })
           .then((response) => {
             console.log(response);
@@ -311,9 +311,10 @@ function AdminDetails() {
                 alert: "Error with server, timeout..!",
               });
               setAlertOpen(true);
-              setLoading(false);
-              
-            } else {
+              setLoading(false);    
+            }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+              clearToken();
+            }else {
               console.log("error", error);
               setAlertMessage({
                 status: "error",
@@ -373,6 +374,8 @@ function AdminDetails() {
               });
               setAlertOpen(true);
               setLoading(false);
+            }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+              clearToken();
             } else {
               console.log("error", error);
               setAlertMessage({

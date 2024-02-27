@@ -29,7 +29,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 function UnAssignedUsers() {
   const [usersRows, setUsersRows] = useState([]);
-  const { getToken } = AuthUser();
+  const { getToken,clearToken } = AuthUser();
   const [drivers, setDrivers] = useState([]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -144,6 +144,8 @@ function UnAssignedUsers() {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.message);
         }
@@ -169,6 +171,8 @@ function UnAssignedUsers() {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setLoading(false);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.message);
           setLoading(false);
@@ -193,9 +197,7 @@ function UnAssignedUsers() {
       },
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
+        
         fetchData();
         setAlertMessage({
           status: "success",
@@ -211,6 +213,8 @@ function UnAssignedUsers() {
             alert: "Unable to Assign RIDE time out, Please try Again..!",
           });
           setAlertOpen(true);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           setAlertMessage({
             status: "error",
@@ -247,9 +251,7 @@ function UnAssignedUsers() {
       timeout: 5000,
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
+        
 
         fetchData();
         setAlertMessage({
@@ -266,6 +268,8 @@ function UnAssignedUsers() {
             alert: "Unable to Assign RIDE time out, Please try Again..!",
           });
           setAlertOpen(true);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           setAlertMessage({
             status: "error",
@@ -388,13 +392,9 @@ function UnAssignedUsers() {
           "Content-Type": "application/json",
           Authorization: getToken(),
         },
-
-        timeout: 5000,
       })
         .then((response) => {
-          console.log(response);
-          console.log("response.data", response.data.details);
-          console.log("message", response.data.message);
+         
           fetchData();
           closepopup();
           setAlertMessage({
@@ -413,6 +413,8 @@ function UnAssignedUsers() {
             });
             setAlertOpen(true);
             setLoading(false);
+          } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+            clearToken();
           } else {
             console.log("error", error);
             setAlertMessage({ status: "error", alert: error.response.data.message });

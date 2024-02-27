@@ -30,7 +30,7 @@ import { format } from "date-fns";
 
 const Payements = () => {
   const [payments, setPayments] = useState([]);
-  const { getToken } = AuthUser();
+  const { getToken,clearToken } = AuthUser();
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
@@ -113,6 +113,8 @@ const Payements = () => {
           });
           setAlertOpen(true);
           setLoading(false);
+        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           setAlertMessage({
             status: "error",
@@ -145,6 +147,8 @@ const Payements = () => {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
         } else {
           console.log(error.response.data.message);
         }
@@ -245,6 +249,8 @@ const Payements = () => {
               });
               setAlertOpen(true);
               setLoading(false);
+            } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+              clearToken();
             } else {
               setAlertMessage({
                 status: "error",
@@ -302,7 +308,9 @@ const Payements = () => {
               });
               setAlertOpen(true);
               setLoading(false);
-            } else {
+            } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+              clearToken();
+            }else {
               console.log("error", error);
               console.log("error.data", error.response);
               setAlertMessage({
@@ -313,7 +321,7 @@ const Payements = () => {
               setLoading(false);
             }
           });
-      } else {
+      }  else {
         console.log("validation failed");
         setAlertMessage({
           status: "error",

@@ -27,7 +27,7 @@ import { set } from "date-fns";
 const CompletedRides = () => {
   const [ridesRows, setRidesRows] = useState([]);
   const navigate = useNavigate();
-  const {getToken} =AuthUser();
+  const {getToken,clearToken} =AuthUser();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [loading, setLoading] = React.useState(false);
   const [startDate, setStartDate] = useState("");
@@ -69,7 +69,6 @@ const CompletedRides = () => {
       headers: {
         Authorization: getToken()
       },
-      timeout: 2000,
     })
       .then((response) => {
         console.log("response.data",response.data.data);
@@ -81,7 +80,9 @@ const CompletedRides = () => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setLoading(false);
-        } else {
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
+        }else {
           console.log(error.message);
           setLoading(false);
         }
