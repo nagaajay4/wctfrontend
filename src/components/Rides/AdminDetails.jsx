@@ -28,11 +28,10 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 
-
 function AdminDetails() {
   const navigate = useNavigate();
   const [adminDetails, setAdminDetails] = useState([]);
-  const { clearToken,getToken } = AuthUser();
+  const { clearToken, getToken } = AuthUser();
   const [errors, setErrors] = useState({});
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
@@ -48,7 +47,7 @@ function AdminDetails() {
   };
 
   const roles = ["ADMIN", "SUPER_ADMIN"];
- 
+
   const [addAdmin, setAddAdmin] = useState({
     adminId: "",
     name: "",
@@ -59,13 +58,12 @@ function AdminDetails() {
     updatedAt: "",
   });
 
-
   const adminColumns = [
     { field: "adminId", headerName: "Admin Id", width: 150 },
     { field: "name", headerName: "Name", width: 200 },
     { field: "email", headerName: "Email", width: 200 },
     // { field: "password", headerName: "password" },
-    { field: "role", headerName: "Role",width:200 },
+    { field: "role", headerName: "Role", width: 200 },
     // { field: "createdAt", headerName: "createdAt" },
     // { field: "updatedAt", headerName: "updatedAt" },
 
@@ -90,7 +88,7 @@ function AdminDetails() {
     //   renderCell: (params) => {
     //     const currentUser = getUser();
     //     const isCurrentUser = toString(sessionStorage.getItem("user")) === toString(params.row.email);
-    //     console.log("params.id", params.row.email);  
+    //     console.log("params.id", params.row.email);
     //     return (
     //       <IconButton
     //         color="secondary"
@@ -117,7 +115,6 @@ function AdminDetails() {
         <IconButton
           color="secondary"
           onClick={() => {
-            console.log(params);
             handleDeleteRow(params.id);
           }}
         >
@@ -129,7 +126,6 @@ function AdminDetails() {
 
   async function fetchData() {
     setLoading(true);
-    console.log("token", getToken());
     axios({
       baseURL: BASE_URL,
       url: "/admin/admins",
@@ -139,30 +135,30 @@ function AdminDetails() {
       },
     })
       .then((response) => {
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
         setAdminDetails(response.data.data);
-        setLoading(false);       
+        setLoading(false);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
           setLoading(false);
-        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+        } else if (
+          error.response.data.error === "Unauthorized" &&
+          error.response.data.message === "Invalid token"
+        ) {
           clearToken();
         } else {
           console.log(error.message);
           setLoading(false);
         }
       });
-    
   }
   useEffect(() => {
     if (getToken() === null) {
       navigate("/AdminLogin");
     }
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
   const [isEditMode, setIsEditMode] = useState(false);
   const handleDeleteRow = (id) => {
     setLoading(true);
@@ -178,8 +174,6 @@ function AdminDetails() {
       },
     })
       .then((response) => {
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
         setAlertMessage({
           status: "success",
           alert: "Admin Deleted succesfully..!",
@@ -197,7 +191,10 @@ function AdminDetails() {
           });
           setAlertOpen(true);
           setLoading(false);
-        }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+        } else if (
+          error.response.data.error === "Unauthorized" &&
+          error.response.data.message === "Invalid token"
+        ) {
           clearToken();
         } else {
           console.log(error.response.data);
@@ -234,7 +231,6 @@ function AdminDetails() {
   };
   const handleChange = (event) => {
     event.preventDefault();
-    console.log(event);
     setAddAdmin({ ...addAdmin, [event.target.name]: event.target.value });
   };
 
@@ -258,14 +254,14 @@ function AdminDetails() {
     if (!addAdmin.password) {
       valid = false;
       newErrors.password = "password is required";
-    } else if((addAdmin.password).length<8) {
+    } else if (addAdmin.password.length < 8) {
       valid = false;
       newErrors.password = "password is less than 8 characters";
     }
-    if (!addAdmin.role) { 
+    if (!addAdmin.role) {
       valid = false;
       newErrors.role = "role is required";
-    }  
+    }
     setErrors(newErrors);
     return valid;
   };
@@ -291,9 +287,6 @@ function AdminDetails() {
           },
         })
           .then((response) => {
-            console.log(response);
-            console.log("response.data", response.data.data);
-            console.log("message", response.data.message);
             setAlertMessage({
               status: "success",
               alert: "Admin Updated succesfully..!",
@@ -311,10 +304,13 @@ function AdminDetails() {
                 alert: "Error with server, timeout..!",
               });
               setAlertOpen(true);
-              setLoading(false);    
-            }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+              setLoading(false);
+            } else if (
+              error.response.data.error === "Unauthorized" &&
+              error.response.data.message === "Invalid token"
+            ) {
               clearToken();
-            }else {
+            } else {
               console.log("error", error);
               setAlertMessage({
                 status: "error",
@@ -353,9 +349,6 @@ function AdminDetails() {
           timeout: 5000,
         })
           .then((response) => {
-            console.log(response);
-            console.log("response.data", response.data.data);
-            console.log("message", response.data.message);
             setAlertMessage({
               status: "success",
               alert: "Admin Added succesfully..!",
@@ -374,7 +367,10 @@ function AdminDetails() {
               });
               setAlertOpen(true);
               setLoading(false);
-            }else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+            } else if (
+              error.response.data.error === "Unauthorized" &&
+              error.response.data.message === "Invalid token"
+            ) {
               clearToken();
             } else {
               console.log("error", error);
@@ -406,8 +402,6 @@ function AdminDetails() {
     }
     setAddAdmin(editAdmin);
     setErrors({});
-
-    console.log(`Edit row with ID ${editAdmin}`);
     functionopenpopup();
   };
 
@@ -433,7 +427,6 @@ function AdminDetails() {
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2} margin={2}>
-              
               {isEditMode === true ? (
                 <>
                   <TextField
@@ -471,15 +464,23 @@ function AdminDetails() {
                         WebkitTextFillColor: "black",
                       },
                     }}
-                    helperText={"You cannnot change role, please create new user"}
+                    helperText={
+                      "You cannnot change role, please create new user"
+                    }
                   />
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={(event) => handleSubmit(event)}
-                  >
-                    Submit
-                  </Button>
+                  {loading ? (
+                    <Container sx={{ marginTop: "15rem" }}>
+                      <CircularProgress />
+                    </Container>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={(event) => handleSubmit(event)}
+                    >
+                      Submit
+                    </Button>
+                  )}
                 </>
               ) : (
                 <>
@@ -508,7 +509,7 @@ function AdminDetails() {
                     error={Boolean(errors.password)}
                     helperText={errors.password}
                   />
-                 
+
                   <FormControl>
                     <InputLabel>Role</InputLabel>
                     <Select
@@ -526,13 +527,19 @@ function AdminDetails() {
                       ))}
                     </Select>
                   </FormControl>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={(event) => handleSubmit(event)}
-                  >
-                    Submit
-                  </Button>
+                  {loading ? (
+                    <Container sx={{ marginTop: "15rem" }}>
+                      <CircularProgress />
+                    </Container>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={(event) => handleSubmit(event)}
+                    >
+                      Submit
+                    </Button>
+                  )}
                 </>
               )}
             </Stack>
@@ -542,50 +549,51 @@ function AdminDetails() {
       </div>
 
       <div style={{ height: "80%", width: "100%" }}>
-      {loading ? (
+        {loading ? (
           <Container sx={{ marginTop: "15rem" }}>
             <CircularProgress />
           </Container>
-        ) : (<Container>
-          <Toolbar />
-          <Box
-            m={1}
-            //margin
-            display="flex"
-            justifyContent="flex-end"
-            alignItems="flex-end"
-            // sx={boxDefault}
-          >
-            <Button
-              // onClick={functionopenpopup}
-              onClick={(event) => handleAddAdmin(event)}
-              color="primary"
-              variant="contained"
-              sx={{ height: 40 }}
-              startIcon={<AirlineSeatReclineNormalIcon />}
+        ) : (
+          <Container>
+            <Toolbar />
+            <Box
+              m={1}
+              //margin
+              display="flex"
+              justifyContent="flex-end"
+              alignItems="flex-end"
+              // sx={boxDefault}
             >
-              Add Admin
-            </Button>
-          </Box>
+              <Button
+                // onClick={functionopenpopup}
+                onClick={(event) => handleAddAdmin(event)}
+                color="primary"
+                variant="contained"
+                sx={{ height: 40 }}
+                startIcon={<AirlineSeatReclineNormalIcon />}
+              >
+                Add Admin
+              </Button>
+            </Box>
 
-          <Paper component={Box} width={1} height={700}>
-            <DataGrid
-              rows={adminDetails}
-              columns={adminColumns}
-              pageSize={5}
-              getRowId={(adminDetails) => adminDetails.adminId}
-              // checkboxSelection
-              // onEditCellChangeCommitted={handleEditCellChange}
-              components={{
-                Toolbar: GridToolbar,
-              }}
-            />
-          </Paper>
-        </Container>)}
-        
+            <Paper component={Box} width={1} height={700}>
+              <DataGrid
+                rows={adminDetails}
+                columns={adminColumns}
+                pageSize={5}
+                getRowId={(adminDetails) => adminDetails.adminId}
+                // checkboxSelection
+                // onEditCellChangeCommitted={handleEditCellChange}
+                components={{
+                  Toolbar: GridToolbar,
+                }}
+              />
+            </Paper>
+          </Container>
+        )}
       </div>
       <div>
-      <Snackbar
+        <Snackbar
           open={alertOpen}
           autoHideDuration={6000}
           onClose={handleAlertClose}

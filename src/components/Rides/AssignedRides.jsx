@@ -95,7 +95,6 @@ const AssignedRides = () => {
       },
     })
       .then((response) => {
-        console.log("response.data drivers", response.data);
         setDrivers(response.data.data);
       })
       .catch((error) => {
@@ -121,7 +120,6 @@ const AssignedRides = () => {
       timeout: 2000,
     })
       .then((response) => {
-        console.log("response.data", response.data);
         setRidesRows(response.data.data);
         setFilteredData(response.data.data);
         setLoading(false);
@@ -140,7 +138,6 @@ const AssignedRides = () => {
   }
 
   const handleDeleteRow = (id) => {
-    console.log(id);
     if (ridesRows.filter((ride) => ride.RideID === id)) {
       const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
       setRidesRows(updatedRows);
@@ -162,10 +159,7 @@ const AssignedRides = () => {
       },
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
-        // const updatedRows = ridesRows.filter((ride) => ride.RideID !== id);
+        
         fetchData();
         setAlertMessage({
           status: "success",
@@ -206,8 +200,7 @@ const AssignedRides = () => {
     setRidesRows(updatedRows);
   };
   const handleStatusChange = (id, newStatus) => {
-    console.log("id", id);
-    console.log("newStatus", newStatus);
+ 
     const updatedRows = ridesRows.map((ridesRows) =>
       ridesRows.RideID === id
         ? { ...ridesRows, Driver: newStatus.driverFirstName }
@@ -227,9 +220,7 @@ const AssignedRides = () => {
       },
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
+       
         fetchData();
         setAlertMessage({
           status: "success",
@@ -366,7 +357,7 @@ const AssignedRides = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(ride);
+   
     closepopup();
   };
 
@@ -378,7 +369,6 @@ const AssignedRides = () => {
     if (editRide === null) {
       alert("Id is not found");
     }
-    console.log(editRide);
     const driverAssigned = drivers.filter(
       (driver) => driver.driverID === editRide.Driver_ID
     )[0];
@@ -402,7 +392,7 @@ const AssignedRides = () => {
         driverAssigned.driverFirstName + " " + driverAssigned.driverLastName,
     });
     functionopenpopup();
-    console.log(`Edit row with ID ${editRide[0]}`);
+  
   };
 
   return (

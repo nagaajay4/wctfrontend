@@ -88,7 +88,6 @@ const Payements = () => {
   ];
   async function fetchData() {
     setLoading(true);
-    console.log("token", getToken());
     axios({
       baseURL: BASE_URL,
       url: "/admin/getAllPayments",
@@ -100,7 +99,6 @@ const Payements = () => {
       timeout: 2000,
     })
       .then((response) => {
-        console.log("response.data", response.data);
         setPayments(response.data.data);
         setLoading(false);
       })
@@ -179,9 +177,7 @@ const Payements = () => {
   const [open, openchange] = useState(false);
   const handleChange = (event) => {
     event.preventDefault();
-    console.log(event);
     setNewpayment({ ...newPayemnt, [event.target.name]: event.target.value });
-    console.log(newPayemnt);
   };
   function isValidPositiveDecimal(str) {
     const numericValue = parseFloat(str);
@@ -209,8 +205,6 @@ const Payements = () => {
     event.preventDefault();
     setLoading(true);
     if (isEditMode) {
-      console.log("newPayemnt", newPayemnt);
-      console.log("getToken", getToken());
       if (validateForm()) {
         axios({
           baseURL: BASE_URL,
@@ -228,9 +222,7 @@ const Payements = () => {
           },
         })
           .then((response) => {
-            console.log(response);
-            console.log("response.data", response.data.data);
-            console.log("message", response.data.message);
+           
             setAlertMessage({
               status: "success",
               alert: "Payment Editted succesfully..!",
@@ -271,8 +263,7 @@ const Payements = () => {
       }
     } else {
       if (validateForm()) {
-        console.log("newPayemnt", newPayemnt);
-        console.log("getToken", getToken());
+        
         axios({
           baseURL: BASE_URL,
           url: "/admin/createPayment",
@@ -340,7 +331,6 @@ const Payements = () => {
     if (pays === null) {
       alert("Id is not found");
     }
-    console.log(pays);
     setNewpayment({
       paymentID: pays.paymentID,
       amount: pays.amount,
@@ -351,11 +341,9 @@ const Payements = () => {
       remarks: pays.remarks,
     });
     functionopenpopup();
-    console.log(`Edit row with ID ${pays}`);
   };
 
   const handleStatusChange = (newStatus) => {
-  console.log(newStatus);
   setNewpayment({
     ...newPayemnt,
     driverID: newStatus.driverID

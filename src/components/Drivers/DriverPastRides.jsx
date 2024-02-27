@@ -42,7 +42,6 @@ function DriverPastRides() {
       },
     })
       .then((response) => {
-        console.log("response.data", response.data);
         setRidesRows(response.data.data);
       })
       .catch((error) => {
@@ -134,7 +133,6 @@ function DriverPastRides() {
   
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(ride);
     closepopup();
   };
 
@@ -146,7 +144,6 @@ function DriverPastRides() {
     if (editRide === null) {
       alert("Id is not found");
     }
-    console.log(editRide);
     setRide({
       RideID: editRide.RideID,
       Ride_Status: editRide.Ride_Status,
@@ -164,7 +161,6 @@ function DriverPastRides() {
     });
     functionopenpopup();
     console.log(`Edit row with ID ${editRide[0]}`);
-    // navigate('/RidesEditPage',editRide[0]);
   };
   return (
     <>

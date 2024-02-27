@@ -75,7 +75,6 @@ function ContactedForms() {
     {
       alert("Id is not found");
     }
-    // console.log("editRide",editRide);
     setViewDetails({
       contactID: tempDetail.contactID,
         name: tempDetail.name,

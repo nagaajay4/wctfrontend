@@ -71,7 +71,6 @@ const CompletedRides = () => {
       },
     })
       .then((response) => {
-        console.log("response.data",response.data.data);
         setRidesRows(response.data.data);
         setFilteredData(response.data.data);
         setLoading(false);
@@ -187,7 +186,6 @@ const CompletedRides = () => {
     {
       alert("Id is not found");
     }
-    console.log("editRide",editRide);
     setRide({
       RideID: editRide.RideID,
       Ride_Status: editRide.Ride_Status,
@@ -205,7 +203,6 @@ const CompletedRides = () => {
       Driver_ID: editRide.Driver_ID,
     });
     functionopenpopup();
-    console.log(`Edit row with ID ${editRide[0]}`);   
   };
 
   return (

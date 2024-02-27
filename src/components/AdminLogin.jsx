@@ -148,7 +148,6 @@ export default function AdminLogin() {
               status: "error",
               alert: "Unable to Login server error..!",
             });
-
             setAlertOpen(true);
           } else {
             setLoading(false);

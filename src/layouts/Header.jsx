@@ -1,7 +1,8 @@
 import React from 'react';
-import { AppBar, Toolbar, Grid, Button, CssBaseline } from '@mui/material';
+import { AppBar, Toolbar, Grid,  CssBaseline } from '@mui/material';
 import { styled } from '@mui/system';
 import logoImage from '../assests/westCentralTransportationedited.png';
+import { Link } from 'react-router-dom';
 
 const useStyles = styled('div')({
   flexGrow: 1,
@@ -16,9 +17,7 @@ const AppBarStyled = styled(AppBar)({
   backgroundColor: 'white', // Set AppBar background color to white
 });
 
-const LogoutButton = styled(Button)({
-  marginLeft: 'auto',
-});
+
 
 export default function Header() {
   return (
@@ -26,11 +25,13 @@ export default function Header() {
       <CssBaseline />
       <AppBarStyled position="static">
         <Toolbar>
-          
+      
           <Grid container direction="row" justifyContent="center" alignItems="center">
+          <Link to="/">
             <LogoImage src={logoImage} alt="Logo" />
+            </Link>
           </Grid>
-          
+        
         </Toolbar>
       </AppBarStyled>
     </div>

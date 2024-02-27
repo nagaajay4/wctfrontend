@@ -28,7 +28,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 function DriverProfiles() {
   const navigate = useNavigate();
   const [driverDetails, setDriverDetails] = useState([]);
-  const { getToken,clearToken } = AuthUser();
+  const { getToken, clearToken } = AuthUser();
   const [alertOpen, setAlertOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
   const [errors, setErrors] = useState({});
@@ -65,7 +65,6 @@ function DriverProfiles() {
     if (getToken() === null) {
       navigate("/AdminLogin");
     }
-    console.log("token", getToken());
     axios({
       baseURL: BASE_URL,
       url: "/admin/drivers",
@@ -75,15 +74,16 @@ function DriverProfiles() {
       },
     })
       .then((response) => {
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
         setDriverDetails(response.data.data);
         //setRidesRows(response.data.data);
       })
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
-        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+        } else if (
+          error.response.data.error === "Unauthorized" &&
+          error.response.data.message === "Invalid token"
+        ) {
           clearToken();
         } else {
           console.log(error.message);
@@ -165,7 +165,6 @@ function DriverProfiles() {
     });
   };
   const handleChange = (event) => {
-    console.log(event);
     setNewdriver({ ...newdriver, [event.target.name]: event.target.value });
   };
 
@@ -232,14 +231,13 @@ function DriverProfiles() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
-    console.log("newdriver is from api call", newdriver);
     if (isEditMode) {
       if (validateForm()) {
         axios({
           baseURL: BASE_URL,
           url: `/admin/updateDriverDetails/${newdriver.driverID}`,
           method: "post",
-         
+
           data: {
             //driverId:newdriver.driverID,
             driverFirstName: newdriver.driverFirstName,
@@ -263,7 +261,6 @@ function DriverProfiles() {
           },
         })
           .then((response) => {
-            
             setCountnewdriver((prevCount) => prevCount + 1);
             closepopup();
             setAlertMessage({
@@ -282,11 +279,17 @@ function DriverProfiles() {
               });
               setAlertOpen(true);
               setLoading(false);
-            } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+            } else if (
+              error.response.data.error === "Unauthorized" &&
+              error.response.data.message === "Invalid token"
+            ) {
               clearToken();
             } else {
               console.log("error", error);
-              setAlertMessage({ status: "error", alert: error.response.data.message });
+              setAlertMessage({
+                status: "error",
+                alert: error.response.data.message,
+              });
               setAlertOpen(true);
               setLoading(false);
             }
@@ -328,10 +331,6 @@ function DriverProfiles() {
           },
         })
           .then((response) => {
-            console.log(response);
-            console.log("response.data", response.data.data);
-            console.log("message", response.data.message);
-
             closepopup();
             setAlertMessage({
               status: "success",
@@ -350,7 +349,10 @@ function DriverProfiles() {
               });
               setAlertOpen(true);
               setLoading(false);
-            } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+            } else if (
+              error.response.data.error === "Unauthorized" &&
+              error.response.data.message === "Invalid token"
+            ) {
               clearToken();
             } else {
               console.log("error", error.response.data.message);
@@ -382,7 +384,6 @@ function DriverProfiles() {
     if (editDriver === null) {
       alert("Id is not found");
     }
-    console.log(editDriver);
     setNewdriver({
       driverID: editDriver.driverID,
       driverFirstName: editDriver.driverFirstName,
@@ -401,7 +402,6 @@ function DriverProfiles() {
     });
     setErrors({});
     functionopenpopup();
-    console.log(`Edit row with ID ${editDriver}`);
   };
 
   return (
@@ -562,14 +562,19 @@ function DriverProfiles() {
                 error={Boolean(errors.vehicleLicense)}
                 helperText={errors.vehicleLicense}
               />
-
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={(event) => handleSubmit(event)}
-              >
-                Submit
-              </Button>
+              {loading ? (
+                <Container sx={{ marginTop: "15rem" }}>
+                  <CircularProgress />
+                </Container>
+              ) : (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={(event) => handleSubmit(event)}
+                >
+                  Submit
+                </Button>
+              )}
             </Stack>
           </DialogContent>
           <DialogActions></DialogActions>

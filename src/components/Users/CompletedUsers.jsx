@@ -119,7 +119,6 @@ function CompletedUsers() {
       },
     })
       .then((response) => {
-        console.log("response.data", response.data);
         setUsersRows(response.data.data);
         setLoading(false);
       })
@@ -141,7 +140,6 @@ function CompletedUsers() {
     if (tempView === null) {
       alert("Id is not found");
     }
-    console.log(tempView);
     setViewUser({
       rideId: tempView.rideId,
       rideStatus: tempView.rideStatus,

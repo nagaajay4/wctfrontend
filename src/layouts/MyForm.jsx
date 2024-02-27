@@ -99,7 +99,6 @@ const MyForm = () => {
           timeout: 5000,
         })
           .then((response) => {
-            console.log("Form submitted:", customer);
             setAlertMessage({
               status: "success",
               alert: "Form Submitted Successfully, We will contact you soon..!",
@@ -131,7 +130,6 @@ const MyForm = () => {
             }
           });
       } else {
-        console.log("Form validation failed");
         setAlertMessage({
           status: "error",
           alert: "Unable to Submit Form, Please try Again..!",

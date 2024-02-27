@@ -118,7 +118,6 @@ const DriverDetails = () => {
       },
     })
       .then((response) => {
-        console.log("response.data",response.data);
         setMyDriver([response.data.data]);
       })
       .catch((error) => {

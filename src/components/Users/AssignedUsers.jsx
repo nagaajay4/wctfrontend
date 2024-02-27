@@ -169,9 +169,7 @@ function AssignedUsers() {
       },
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
+        
         fetchData();
         setAlertMessage({
           status: "success",
@@ -263,7 +261,6 @@ function AssignedUsers() {
       },
     })
       .then((response) => {
-        console.log("response.data drivers", response.data);
         setDrivers(response.data.data);
       })
       .catch((error) => {
@@ -348,7 +345,6 @@ function AssignedUsers() {
           });
           setAlertOpen(true);
           fetchData();
-          console.log("error", error);
           setLoading(false);
         }
       });
@@ -406,7 +402,6 @@ function AssignedUsers() {
     if (tempView === null) {
       alert("Id is not found");
     }
-    console.log(tempView);
     setViewUser({
       rideId: tempView.rideId,
       rideStatus: tempView.rideStatus,
@@ -468,13 +463,11 @@ function AssignedUsers() {
   const handleSubmitNewUser = (event) => {
     event.preventDefault();
     setLoading(true);
-    console.log("user", user.firstName);
     if (validateForm()) {
       axios({
         baseURL: BASE_URL,
         url: "/admin/addUserRide",
         method: "post",
-
         data: {
           firstName: user.firstName,
           lastName: user.lastName,
@@ -563,7 +556,6 @@ function AssignedUsers() {
 
   const handleClose = (event) => {
     event.preventDefault();
-    console.log();
     closepopup();
   };
 

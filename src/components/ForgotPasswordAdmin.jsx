@@ -82,11 +82,6 @@ export default function ForgotPasswordAdmin() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    console.log({
-      email: email,
-    });
-
     if (validateForm()) {
       axios({
         baseURL: BASE_URL,

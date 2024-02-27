@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button, Typography, Box, Container } from "@mui/material";
-import Header from "../layouts/Header";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../layouts/AdminSidebar";
 import AuthUser from "./AuthUser";
@@ -30,22 +29,15 @@ const FileUpload = () => {
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
     setSelectedFiles(files);
-    console.log("files", files);
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
+ 
   useEffect(() => {
     if (getToken() === null) {
       navigate("/AdminLogin");
     }
   }, []);
 
-  const handleOk = () => {
-    navigate("/ActiveRides");
-
-    //window.location.href = "/new-page"; // replace with your page route
-  };
+  
 
   const handleUpload = async () => {
     setOpen(true);

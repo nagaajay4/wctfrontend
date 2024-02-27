@@ -55,7 +55,6 @@ function DriverPastUsers() {
       },
     })
       .then((response) => {
-        console.log("response.data",response.data);
         setRidesRows(response.data.data);
       })
       .catch((error) => {
@@ -154,7 +153,6 @@ function DriverPastUsers() {
  
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(ride);
     closepopup();
   };
 
@@ -167,9 +165,7 @@ function DriverPastUsers() {
     {
       alert("Id is not found");
     }
-    console.log(editRide);
-    setRide({
-        
+    setRide({ 
       RideID: editRide.rideId,
       Ride_Status: editRide.rideStatus,
       Ride_Date: editRide.rideDate,

@@ -41,7 +41,6 @@ function FormDetails() {
   };
 
   const handleContactStatusChange = (id) => {
-    console.log("id: ", id);
     setLoading(true);
     axios({
       baseURL: BASE_URL,
@@ -53,9 +52,7 @@ function FormDetails() {
       },
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
+       
         setAlertMessage({
           status: "success",
           alert: "Marked user as contacted succesfully..!",
@@ -133,7 +130,6 @@ function FormDetails() {
     if (tempDetail === null) {
       alert("Id is not found");
     }
-    // console.log("editRide",editRide);
     setViewDetails({
       contactID: tempDetail.contactID,
       name: tempDetail.name,
@@ -146,8 +142,7 @@ function FormDetails() {
     });
 
     functionopenpopup();
-    // console.log(`Edit row with ID ${editRide[0]}`);
-    // // navigate('/RidesEditPage',editRide[0]);
+    
   };
   const [open, openchange] = useState(false);
   const functionopenpopup = () => {
@@ -180,8 +175,7 @@ function FormDetails() {
     })
       .then((response) => {
         setFormDetails(response.data.details);
-        console.log("response.data", response.data.details);
-        console.log("message", response.data.message);
+        
         setLoading(false);
       })
       .catch((error) => {

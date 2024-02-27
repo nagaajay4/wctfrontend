@@ -51,8 +51,7 @@ const ActiveRides = () => {
 
   const filterData = () => {
     // Filter data based on the date range
-    console.log("startDate: ", startDate);
-    console.log("endDate: ", endDate);
+   
     if (startDate !== "" && endDate !== "") {
       const filteredRows = filteredData.filter((ride) => {
         const rideDate = new Date(ride.Ride_Date);
@@ -116,7 +115,6 @@ const ActiveRides = () => {
       },
     })
       .then((response) => {
-        console.log("response.data", response.data);
         setDrivers(response.data.data);
       })
       .catch((error) => {
@@ -153,9 +151,7 @@ const ActiveRides = () => {
       },
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
+       
         fetchData();
         setAlertMessage({
           status: "success",
@@ -198,9 +194,7 @@ const ActiveRides = () => {
       },
     })
       .then((response) => {
-        console.log(response);
-        console.log("response.data", response.data.data);
-        console.log("message", response.data.message);
+       
         fetchData();
         setAlertMessage({
           status: "success",
@@ -331,7 +325,6 @@ const ActiveRides = () => {
         },
       })
         .then((response) => {
-          console.log("response.data", response);
           setRide({ ...ride, [event.target.name]: event.target.value });
           const updatedRows = ridesRows.filter(
             (rides) => rides.RideID !== ride.RideID
@@ -361,7 +354,6 @@ const ActiveRides = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(ride);
     closepopup();
   };
 
@@ -373,7 +365,6 @@ const ActiveRides = () => {
     if (editRide === null) {
       alert("Id is not found");
     }
-    console.log(editRide);
     setRide({
       RideID: editRide.RideID,
       Ride_Status: editRide.Ride_Status,
@@ -391,7 +382,6 @@ const ActiveRides = () => {
       Driver: editRide.Driver,
     });
     functionopenpopup();
-    console.log(`Edit row with ID ${editRide[0]}`);
   };
 
   return (

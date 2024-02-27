@@ -121,7 +121,7 @@ const DriverActiveRides = () => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
         } else {
-          console.log(error.message);
+          console.log(error);
         }
       });
       axios({
@@ -133,7 +133,6 @@ const DriverActiveRides = () => {
         },
       })
         .then((response) => {
-          console.log("response.data user",response.data);
           setUserRides(response.data.data);
         })
         .catch((error) => {

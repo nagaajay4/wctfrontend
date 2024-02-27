@@ -110,9 +110,7 @@ function DriverPayments() {
   };
   const [open, openchange] = useState(false);
   const handleChange = (event) => {
-    console.log(event);
     setNewpayment({ ...newPayemnt, [event.target.name]: event.target.value });
-    console.log(newPayemnt);
   };
   const handleSubmit = (event) => {
     closepopup();
@@ -123,7 +121,6 @@ function DriverPayments() {
     if (pays === null) {
       alert("Id is not found");
     }
-    console.log(pays);
     setNewpayment({
       paymentID: pays.paymentID,
       amount: pays.amount,
@@ -133,7 +130,6 @@ function DriverPayments() {
       updatedAt: pays.updatedAt,
     });
     functionopenpopup();
-    console.log(`Edit row with ID ${pays}`);
   };
 
   return (

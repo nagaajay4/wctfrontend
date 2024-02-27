@@ -138,7 +138,6 @@ function UnAssignedUsers() {
       },
     })
       .then((response) => {
-        console.log("response.data drivers", response.data);
         setDrivers(response.data.data);
       })
       .catch((error) => {
@@ -163,7 +162,6 @@ function UnAssignedUsers() {
       },
     })
       .then((response) => {
-        console.log("response.data", response.data);
         setUsersRows(response.data.details);
         setLoading(false);
       })
@@ -181,8 +179,7 @@ function UnAssignedUsers() {
   }
 
   const handleStatusChange = (id, newStatus) => {
-    console.log("id", id);
-    console.log("newStatus", newStatus);
+    
     axios({
       baseURL: BASE_URL,
       url: "/admin/assignUserRideToDriver",
@@ -228,12 +225,7 @@ function UnAssignedUsers() {
     //closepopup();
   };
   const handleDriverChange = (id, newStatus) => {
-    //console.log("id", id);
-    console.log("newStatus", newStatus);
-    //const rideID=""+id;
-    console.log("id", id);
-    console.log("type of id", typeof id);
-
+    
     axios({
       baseURL: BASE_URL,
       url: "/admin/assignUserRideToDriver",
@@ -290,7 +282,6 @@ function UnAssignedUsers() {
     if (tempView === null) {
       alert("Id is not found");
     }
-    console.log(tempView);
     setViewUser({
       rideId: tempView.rideId,
       rideStatus: tempView.rideStatus,
