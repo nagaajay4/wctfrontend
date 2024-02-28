@@ -258,6 +258,7 @@ const ActiveRides = () => {
       field: "Ride_Status",
       headerName: "Ride Status",
       minWidth: 120,
+      headerClassName: 'bold-header',
     },
     { field: "RideID", headerName: "Ride ID", width: 100 },
     { field: "Ride_Date", headerName: "Ride Date" },

@@ -113,9 +113,10 @@ export default function AdminLogin() {
   };
 
   const handleSubmit = async (event) => {
-    setLoading(true);
+   
     event.preventDefault();
     if (validateForm()) {
+      setLoading(true);
       axios({
         baseURL: BASE_URL,
         url: "/admin/signIn",

@@ -268,9 +268,10 @@ function AdminDetails() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true);
+    
     if (isEditMode) {
       if (validateForm()) {
+        setLoading(true);
         axios({
           baseURL: BASE_URL,
           url: "/admin/updateAdmin",
@@ -331,6 +332,7 @@ function AdminDetails() {
       }
     } else {
       if (validateForm()) {
+        setLoading(true);
         axios({
           baseURL: BASE_URL,
           url: "/admin/addAdmin",

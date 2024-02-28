@@ -230,9 +230,9 @@ function DriverProfiles() {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true);
     if (isEditMode) {
       if (validateForm()) {
+        setLoading(true);
         axios({
           baseURL: BASE_URL,
           url: `/admin/updateDriverDetails/${newdriver.driverID}`,
@@ -305,6 +305,7 @@ function DriverProfiles() {
       }
     } else {
       if (validateForm()) {
+        setLoading(true);
         axios({
           baseURL: BASE_URL,
           url: "/admin/addDriver",

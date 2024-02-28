@@ -203,9 +203,10 @@ const Payements = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true);
+    
     if (isEditMode) {
       if (validateForm()) {
+        setLoading(true);
         axios({
           baseURL: BASE_URL,
           url: `/admin/payments/${newPayemnt.paymentID}`,
@@ -263,7 +264,7 @@ const Payements = () => {
       }
     } else {
       if (validateForm()) {
-        
+        setLoading(true);
         axios({
           baseURL: BASE_URL,
           url: "/admin/createPayment",

@@ -78,9 +78,8 @@ const MyForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
     if (validateForm()) {
-      if (validateForm()) {
+      setLoading(true);
         axios({
           baseURL: BASE_URL,
           url: "/form/createForm",
@@ -137,7 +136,7 @@ const MyForm = () => {
         setAlertOpen(true);
         setLoading(false);
       }
-    }
+   
   };
 
   return (

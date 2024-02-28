@@ -462,8 +462,8 @@ function AssignedUsers() {
 
   const handleSubmitNewUser = (event) => {
     event.preventDefault();
-    setLoading(true);
     if (validateForm()) {
+      setLoading(true);
       axios({
         baseURL: BASE_URL,
         url: "/admin/addUserRide",

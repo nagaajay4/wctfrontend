@@ -357,12 +357,13 @@ function UnAssignedUsers() {
 
   const handleSubmitNewUser = (event) => {
     event.preventDefault();
-    setLoading(true);
+   
     if (!isEditMode) {
       user.rideDate = ridebookingDate;
       user.pickUpTime = ridebookingTime;
     } 
     if (validateForm()) {
+      setLoading(true);
       axios({
         baseURL: BASE_URL,
         url: "/admin/addUserRide",
