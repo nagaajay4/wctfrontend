@@ -18,14 +18,14 @@ import {useNavigate} from 'react-router-dom'
 const driverDetailsStyles = {
   paper: {
     padding: '16px',
-    margin: '16px',
-    maxWidth: '800px',
+    //margin: '16px',
+    maxWidth: '100%',
     background: '#e6f7ff', // Light blue background
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
   },
   header: {
-    marginBottom: '12px',
+    //marginBottom: '12px',
     color: '#004080', // Dark blue text color
   },
   label: {
@@ -47,9 +47,9 @@ const driverDetailsStyles = {
 const DriverDetail = ({ driver }) => {
   return (
     <>
-      <Box display={'flex'} flexDirection={'column'}>
+      <Box display={'flex'}>
         <DriverSidebar />
-        <Container maxWidth="sm">
+        <Container maxWidth="sm"  sx={{flexDirection:"column", }} >
           <Typography variant="h3" style={driverDetailsStyles.header}>
               Driver Details
           </Typography>

@@ -187,7 +187,7 @@ function DriverPastUsers() {
     <>
       <Box display={'flex'}>
         <DriverSidebar />
-        <Box display={'flex'} flexDirection={'column'} margin={'16px'}>
+        <Box display={'flex'} flexDirection={'column'} flexGrow={"1"} margin={'16px'}>
           <Typography variant="h3" sx={{marginTop:'60px', color:'#004080'}}>
                 Drivers Past User Rides
           </Typography>
@@ -359,16 +359,7 @@ function DriverPastUsers() {
 
           <div style={{ height: "80%", width: "100%" }}>
             <Container>
-              <Box
-                m={1}
-                //margin
-                display="flex"
-                justifyContent="flex-end"
-                alignItems="flex-end"
-                // sx={boxDefault}
-              >
-              
-              </Box>
+             
 
               <Paper component={Box} width={1} height={700}>
                 <DataGrid

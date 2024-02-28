@@ -413,7 +413,6 @@ function DriverProfiles() {
       </Typography>
       <div>
         <Dialog
-          // fullScreen
           open={open}
           onClose={closepopup}
           fullWidth

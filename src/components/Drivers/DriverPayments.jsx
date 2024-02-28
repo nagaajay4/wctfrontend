@@ -59,9 +59,9 @@ function DriverPayments() {
         </IconButton>
       ),
     },
-    { field: "paymentID", headerName: "paymentID", width: 150 },
-    { field: "amount", headerName: "amount", width: 150 },
-    { field: "driverID", headerName: "driverID", width: 150 },
+    { field: "paymentID", headerName: "paymentID", width: 200 },
+    { field: "amount", headerName: "amount", width: 200 },
+    { field: "driverID", headerName: "driverID", width: 200 },
     {
       field: "paymentDate",
       headerName: "paymentDate",
@@ -134,10 +134,10 @@ function DriverPayments() {
 
   return (
     <>
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-      <Box display={"flex"} sx={{ marginTop: "160px"}} >
+    {/* <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}> */}
+      <Box display={"flex"} sx={{ marginTop: "16px"}} >
         <DriverSidebar />
-        <Box display={"flex"} flexDirection={"column"}>
+        <Box display={"flex"} flexDirection={"column"} alignItems={"center"} flexGrow={"1"}>
           <Typography variant="h3" sx={{ marginTop: "70px", color: "#004080" }}>
             Drivers Payments
           </Typography>
@@ -245,7 +245,7 @@ function DriverPayments() {
           </div>
         </Box>
       </Box>
-      </div>
+      {/* </div> */}
     </>
   );
 }

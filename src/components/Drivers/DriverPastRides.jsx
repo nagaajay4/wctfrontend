@@ -17,18 +17,17 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
-
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import { Fullscreen } from "@mui/icons-material";
 
 function DriverPastRides() {
   const [ridesRows, setRidesRows] = useState([]);
-  const {getToken,clearToken } =AuthUser();
+  const { getToken, clearToken } = AuthUser();
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down(500));
-  
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   useEffect(() => {
     if (getToken() === null) {
       navigate("/DriverLogin");
@@ -47,9 +46,12 @@ function DriverPastRides() {
       .catch((error) => {
         if (error.code === "ECONNABORTED") {
           console.log("Request timed out");
-        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+        } else if (
+          error.response.data.error === "Unauthorized" &&
+          error.response.data.message === "Invalid token"
+        ) {
           clearToken();
-        }else {
+        } else {
           console.log(error.response.data.message);
         }
       });
@@ -130,7 +132,7 @@ function DriverPastRides() {
     Dropoff_Address: "",
     Pickup_Directions: "",
   });
-  
+
   const handleSubmit = (event) => {
     event.preventDefault();
     closepopup();
@@ -164,185 +166,172 @@ function DriverPastRides() {
   };
   return (
     <>
-      <Box display={"flex"}>
-        <DriverSidebar />
-        <Box display={"flex"} flexDirection={"column"} margin={"16px"}>
-          <Typography variant="h3" sx={{ marginTop: "60px", color: "#004080" }}>
-            Drivers Past Rides
-          </Typography>
-          <div>
-            <Dialog
-             fullScreen={fullScreen}
-              open={open}
-              onClose={closepopup}
-              fullWidth
-              maxWidth="sm"
-            >
-              <DialogTitle>
-                Completed Ride Details{" "}
-                <IconButton onClick={closepopup} style={{ float: "right" }}>
-                  <CloseIcon color="primary"></CloseIcon>
-                </IconButton>{" "}
-              </DialogTitle>
-              <DialogContent>
-                <Stack spacing={2} margin={2}>
-                  <TextField
-                    label="Ride ID"
-                    name="RideID"
-                    value={ride.RideID}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Ride Status"
-                    name="Ride_Status"
-                    value={ride.Ride_Status}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Ride Date"
-                    name="Ride_Date"
-                    value={ride.Ride_Date}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Customer First Name"
-                    name="Customer_FirstName"
-                    value={ride.Customer_FirstName}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Customer Last Name"
-                    name="Customer_LastName"
-                    value={ride.Customer_LastName}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Phone Number"
-                    name="Phone_Number"
-                    value={ride.Phone_Number}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Transportation Type"
-                    name="Transportation_Type"
-                    value={ride.Transportation_Type}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Pick Up Time"
-                    name="Pick_Up_Time"
-                    value={ride.Pick_Up_Time}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Arrival Time"
-                    name="Arrival_Time"
-                    value={ride.Arrival_Time}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Estimated Distance"
-                    name="Estimated_Distance"
-                    value={ride.Estimated_Distance}
-                    // onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Pickup Address"
-                    name="Pickup_Address"
-                    value={ride.Pickup_Address}
-                    //onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Dropoff Address"
-                    name="Dropoff_Address"
-                    value={ride.Dropoff_Address}
-                    //onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  <TextField
-                    label="Pickup Directions"
-                    name="Pickup_Directions"
-                    value={ride.Pickup_Directions}
-                    //onChange={handleChange}
-                    disabled={true}
-                    sx={{
-                      "& .MuiInputBase-input.Mui-disabled": {
-                        WebkitTextFillColor: "black",
-                      },
-                    }}
-                  />
-                  {/* <TextField
+        <Dialog open={open} onClose={closepopup} fullScreen={fullScreen} fullWidth maxWidth="sm">
+          <DialogTitle>
+            Completed Ride Details{" "}
+            <IconButton onClick={closepopup} style={{ float: "right" }}>
+              <CloseIcon color="primary"></CloseIcon>
+            </IconButton>{" "}
+          </DialogTitle>
+          <DialogContent>
+            <Stack spacing={2} margin={2}>
+              <TextField
+                label="Ride ID"
+                name="RideID"
+                value={ride.RideID}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Ride Status"
+                name="Ride_Status"
+                value={ride.Ride_Status}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Ride Date"
+                name="Ride_Date"
+                value={ride.Ride_Date}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Customer First Name"
+                name="Customer_FirstName"
+                value={ride.Customer_FirstName}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Customer Last Name"
+                name="Customer_LastName"
+                value={ride.Customer_LastName}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Phone Number"
+                name="Phone_Number"
+                value={ride.Phone_Number}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Transportation Type"
+                name="Transportation_Type"
+                value={ride.Transportation_Type}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Pick Up Time"
+                name="Pick_Up_Time"
+                value={ride.Pick_Up_Time}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Arrival Time"
+                name="Arrival_Time"
+                value={ride.Arrival_Time}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Estimated Distance"
+                name="Estimated_Distance"
+                value={ride.Estimated_Distance}
+                // onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Pickup Address"
+                name="Pickup_Address"
+                value={ride.Pickup_Address}
+                //onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Dropoff Address"
+                name="Dropoff_Address"
+                value={ride.Dropoff_Address}
+                //onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              <TextField
+                label="Pickup Directions"
+                name="Pickup_Directions"
+                value={ride.Pickup_Directions}
+                //onChange={handleChange}
+                disabled={true}
+                sx={{
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "black",
+                  },
+                }}
+              />
+              {/* <TextField
                     name="Driver"
                     value={ride.Driver}
                     //onChange={handleChange}
@@ -356,31 +345,40 @@ function DriverPastRides() {
                   />
                    */}
 
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={(event) => handleSubmit(event)}
-                  >
-                    Close
-                  </Button>
-                </Stack>
-              </DialogContent>
-              <DialogActions></DialogActions>
-            </Dialog>
-          </div>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={(event) => handleSubmit(event)}
+              >
+                Close
+              </Button>
+            </Stack>
+          </DialogContent>
+          <DialogActions></DialogActions>
+        </Dialog>
+     
+      <Box display={"flex"}>
+        <DriverSidebar />
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          flexGrow={"1"}
+          margin={"16px"}
+        >
+          <Typography variant="h3" sx={{ marginTop: "60px", color: "#004080" }}>
+            Drivers Past Rides
+          </Typography>
 
-          <div style={{ overflowX: 'auto' }}>
+          <div
+            style={{
+              overflowX: "auto",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <Container>
-              <Box
-                m={1}
-                //margin
-                display="flex"
-                justifyContent="flex-end"
-                alignItems="flex-end"
-                // sx={boxDefault}
-              ></Box>
-
-              <Paper component={Box} width={1} >
+              <Paper component={Box} width={1}>
                 <DataGrid
                   rows={ridesRows}
                   columns={rideColumns}

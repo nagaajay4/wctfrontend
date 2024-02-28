@@ -26,6 +26,8 @@ const appStyles = {
     flexDirection: 'column',
     alignItems: 'center',
     margin: '16px',
+    height: '100%',
+    width: '100%',
   },
 };
 
@@ -150,7 +152,7 @@ const DriverActiveRides = () => {
     <Box display={'flex'}>
       <DriverSidebar />
       <div style={appStyles.container}>
-        <Typography variant="h3" sx={{marginTop:'60px',color:'#004080'}}>
+        <Typography variant="h3" sx={{marginTop:'60px',color:'#004080',alignItems:'center', }}>
           Drivers Active Rides
         </Typography>
         {myrides.map((ride, index) => (
