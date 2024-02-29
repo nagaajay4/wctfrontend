@@ -166,7 +166,7 @@ function DriverPastRides() {
   };
   return (
     <>
-        <Dialog open={open} onClose={closepopup} fullScreen={fullScreen} fullWidth maxWidth="sm">
+        <Dialog open={open} onClose={closepopup} fullScreen={fullScreen} fullWidth maxWidth="100px">
           <DialogTitle>
             Completed Ride Details{" "}
             <IconButton onClick={closepopup} style={{ float: "right" }}>

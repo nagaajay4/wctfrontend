@@ -50,7 +50,7 @@ export default function AuthUser() {
     const userRole=getRole();
     if (userRole === "ADMIN") {
       navigate("/AdminLogin");
-    } else if (userRole === "SUPER ADMIN") {
+    } else if (userRole === "SUPER_ADMIN") {
       navigate("/AdminLogin");
     } else if (userRole === "driver") {
       navigate("/DriverLogin");
@@ -72,7 +72,7 @@ export default function AuthUser() {
     setRole(role);
     if (userRole === "ADMIN" && token !== "" && user !== "") {
       navigate("/FileUpload");
-    } else if (userRole === "SUPER ADMIN" && token !== "" && user !== "") {
+    } else if (userRole === "SUPER_ADMIN" && token !== "" && user !== "") {
       navigate("/FileUpload");
     } else if (userRole === "driver" && token !== "" && user !== "") {
       navigate("/DriverActiveRides");

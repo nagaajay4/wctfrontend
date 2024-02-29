@@ -300,7 +300,7 @@ export default function MiniDrawer() {
                 />
               </ListItemButton>
             </ListItem>
-            {(getRole()==="SUPER ADMIN") && <ListItem
+            {(getRole()==="SUPER_ADMIN") && <ListItem
               disablePadding
               sx={{ display: "block" }}
               onClick={() => navigate("/Payments")}
@@ -328,7 +328,7 @@ export default function MiniDrawer() {
               </ListItemButton>
             </ListItem>}
 
-            {(getRole()==="SUPER ADMIN") && <ListItem
+            {(getRole()==="SUPER_ADMIN") && <ListItem
               disablePadding
               sx={{ display: "block" }}
               onClick={() => navigate("/AdminDetails")}
