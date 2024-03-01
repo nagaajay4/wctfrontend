@@ -44,12 +44,12 @@ function ContactedForms() {
 
   const formColumns = [
     { field: "contactID", headerName: "Contact ID", width: 200 },
-    { field: "name", headerName: "name", width: 150 },
-    { field: "phoneNumber", headerName: "phoneNumber" },
-    { field: "email", headerName: "email" },
+    { field: "name", headerName: "Name", width: 150 },
+    { field: "phoneNumber", headerName: "Phone Number" },
+    { field: "email", headerName: "Email" },
     // { field: "password", headerName: "password" },
-    { field: "message", headerName: "message" },
-    { field: "status", headerName: "status" },
+    { field: "message", headerName: "Message" },
+    { field: "status", headerName: "Status" },
  
     
     {

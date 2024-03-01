@@ -281,6 +281,8 @@ function AdminDetails() {
             name: addAdmin.name,
             email: addAdmin.email,
             role: addAdmin.role,
+            password: addAdmin.password,
+
           },
           headers: {
             "Content-Type": "application/json",
@@ -454,6 +456,14 @@ function AdminDetails() {
                     name="email"
                     value={addAdmin.email}
                     onChange={(event) => handleChange(event)}
+                  />
+                  <TextField
+                    label="Admin password"
+                    name="password"
+                    value={addAdmin.password}
+                    onChange={(event) => handleChange(event)}
+                    error={Boolean(errors.password)}
+                    helperText={errors.password}
                   />
                   <TextField
                     label="Admin role"

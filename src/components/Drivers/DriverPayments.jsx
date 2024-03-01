@@ -59,12 +59,12 @@ function DriverPayments() {
         </IconButton>
       ),
     },
-    { field: "paymentID", headerName: "paymentID", width: 200 },
-    { field: "amount", headerName: "amount", width: 200 },
-    { field: "driverID", headerName: "driverID", width: 200 },
+    { field: "paymentID", headerName: "Payment ID", width: 200 },
+    { field: "amount", headerName: "Amount", width: 200 },
+    { field: "driverID", headerName: "Driver ID", width: 200 },
     {
       field: "paymentDate",
-      headerName: "paymentDate",
+      headerName: "Payment Date",
       width: 250,
       valueFormatter: (params) =>
         format(new Date(params.value), "MMMM d, yyyy hh:mm a"),

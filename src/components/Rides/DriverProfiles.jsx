@@ -413,6 +413,7 @@ function DriverProfiles() {
       </Typography>
       <div>
         <Dialog
+          // fullScreen
           open={open}
           onClose={closepopup}
           fullWidth
@@ -470,7 +471,7 @@ function DriverProfiles() {
                 error={Boolean(errors.email)}
                 helperText={errors.email}
               />
-              {!isEditMode && (
+              {/* {!isEditMode && ( */}
                 <TextField
                   label="Driver password"
                   name="password"
@@ -480,7 +481,7 @@ function DriverProfiles() {
                   error={Boolean(errors.password)}
                   helperText={errors.password}
                 />
-              )}
+              
               <TextField
                 label="Driver Address"
                 name="driverAddress"

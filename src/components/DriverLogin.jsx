@@ -140,11 +140,9 @@ export default function DriverLogin() {
           email: email,
           password: password,
         },
-
         headers: {
           "Content-Type": "application/json",
         },
-
         timeout: 5000,
       })
         .then((response) => {
