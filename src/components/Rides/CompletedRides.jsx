@@ -33,6 +33,8 @@ const CompletedRides = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [drivers, setDrivers] = useState([]);
+
 
 
   const filterData = () => {
@@ -43,7 +45,7 @@ const CompletedRides = () => {
         const rideDate = new Date(ride.Ride_Date);
         const start = new Date(startDate);
         const end = new Date(endDate);
-        start.setDate(start.getDate() - 1);
+        //start.setDate(start.getDate() - 1);
         return rideDate >= start && rideDate <= end;
       });
       setRidesRows(filteredRows);
@@ -92,7 +94,27 @@ const CompletedRides = () => {
     if(getToken()===null) {
       navigate('/AdminLogin');
     }
-    fetchCompletedRides();    
+    fetchCompletedRides();
+    axios({
+      baseURL: BASE_URL,
+      url: "/admin/drivers",
+      method: "get",
+      headers: {
+        Authorization: getToken(),
+      },
+    })
+      .then((response) => {
+        setDrivers(response.data.data);
+      })
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
+        }else {
+          console.log(error.message);
+        }
+      });    
   }, []);
 
   const handleEditCellChange = (params) => {
@@ -121,6 +143,14 @@ const CompletedRides = () => {
     { field: "RideID", headerName: "Ride ID", width: 100 },
     { field: "Ride_Status", headerName: "Ride Status", width: 150 },
     {field: "Driver_ID",headerName:"Driver ID",minWidth: 120,},
+    {
+      field: "AssignedDriver",
+      headerName: "Driver",
+      valueGetter: (params) => {
+        const driver = drivers.find((driver) => driver.driverID === params.row.Driver_ID);
+        return driver ? driver.driverFirstName + " " + driver.driverLastName : "";
+      },
+    },
     { field: "Ride_Date", headerName: "Ride Date" },
     { field: "Customer_FirstName", headerName: "First Name" },
     { field: "Customer_LastName", headerName: "Last Name" },

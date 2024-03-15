@@ -56,7 +56,7 @@ const ActiveRides = () => {
       const filteredRows = filteredData.filter((ride) => {
         const rideDate = new Date(ride.Ride_Date);
         const start = new Date(startDate);
-        start.setDate(start.getDate() - 1);
+        //start.setDate(start.getDate() - 1);
         const end = new Date(endDate);
         return rideDate >= start && rideDate <= end;
       });

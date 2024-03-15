@@ -62,7 +62,7 @@ const AssignedRides = () => {
       const filteredRows = filteredData.filter((ride) => {
         const rideDate = new Date(ride.Ride_Date);
         const start = new Date(startDate);
-        start.setDate(start.getDate() - 1);
+        //start.setDate(start.getDate() - 1);
         const end = new Date(endDate);
         return rideDate >= start && rideDate <= end;
       });
@@ -281,7 +281,15 @@ const AssignedRides = () => {
     },
 
     { field: "RideID", headerName: "Ride ID", width: 100 },
-    { field: "Driver_ID", headerName: "Assigned Driver" },
+    { field: "Driver_ID", headerName: "Assigned Driver ID" },
+    {
+      field: "AssignedDriver",
+      headerName: "Assigned Driver",
+      valueGetter: (params) => {
+        const driver = drivers.find((driver) => driver.driverID === params.row.Driver_ID);
+        return driver ? driver.driverFirstName + " " + driver.driverLastName : "";
+      },
+    },
     {
       field: "Driver",
       headerName: "Assign Driver",
