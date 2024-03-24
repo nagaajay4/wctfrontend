@@ -21,7 +21,14 @@ import { Typography } from '@mui/material';
 import AuthUser from "../AuthUser";
 import axios from 'axios';
 import CircularProgress from "@mui/material/CircularProgress";
-import { set } from "date-fns";
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 
 const CompletedRides = () => {
@@ -34,8 +41,15 @@ const CompletedRides = () => {
   const [endDate, setEndDate] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [drivers, setDrivers] = useState([]);
+  const [alertMessage, setAlertMessage] = useState({ status: "", alert: "" });
+  const [alertOpen, setAlertOpen] = useState(false);
 
-
+  const handleAlertClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlertOpen(false);
+  };
 
   const filterData = () => {
     // Filter data based on the date range
@@ -126,6 +140,55 @@ const CompletedRides = () => {
     setRidesRows(updatedRows);
   };
 
+  //Handle Undo Ride
+
+  const handleUndo = (id) => {
+    axios({
+      baseURL: BASE_URL,
+      url: "/admin/completedRideUndo",
+      method: "post",
+      data: {
+        rideId: id,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getToken(),
+      },
+    })
+      .then((response) => {
+        
+        fetchCompletedRides();
+        setAlertMessage({
+          status: "success",
+          alert: "Ride marked UNDO successfully..!",
+        });
+
+        setAlertOpen(true);
+        //fetchData();
+      })
+      .catch((error) => {
+        if (error.code === "ECONNABORTED") {
+          console.log("Request timed out");
+          setAlertMessage({
+            status: "error",
+            alert: "Unable to UNDO ride as completed..!",
+          });
+
+          setAlertOpen(true);
+        } else if(error.response.data.error==="Unauthorized" && error.response.data.message==="Invalid token"){
+          clearToken();
+        } else {
+          console.log("error", error);
+          setAlertMessage({
+            status: "error",
+            alert: error.response.data.message,
+          });
+          setAlertOpen(true);
+        }
+      });
+  };
+ 
+
 
   const rideColumns = [
     {
@@ -137,6 +200,18 @@ const CompletedRides = () => {
       renderCell: (params) => (
         <IconButton color="primary" onClick={() => handleEditRow(params.id)}>
           <RemoveRedEyeIcon />
+        </IconButton>
+      ),
+    },
+    {
+      field: "undo",
+      headerName: "Undo",
+      sortable: false,
+      width: 80,
+      disableClickEventBubbling: true,
+      renderCell: (params) => (
+        <IconButton color="primary" onClick={() => handleUndo(params.id)}>
+          <SettingsBackupRestoreIcon />
         </IconButton>
       ),
     },
@@ -501,6 +576,24 @@ const CompletedRides = () => {
           </Paper>
         </Container>)}
         
+      </div>
+      <div>
+        <Snackbar
+          open={alertOpen}
+          autoHideDuration={6000}
+          onClose={handleAlertClose}
+        >
+          <Alert
+            onClose={handleAlertClose}
+            severity={alertMessage.status}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {typeof alertMessage.alert === "object"
+              ? JSON.stringify(alertMessage.alert)
+              : alertMessage.alert}
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );

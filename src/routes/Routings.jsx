@@ -6,7 +6,8 @@ import { Route, Routes } from "react-router-dom";
 import AdminLogin from "../components/AdminLogin";
 import ActiveRides from '../components/Rides/ActiveRides'
 import AssignedRides from '../components/Rides/AssignedRides'
-import CompletedRides from '../components/Rides/CompletedRides'
+import CompletedRides from '../components/Rides/CompletedRides';
+import CancelledRides from '../components/Rides/CancelledRides';
 import DriverPayments from "../components/Drivers/DriverPayments";
 import DriverDetails from "../components/Drivers/DriverDetails";
 import DriverPastUsers from "../components/Drivers/DriverPastUsers"
@@ -55,6 +56,7 @@ function Routings() {
           <Route exact path="/ActiveRides" element={<ActiveRides />}></Route>
           <Route exact path="/AssignedRides" element={<AssignedRides />}></Route>
           <Route exact path="/CompletedRides" element={<CompletedRides />}></Route>
+          <Route exact path="/CancelledRides" element={<CancelledRides />}></Route>
           <Route exactpath="/AdminSidebar" element={<AdminSidebar />}></Route>
           <Route exact path="/Payments" element={<Payments /> }></Route>
           <Route exact path="/DriverProfiles" element={<DriverProfiles />}></Route>
