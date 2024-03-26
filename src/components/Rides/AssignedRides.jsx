@@ -264,7 +264,7 @@ const AssignedRides = () => {
     );
     axios({
       baseURL: BASE_URL,
-      url: "/admin/assignRide",
+      url: "/admin/updateAssignRides",
       method: "post",
       data: {
         rideId: id,
