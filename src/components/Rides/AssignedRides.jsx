@@ -60,13 +60,23 @@ const AssignedRides = () => {
   const filterData = () => {
     // Filter data based on the date range
     setLoading(true);
-    if (startDate !== "" && endDate !== "") {
+    if (startDate !== "" || endDate !== "") {
       const filteredRows = filteredData.filter((ride) => {
         const rideDate = new Date(ride.Ride_Date);
-        const start = new Date(startDate);
-        //start.setDate(start.getDate() - 1);
-        const end = new Date(endDate);
-        return rideDate >= start && rideDate <= end;
+        let start, end;
+        if (startDate !== "") {
+          start = new Date(startDate);
+        }
+        if (endDate !== "") {
+          end = new Date(endDate);
+        }
+        if (start && end) {
+          return rideDate >= start && rideDate <= end;
+        } else if (start) {
+          return rideDate >= start;
+        } else if (end) {
+          return rideDate <= end;
+        }
       });
       setRidesRows(filteredRows);
       setLoading(false);
